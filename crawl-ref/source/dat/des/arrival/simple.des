@@ -2386,16 +2386,3 @@ xxx........Gxxx
  xxxwwwwwxx+x
    xxxxxxx
 ENDMAP
-
-# Vault used to test mlioglotl first principles
-NAME:     amcnicky_test_mlioglotl
-TAGS:     arrival
-WEIGHT:   99999
-KMONS:    p = mlioglotl
-MAP
-@@@@@@@@@
-@.......@
-@.{..p..@
-@.......@
-@@@@@@@@@
-ENDMAP
