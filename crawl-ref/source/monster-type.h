@@ -834,6 +834,7 @@ enum monster_type                      // menv[].type
     MONS_BAI_SUZHEN,
     MONS_BAI_SUZHEN_DRAGON,
     MONS_MAGGIE,
+    MONS_MLIOGLOTL,
 #endif
     // Sprint uniques:
     MONS_CHUCK,
