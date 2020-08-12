@@ -486,6 +486,29 @@ MAP
 1
 ENDMAP
 
+NAME:   uniq_mlioglotl
+DEPTH:  Abyss:3-
+WEIGHT: 20 (Abyss:3), 40 (Abyss:4), 80 (Abyss:5)
+#       Weights still feel small per playtesting but look large per
+#       peer comparison in this file. Something about abyss vault selection
+#       reducing the prevelance?
+TAGS:   generate_awake
+#       Similar intention to Ignacio - if the player runs or tps away
+#       without killing mlioglotl, there should be a chance to re-encounter
+TAGS:   transparent extra allow_dup
+veto {{
+  if you.uniques("Mlioglotl") then
+    return true
+  else
+    return false
+  end
+}}
+MONS: Mlioglotl
+MAP
+1
+ENDMAP
+
+
 ###############################################################################
 # Crazy Yiuf! Only in his cottage.
 NAME:    uniq_crazy_yiuf_cottage
