@@ -2200,118 +2200,64 @@ static bool _mons_call_of_chaos(const monster& mon, bool check_only = false)
  */
  static void _corrupt_locale(monster mons)
  {
-    mprf("%s corrupts the very nature of the dungeon!",
+    vector<coord_def> tile_locs;
+
+    for (radius_iterator ai(mons.pos(),3,C_SQUARE,LOS_NO_TRANS,true); ai; ++ai)
+    {
+      const auto feat = grd(*ai);
+      if(feat_has_dry_floor(feat)){
+        tile_locs.push_back(*ai);
+      }
+    }
+
+    if(tile_locs.empty())
+    {
+      mprf("%s tries to corrupt the dungeon but fails!",
           mons.name(DESC_THE).c_str(),
           silenced(mons.pos()) ? "silent" : "terrible");
-    static const set<dungeon_feature_type> susceptible_tiles =
-      {
-          DNGN_METAL_WALL,
-          DNGN_CRYSTAL_WALL,
-          DNGN_ROCK_WALL,
-          DNGN_SLIMY_WALL,
-          DNGN_STONE_WALL,
-          DNGN_CLEAR_ROCK_WALL,              // transparent walls
-          DNGN_CLEAR_STONE_WALL,
-          DNGN_ORCISH_IDOL,
-          DNGN_GRANITE_STATUE,
-          DNGN_DEEP_WATER,
-          DNGN_SHALLOW_WATER,
-          DNGN_FLOOR,
-          DNGN_FOUNTAIN_BLUE,
-          DNGN_FOUNTAIN_SPARKLING,           // aka 'Magic Fountain' {dlb}
-          DNGN_FOUNTAIN_BLOOD,
-          DNGN_DRY_FOUNTAIN_BLUE,
-          DNGN_DRY_FOUNTAIN_SPARKLING,
-          DNGN_DRY_FOUNTAIN_BLOOD,
-          DNGN_DRY_FOUNTAIN,
-          DNGN_LAVA,
-      };
-    for (radius_iterator ai(mons.pos(),3,C_SQUARE); ai; ++ai)
+      return;
+    }
+
+    for(auto tile: tile_locs)
     {
-      // Make sure we have a legitimate tile.
-      if (susceptible_tiles.count(grd(*ai)))
+      if(in_bounds(tile))
       {
-          //currently iterated tile is susceptible
-          switch (grd(*ai))
+        if (coinflip())
+        {
+          dungeon_terrain_changed(tile,DNGN_SHALLOW_WATER,0,1,0,0);
+        } else if(coinflip())
+        {
+          place_cloud(CLOUD_FIRE, tile,
+            30 + random2(20), &mons);
+        }
+      }
+    }
+
+    /*
+    for(auto tile: tile_locs)
+    {
+      const auto feat = grd(tile);
+      if(in_bounds(feat))
+      {
+        if(feat_has_dry_floor(feat))
+        {
+          if (coinflip())
           {
-          default:
-              break;
-              case DNGN_METAL_WALL: {
-                temp_change_terrain(*ai, DNGN_ROCK_WALL, INFINITE_DURATION,
-                          TERRAIN_CHANGE_GENERIC);
-              }
-              case DNGN_CRYSTAL_WALL: {
-                temp_change_terrain(*ai, DNGN_ROCK_WALL, INFINITE_DURATION,
-                          TERRAIN_CHANGE_GENERIC);
-              }
-              case DNGN_ROCK_WALL: {
-                temp_change_terrain(*ai, DNGN_CRYSTAL_WALL, INFINITE_DURATION,
-                          TERRAIN_CHANGE_GENERIC);
-              }
-              case DNGN_SLIMY_WALL: {
-                temp_change_terrain(*ai, DNGN_METAL_WALL, INFINITE_DURATION,
-                          TERRAIN_CHANGE_GENERIC);
-              }
-              case DNGN_STONE_WALL: {
-                temp_change_terrain(*ai, DNGN_ROCK_WALL, INFINITE_DURATION,
-                          TERRAIN_CHANGE_GENERIC);
-              }
-              case DNGN_CLEAR_ROCK_WALL: {
-                temp_change_terrain(*ai, DNGN_SLIMY_WALL, INFINITE_DURATION,
-                          TERRAIN_CHANGE_GENERIC);
-              }
-              case DNGN_CLEAR_STONE_WALL: {
-                temp_change_terrain(*ai, DNGN_CRYSTAL_WALL, INFINITE_DURATION,
-                          TERRAIN_CHANGE_GENERIC);
-              }
-              case DNGN_ORCISH_IDOL: {
-                temp_change_terrain(*ai, DNGN_FOUNTAIN_BLOOD, INFINITE_DURATION,
-                          TERRAIN_CHANGE_GENERIC);
-              }
-              case DNGN_GRANITE_STATUE: {
-                temp_change_terrain(*ai, DNGN_ORCISH_IDOL, INFINITE_DURATION,
-                          TERRAIN_CHANGE_GENERIC);
-              }
-              case DNGN_DEEP_WATER: {
-                temp_change_terrain(*ai, DNGN_LAVA, INFINITE_DURATION,
-                          TERRAIN_CHANGE_GENERIC);
-              }
-              case DNGN_SHALLOW_WATER: {
-                temp_change_terrain(*ai, DNGN_FLOOR, INFINITE_DURATION,
-                          TERRAIN_CHANGE_GENERIC);
-              }
-              case DNGN_FLOOR: {
-                temp_change_terrain(*ai, DNGN_FLOOR, INFINITE_DURATION,
-                          TERRAIN_CHANGE_GENERIC);
-              }
-              case DNGN_FOUNTAIN_BLUE: {
-                temp_change_terrain(*ai, DNGN_DRY_FOUNTAIN_SPARKLING, INFINITE_DURATION,
-                          TERRAIN_CHANGE_GENERIC);
-              }
-              case DNGN_FOUNTAIN_SPARKLING: {
-                temp_change_terrain(*ai, DNGN_FOUNTAIN_BLOOD, INFINITE_DURATION,
-                          TERRAIN_CHANGE_GENERIC);
-              }
-              case DNGN_FOUNTAIN_BLOOD: {
-                temp_change_terrain(*ai, DNGN_FOUNTAIN_SPARKLING, INFINITE_DURATION,
-                          TERRAIN_CHANGE_GENERIC);
-              }
-              case DNGN_DRY_FOUNTAIN_BLUE: {
-                temp_change_terrain(*ai, DNGN_DRY_FOUNTAIN_SPARKLING, INFINITE_DURATION,
-                          TERRAIN_CHANGE_GENERIC);
-              }
-              //to finish
-              case DNGN_LAVA: {
-                temp_change_terrain(*ai, DNGN_DEEP_WATER, INFINITE_DURATION,
-                          TERRAIN_CHANGE_GENERIC);
-                          mprf("%s corrupts the lava!",
-                                mons.name(DESC_THE).c_str(),
-                                silenced(mons.pos()) ? "silent" : "terrible");
-              }
+            dungeon_terrain_changed(feat,DNGN_SHALLOW_WATER,0,1,0,0);
+          } else if(coinflip())
+          {
+            place_cloud(CLOUD_FIRE, feat,
+              30 + random2(20), mons);
           }
+
+        }
+        if(feat_is_watery(feat)){
+          dungeon_terrain_changed(feat,DNGN_LAVA,0,1,0,0);
+        }
 
       }
     }
+    */
 
  }
 
