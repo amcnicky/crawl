@@ -24,6 +24,7 @@
 #include "database.h"
 #include "delay.h"
 #include "directn.h"
+#include "dungeon.h"
 #include "english.h"
 #include "env.h"
 #include "evoke.h"
@@ -2200,17 +2201,47 @@ static bool _mons_call_of_chaos(const monster& mon, bool check_only = false)
  */
  static void _corrupt_locale(monster mons)
  {
-    vector<coord_def> tile_locs;
+    vector<coord_def> floor_locs;
+    vector<coord_def> wall_locs;
+    vector<coord_def> other_locs;
 
+    //Look through mons LOS, grabbing relevant tiles into storage vectors
     for (radius_iterator ai(mons.pos(),3,C_SQUARE,LOS_NO_TRANS,true); ai; ++ai)
     {
       const auto feat = grd(*ai);
-      if(feat_has_dry_floor(feat)){
-        tile_locs.push_back(*ai);
+
+      //feat_is_critical check possibly not needed but seems like a safe inclusion
+      //(we shouldn't mess with anything critical of course)
+      if(feat_is_critical(feat)){
+        break;
+      }
+
+      //dry floor sent into vector of floor locations
+      if(feat_has_dry_floor(feat))
+      {
+        floor_locs.push_back(*ai);
+      } 
+
+      //walls sent into vector of wall locations, except for permawalls which we aren't touching
+      else if (feat_is_wall(feat) && !feat_is_permarock(feat))
+      {
+        wall_locs.push_back(*ai);
+      }
+
+      //collect any other special cases. Needs to be non-floor, non-wall of course
+      //currently just grabs trees, TODO: add special handling for statues and altars
+      else
+      {
+        switch(feat){
+          DNGN_TREE:
+            other_locs.push_back(*ai);
+          default:
+            break;
+        }
       }
     }
 
-    if(tile_locs.empty())
+    if(floor_locs.empty() && wall_locs.empty() && other_locs.empty())
     {
       mprf("%s tries to corrupt the dungeon but fails!",
           mons.name(DESC_THE).c_str(),
@@ -2218,47 +2249,47 @@ static bool _mons_call_of_chaos(const monster& mon, bool check_only = false)
       return;
     }
 
-    for(auto tile: tile_locs)
+    for(auto floor_tile: floor_locs)
     {
-      if(in_bounds(tile))
+      if(in_bounds(floor_tile))
+      {
+        if(one_chance_in(3))
+        {
+          env.pgrid(floor_tile) |= FPROP_BLOODY;
+        }
+        if(coinflip())
+        {
+          dungeon_terrain_changed(floor_tile,DNGN_SHALLOW_WATER,0,1,0,0);
+        }
+        if(coinflip())
+        {
+          dgn_set_grid_colour_at(floor_tile,5);
+        }
+      }
+    }
+
+    for(auto wall_tile: wall_locs)
+    {
+      if(in_bounds(wall_tile))
       {
         if (coinflip())
         {
-          dungeon_terrain_changed(tile,DNGN_SHALLOW_WATER,0,1,0,0);
+          dungeon_terrain_changed(wall_tile,DNGN_METAL_WALL,0,1,0,0);
         } else if(coinflip())
         {
-          place_cloud(CLOUD_FIRE, tile,
-            30 + random2(20), &mons);
+          dungeon_terrain_changed(wall_tile,DNGN_CRYSTAL_WALL,0,1,0,0);
         }
       }
     }
 
-    /*
-    for(auto tile: tile_locs)
+    for(auto other_tile: other_locs)
     {
-      const auto feat = grd(tile);
-      if(in_bounds(feat))
+      if (coinflip())
       {
-        if(feat_has_dry_floor(feat))
-        {
-          if (coinflip())
-          {
-            dungeon_terrain_changed(feat,DNGN_SHALLOW_WATER,0,1,0,0);
-          } else if(coinflip())
-          {
-            place_cloud(CLOUD_FIRE, feat,
-              30 + random2(20), mons);
-          }
-
-        }
-        if(feat_is_watery(feat)){
-          dungeon_terrain_changed(feat,DNGN_LAVA,0,1,0,0);
-        }
-
+        place_cloud(CLOUD_FIRE, other_tile,
+        30 + random2(20), &mons);
       }
     }
-    */
-
  }
 
 
