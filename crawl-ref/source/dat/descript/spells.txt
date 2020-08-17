@@ -345,6 +345,12 @@ Corrosive Bolt spell
 
 Fires a penetrating bolt of acid.
 %%%%
+Corrupt Locale spell
+
+Corrupts the appearance of much of the dungeon. Can generate clouds of
+seething chaos drawn directly from the abyss, and damage statues that aren't
+securely nailed down.
+%%%%
 Corrupting Pulse spell
 
 Instills a corruption within all visible targets, temporarily mutating their

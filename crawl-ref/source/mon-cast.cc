@@ -12,6 +12,7 @@
 #include <functional>
 #include <unordered_set>
 
+#include "abyss.h"
 #include "act-iter.h"
 #include "areas.h"
 #include "attack.h"
@@ -24,7 +25,6 @@
 #include "database.h"
 #include "delay.h"
 #include "directn.h"
-#include "dungeon.h"
 #include "english.h"
 #include "env.h"
 #include "evoke.h"
@@ -73,6 +73,7 @@
 #ifdef USE_TILE
 #include "rltiles/tiledef-dngn.h"
 #endif
+#include "tileview.h"
 #include "timed-effects.h"
 #include "traps.h"
 #include "travel.h"
@@ -2192,8 +2193,8 @@ static bool _mons_call_of_chaos(const monster& mon, bool check_only = false)
 }
 
 /**
- * Have a monster attempt to cast corrupt lcoale
- * currently only used by mlioglotl
+ * Have a monster attempt to cast corrupt lcoale.
+ * Currently only used by mlioglotl
  * and intended to be aesthetic in nature only,
  * to avoid any incentive for dragging mlioglotl around
  * to, for example, corrupt Z:5 walls or something
@@ -2201,6 +2202,15 @@ static bool _mons_call_of_chaos(const monster& mon, bool check_only = false)
  */
  static void _corrupt_locale(monster mons)
  {
+    //becomes a glorified cantrip if we're already in the abyss
+    if(player_in_branch(BRANCH_ABYSS))
+    {
+        mprf("%s basks in the glorious corruption of his surroundings.",
+          mons.name(DESC_THE).c_str(),
+          silenced(mons.pos()) ? "silent" : "terrible");
+        return;
+    }
+    //TODO: destroy statues with message
     vector<coord_def> floor_locs;
     vector<coord_def> wall_locs;
     vector<coord_def> other_locs;
@@ -2216,24 +2226,29 @@ static bool _mons_call_of_chaos(const monster& mon, bool check_only = false)
         break;
       }
 
-      //dry floor sent into vector of floor locations
+      //dry floor goes into vector of floor locations
       if(feat_has_dry_floor(feat))
       {
         floor_locs.push_back(*ai);
       } 
 
-      //walls sent into vector of wall locations, except for permawalls which we aren't touching
+      //walls go into vector of wall locations, except for permawalls which we aren't touching
       else if (feat_is_wall(feat) && !feat_is_permarock(feat))
       {
         wall_locs.push_back(*ai);
       }
 
       //collect any other special cases. Needs to be non-floor, non-wall of course
-      //currently just grabs trees, TODO: add special handling for statues and altars
+      //currently just grabs trees
       else
       {
-        switch(feat){
+        switch(feat)
+        {
           DNGN_TREE:
+          DNGN_DEEP_WATER:
+          DNGN_OPEN_SEA:
+          DNGN_ORCISH_IDOL:
+          DNGN_GRANITE_STATUE:
             other_locs.push_back(*ai);
           default:
             break;
@@ -2247,51 +2262,15 @@ static bool _mons_call_of_chaos(const monster& mon, bool check_only = false)
           mons.name(DESC_THE).c_str(),
           silenced(mons.pos()) ? "silent" : "terrible");
       return;
-    }
-
-    for(auto floor_tile: floor_locs)
+    } else
     {
-      if(in_bounds(floor_tile))
-      {
-        if(one_chance_in(3))
-        {
-          env.pgrid(floor_tile) |= FPROP_BLOODY;
-        }
-        if(coinflip())
-        {
-          dungeon_terrain_changed(floor_tile,DNGN_SHALLOW_WATER,0,1,0,0);
-        }
-        if(coinflip())
-        {
-          dgn_set_grid_colour_at(floor_tile,5);
-        }
-      }
+      mprf("%s corrupts the dungeon around him!",
+        mons.name(DESC_THE).c_str(),
+        silenced(mons.pos()) ? "silent" : "terrible");
     }
-
-    for(auto wall_tile: wall_locs)
-    {
-      if(in_bounds(wall_tile))
-      {
-        if (coinflip())
-        {
-          dungeon_terrain_changed(wall_tile,DNGN_METAL_WALL,0,1,0,0);
-        } else if(coinflip())
-        {
-          dungeon_terrain_changed(wall_tile,DNGN_CRYSTAL_WALL,0,1,0,0);
-        }
-      }
-    }
-
-    for(auto other_tile: other_locs)
-    {
-      if (coinflip())
-      {
-        place_cloud(CLOUD_FIRE, other_tile,
-        30 + random2(20), &mons);
-      }
-    }
+    
+    lugonu_corrupt_level_mons(mons);
  }
-
 
 static void _set_door(set<coord_def> door, dungeon_feature_type feat)
 {
