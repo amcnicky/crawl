@@ -2210,66 +2210,12 @@ static bool _mons_call_of_chaos(const monster& mon, bool check_only = false)
           silenced(mons.pos()) ? "silent" : "terrible");
         return;
     }
-    //TODO: destroy statues with message
-    vector<coord_def> floor_locs;
-    vector<coord_def> wall_locs;
-    vector<coord_def> other_locs;
 
-    //Look through mons LOS, grabbing relevant tiles into storage vectors
-    for (radius_iterator ai(mons.pos(),3,C_SQUARE,LOS_NO_TRANS,true); ai; ++ai)
-    {
-      const auto feat = grd(*ai);
-
-      //feat_is_critical check possibly not needed but seems like a safe inclusion
-      //(we shouldn't mess with anything critical of course)
-      if(feat_is_critical(feat)){
-        break;
-      }
-
-      //dry floor goes into vector of floor locations
-      if(feat_has_dry_floor(feat))
-      {
-        floor_locs.push_back(*ai);
-      } 
-
-      //walls go into vector of wall locations, except for permawalls which we aren't touching
-      else if (feat_is_wall(feat) && !feat_is_permarock(feat))
-      {
-        wall_locs.push_back(*ai);
-      }
-
-      //collect any other special cases. Needs to be non-floor, non-wall of course
-      //currently just grabs trees
-      else
-      {
-        switch(feat)
-        {
-          DNGN_TREE:
-          DNGN_DEEP_WATER:
-          DNGN_OPEN_SEA:
-          DNGN_ORCISH_IDOL:
-          DNGN_GRANITE_STATUE:
-            other_locs.push_back(*ai);
-          default:
-            break;
-        }
-      }
-    }
-
-    if(floor_locs.empty() && wall_locs.empty() && other_locs.empty())
-    {
-      mprf("%s tries to corrupt the dungeon but fails!",
-          mons.name(DESC_THE).c_str(),
-          silenced(mons.pos()) ? "silent" : "terrible");
-      return;
-    } else
-    {
-      mprf("%s corrupts the dungeon around him!",
+    mprf("%s corrupts the dungeon around him!",
         mons.name(DESC_THE).c_str(),
         silenced(mons.pos()) ? "silent" : "terrible");
-    }
     
-    lugonu_corrupt_level_mons(mons);
+    lugonu_corrupt_level_mons(10, mons);
  }
 
 static void _set_door(set<coord_def> door, dungeon_feature_type feat)
