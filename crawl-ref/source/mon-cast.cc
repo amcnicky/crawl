@@ -2203,7 +2203,7 @@ static bool _mons_call_of_chaos(const monster& mon, bool check_only = false)
  static void _corrupt_locale(monster mons)
  {
     //becomes a glorified cantrip if we're already in the abyss
-    if(player_in_branch(BRANCH_ABYSS))
+    if (player_in_branch(BRANCH_ABYSS))
     {
         mprf("%s basks in the glorious corruption of his surroundings.",
           mons.name(DESC_THE).c_str(),
@@ -2214,7 +2214,7 @@ static bool _mons_call_of_chaos(const monster& mon, bool check_only = false)
     mprf("%s corrupts the dungeon around him!",
         mons.name(DESC_THE).c_str(),
         silenced(mons.pos()) ? "silent" : "terrible");
-    
+
     lugonu_corrupt_level_mons(10, mons);
  }
 

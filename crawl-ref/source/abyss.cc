@@ -1768,7 +1768,7 @@ struct corrupt_env
 
 static void _place_corruption_seed(const coord_def &pos, int duration, bool is_monster_version = false)
 {
-    if(is_monster_version)
+    if (is_monster_version)
     {
         env.markers.add(new map_corruption_marker_mons(pos, duration));
 
@@ -1793,7 +1793,7 @@ static void _initialise_level_corrupt_seeds(int power, monster* mons = nullptr, 
     dprf("Placing %d corruption seeds (power: %d)", nseeds, power);
 
     // The corruption centred on the player is free.
-    if(is_monster_version)
+    if (is_monster_version)
     {
         _place_corruption_seed(mons->pos(), high + 300, true);
     } else //is player version
@@ -1815,12 +1815,12 @@ static void _initialise_level_corrupt_seeds(int power, monster* mons = nullptr, 
         }
         if (!where.origin())
         {
-            if(is_monster_version)
-            {                
+            if (is_monster_version)
+            {
                     _place_corruption_seed(where, random_range(low, high, 2) + 300, true);
             } else //is player version
             {
-                   _place_corruption_seed(where, random_range(low, high, 2) + 300, false); 
+                   _place_corruption_seed(where, random_range(low, high, 2) + 300, false);
             }
         }
     }
@@ -1834,7 +1834,7 @@ static bool _incorruptible(monster_type mt)
 static bool _incorruptible_weaker(monster_type mt)
 {
     return mons_is_abyssal_only(mt) || mons_class_holiness(mt) == MH_HOLY
-    || mons_demon_tier(mt) == 1     || mons_demon_tier(mt) == 2    
+    || mons_demon_tier(mt) == 1     || mons_demon_tier(mt) == 2
     || mt == MONS_TENTACLED_STARSPAWN;
     // no tier 1 or 2 demons, or starspawn for the monster version
 }
@@ -1846,14 +1846,14 @@ static bool _spawn_corrupted_servant_near(const coord_def &pos, bool is_monster_
 {
     // Chance to fail to place a monster (but allow continued attempts).
     // Assume Mlioglotl (for the monster version of this spell) has 11 invocations
-    if(is_monster_version)
+    if (is_monster_version)
     {
         if (x_chance_in_y(100, 200 + 11))
             return true;
     } else //not monster version i.e. should be powered by player invocations skill
     {
         if (x_chance_in_y(100, 200 + you.skill(SK_INVOCATIONS, 25)))
-            return true;       
+            return true;
     }
 
     // Thirty tries for a place.
@@ -1879,24 +1879,24 @@ static bool _spawn_corrupted_servant_near(const coord_def &pos, bool is_monster_
         ASSERT(mons != MONS_PROGRAM_BUG);
         if (!monster_habitable_grid(mons, grd(p)))
             continue;
-        if(is_monster_version && !have_passive(passive_t::attract_abyssal_rune))
+        if (is_monster_version && !have_passive(passive_t::attract_abyssal_rune))
         {   //monster version of the spell, and no protection from worshipping Lugonu yourself
-            mgen_data mg(mons, BEH_HOSTILE, p);  
+            mgen_data mg(mons, BEH_HOSTILE, p);
             mg.set_summoned(0, 5, 0).set_non_actor_summoner("Mlioglotl's corruption");
             mg.place = BRANCH_ABYSS;
-            return create_monster(mg);          
-        } else if(is_monster_version && have_passive(passive_t::attract_abyssal_rune))
+            return create_monster(mg);
+        } else if (is_monster_version && have_passive(passive_t::attract_abyssal_rune))
         {   //worshipping Lugonu yourself means the monsters spawn neutral
-            mgen_data mg(mons, BEH_NEUTRAL, p);  
+            mgen_data mg(mons, BEH_NEUTRAL, p);
             mg.set_summoned(0, 5, 0).set_non_actor_summoner("Mlioglotl's corruption");
             mg.place = BRANCH_ABYSS;
-            return create_monster(mg); 
+            return create_monster(mg);
         } else
         {   //player version of the spell - always neutral monsters
             mgen_data mg(mons, BEH_NEUTRAL, p);
             mg.set_summoned(0, 5, 0).set_non_actor_summoner("Lugonu's corruption");
             mg.place = BRANCH_ABYSS;
-            return create_monster(mg);    
+            return create_monster(mg);
         }
 
     }
@@ -1911,7 +1911,7 @@ static void _apply_corruption_effect(map_marker *marker, int duration, bool is_m
 
     const int neffects = max(div_rand_round(duration, 5), 1);
 
-    if(!is_monster_version){
+    if (!is_monster_version){
         map_corruption_marker *cmark = dynamic_cast<map_corruption_marker*>(marker);
         if (cmark->duration < 1)
             return;
@@ -2214,7 +2214,7 @@ bool is_level_incorruptible_mons()
         return true;
     } else
     {
-        return false;        
+        return false;
     }
 }
 
@@ -2288,7 +2288,7 @@ bool lugonu_corrupt_level_mons(int power, monster mons)
     scaled_delay(1000);
 #endif
 
-    return true;    
+    return true;
 }
 
 /// If the player has earned enough XP, spawn an exit or stairs down.
