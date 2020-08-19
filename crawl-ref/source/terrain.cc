@@ -549,6 +549,7 @@ static const pair<god_type, dungeon_feature_type> _god_altars[] =
     { GOD_HEPLIAKLQANA, DNGN_ALTAR_HEPLIAKLQANA },
     { GOD_WU_JIAN, DNGN_ALTAR_WU_JIAN },
     { GOD_ECUMENICAL, DNGN_ALTAR_ECUMENICAL },
+    { GOD_PHRAEGLURK, DNGN_ALTAR_PHRAEGLURK },
 };
 
 COMPILE_CHECK(ARRAYSZ(_god_altars) == NUM_GODS );

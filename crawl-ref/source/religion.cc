@@ -383,6 +383,15 @@ const vector<god_power> god_powers[NUM_GODS] =
            "summon a storm of heavenly clouds to empower your attacks",
            "summon a storm of heavenly clouds" },
     },
+
+    // Phraeglurk
+    { { 0, "Phraeglurk's first disgusting blessing" },
+      { 1, "Phraeglurk's second disgusting blessing" },
+      { 2, "Phraeglurk's third disgusting blessing" },
+      { 3, "Phraeglurk's fourth disgusting blessing" },
+      { 4, "Phraeglurk's fifth disgusting blessing"},
+      { 5, "Phraeglurk's sixth disgusting blessing"},
+    },
 };
 
 vector<god_power> get_god_powers(god_type god)
@@ -2125,7 +2134,8 @@ string god_name(god_type which_god, bool long_name)
 #endif
     case GOD_USKAYAW:       return "Uskayaw";
     case GOD_HEPLIAKLQANA:  return "Hepliaklqana";
-    case GOD_WU_JIAN:     return "Wu Jian";
+    case GOD_WU_JIAN:       return "Wu Jian";
+    case GOD_PHRAEGLURK:    return "Phraeglurk";
     case GOD_JIYVA: // This is handled at the beginning of the function
     case GOD_ECUMENICAL:    return "an unknown god";
     case NUM_GODS:          return "Buggy";
@@ -2989,6 +2999,9 @@ void excommunication(bool voluntary, god_type new_god)
         if (you.props.exists(WU_JIAN_HEAVENLY_STORM_KEY))
             wu_jian_end_heavenly_storm();
         break;
+
+    case GOD_PHRAEGLURK:
+        simple_god_message(" is furious at your lack of faith.", old_god);
 
     default:
         break;
@@ -4075,6 +4088,7 @@ void handle_god_time(int /*time_delta*/)
         case GOD_FEDHAS:
         case GOD_CHEIBRIADOS:
         case GOD_SHINING_ONE:
+        case GOD_PHRAEGLURK:
         case GOD_NEMELEX_XOBEH:
             if (one_chance_in(35))
                 lose_piety(1);

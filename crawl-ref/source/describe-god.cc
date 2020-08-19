@@ -237,8 +237,12 @@ static const char *divine_title[][8] =
         "Brooding",           "Anamnesiscian",               "Grand Scion",                "Unforgettable"},
 
     // Wu Jian -- animal/chinese martial arts monk theme
-    {"Wooden Rat",          "Young Dog",             "Young Crane",              "Young Tiger",
+    {"Wooden Rat",          "Young Dog",            "Young Crane",              "Young Tiger",
         "Young Dragon",     "Red Sash",               "Golden Sash",              "Sifu"},
+
+    // Phraeglurk -- plague/decay/regrowth theme
+    {"Muck Wriggler",       "Festerling",           "Scion of Decay",           "Epidemiologist",
+        "Plague Master",      "Plague Lord",          "Divine Sickness",          "Great Unclean One"},
 };
 COMPILE_CHECK(ARRAYSZ(divine_title) == NUM_GODS);
 

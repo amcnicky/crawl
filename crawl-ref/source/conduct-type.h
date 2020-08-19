@@ -39,5 +39,8 @@ enum conduct_type
     DID_CHANNEL,                          // Pakellas
     DID_HURT_FOE,                         // Uskayaw
     DID_WIZARDLY_ITEM,                    // Trog
+    DID_HEAL_WOUNDS,                      // Phraeglurk - HW
+    DID_CURING,                           // Phraeglurk - Curing
+    DID_AMBROSIA,                         // Phraeglurk - Ambrosia
     NUM_CONDUCTS
 };

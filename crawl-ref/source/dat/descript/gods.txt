@@ -139,6 +139,12 @@ from ambient magical power, are provided with magical energy to empower their
 devices so long as they use them to assert Pakellas' supremacy. Pakellas will
 grant devout worshippers access to increasingly powerful devices.
 %%%%
+Phraeglurk
+
+Phraeglurk, the Great God of Plague, is a ferocious and unforgiving master of
+the unclean. Followers will be warped horribly by his plagues and other
+"blessings", allowing them to attain disgusting size and resilience.
+%%%%
 Qazlal
 
 Qazlal Stormbringer is a violent god of tempests, who delights in unleashing
@@ -377,6 +383,16 @@ Sufficiently devout followers will receive new devices from Pakellas, and may
 eventually petition Pakellas to personally charge one of their devices beyond
 its normal limits.
 %%%%
+Phraeglurk powers
+
+Followers of Phraeglurk will see their natural health pools and regeneration
+greatly enhanced, and a miasma of pestillence will begin to form around them.
+As their devotion deepens, plaguelings may errupt from their now-deformed
+bodies upon taking damage and the growing bloat and redundancy of their
+limbs and organs provide a limit to how much any single blow can truly hurt
+them. Eventually, followers of Phraeglurk will be permitted to unleash his
+final plague upon their foes.
+%%%%
 Qazlal powers
 
 Followers of Qazlal are protected from all clouds. As a follower of Qazlal
@@ -596,6 +612,11 @@ Those that offend Pakellas will find themselves completely unable to make use
 of their devices for the duration of Pakellas's displeasure. Those who abandon
 Pakellas altogether will also continue to be unable to regenerate their magical
 power so long as Pakellas' attention remains on them.
+%%%%
+Phraeglurk wrath
+
+Those that offend Pakellas will find themselves completely unaffected, as
+this hasn't been implemented yet.
 %%%%
 Qazlal wrath
 

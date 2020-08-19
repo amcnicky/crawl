@@ -319,6 +319,7 @@ enum dungeon_feature_type
     DNGN_TRAVEL_TRAIL,
 #endif
 
+    DNGN_ALTAR_PHRAEGLURK,
     NUM_FEATURES
 };
 COMPILE_CHECK(NUM_FEATURES <= 256);

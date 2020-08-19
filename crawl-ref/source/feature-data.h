@@ -566,6 +566,7 @@ ALTAR(DNGN_ALTAR_PAKELLAS, "oddly glowing altar of Pakellas", "altar_pakellas", 
 ALTAR(DNGN_ALTAR_USKAYAW, "hide-covered altar of Uskayaw", "altar_uskayaw", ETC_INCARNADINE),
 ALTAR(DNGN_ALTAR_HEPLIAKLQANA, "hazy altar of Hepliaklqana", "altar_hepliaklqana", LIGHTGREEN),
 ALTAR(DNGN_ALTAR_WU_JIAN, "ornate altar of the Wu Jian Council", "altar_wu_jian", ETC_WU_JIAN),
+ALTAR(DNGN_ALTAR_PHRAEGLURK, "disgusting, rust-covered altar of Phraeglurk", "altar_phraeglurk", GREEN),
 
 #define FOUNTAIN(enum, name, vaultname, colour)\
 {\

@@ -79,6 +79,7 @@ static const char *conducts[] =
     "Kill Slime", "Kill Plant", "Was Hasty", "Attack In Sanctuary",
     "Kill Artificial", "Exploration", "Seen Monster",
     "Sacrificed Love", "Channel", "Hurt Foe", "Use Wizardly Item",
+    "Drink Heal Wounds", "Drink Curing", "Drink Ambrosia",
 };
 COMPILE_CHECK(ARRAYSZ(conducts) == NUM_CONDUCTS);
 
@@ -443,6 +444,27 @@ static peeve_map divine_peeves[] =
     peeve_map(),
     // GOD_WU_JIAN,
     peeve_map(),
+    // GOD_PHRAEGLURK,
+    {
+        { DID_HEAL_WOUNDS,  {"you use potions of heal wounds"
+                                , true
+                                , 10
+                                , 10
+                                , nullptr
+                                , "abhores your extensive use of unnatural healing"} },
+        { DID_CURING,       {"you use potions of curing"
+                                , true
+                                , 8
+                                , 8
+                                , nullptr
+                                , "is angered as you turn your back on Him, curing His blessed ailments"} },
+        { DID_AMBROSIA,     {"you use potions of ambrosia"
+                                , false
+                                , 6
+                                , 6
+                                , nullptr
+                                , "is disappointed in such unnatural healing"} },
+    },
 };
 
 string get_god_dislikes(god_type which_god)
@@ -925,6 +947,14 @@ static like_map divine_likes[] =
         { DID_EXPLORATION, EXPLORE_RESPONSE },
     },
     // GOD_WU_JIAN
+    {
+        { DID_KILL_LIVING, KILL_LIVING_RESPONSE },
+        { DID_KILL_UNDEAD, KILL_UNDEAD_RESPONSE },
+        { DID_KILL_DEMON, KILL_DEMON_RESPONSE },
+        { DID_KILL_HOLY, KILL_HOLY_RESPONSE },
+        { DID_KILL_NONLIVING, KILL_NONLIVING_RESPONSE },
+    },
+    // GOD_PHRAEGLURK
     {
         { DID_KILL_LIVING, KILL_LIVING_RESPONSE },
         { DID_KILL_UNDEAD, KILL_UNDEAD_RESPONSE },
