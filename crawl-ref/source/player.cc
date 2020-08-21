@@ -1111,6 +1111,11 @@ static int _player_bonus_regen()
     if (you.duration[DUR_POWERED_BY_DEATH])
         rr += you.props[POWERED_BY_DEATH_KEY].get_int() * 100;
 
+    // Phraeglurk bonus regeneration
+    if (have_passive(passive_t::phraeglurk_regen) && you_worship(GOD_PHRAEGLURK))
+    {
+        rr += ((piety_rank(you.piety))*35);
+    }
     return rr;
 }
 
@@ -3777,6 +3782,12 @@ int get_real_hp(bool trans, bool rotted)
     if (trans && player_equip_unrand(UNRAND_ETERNAL_TORMENT))
         hitp = hitp * 4 / 5;
 #endif
+
+    // Some gods give you extra hp.
+    if (have_passive(passive_t::phraeglurk_health) && you_worship(GOD_PHRAEGLURK))
+    {
+        hitp = hitp*((10+(piety_rank(you.piety)))/10);   
+    }
 
     return max(1, hitp);
 }

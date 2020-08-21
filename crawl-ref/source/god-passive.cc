@@ -425,7 +425,10 @@ static const vector<god_passive> god_passives[] =
         { 2, passive_t::wu_jian_wall_jump, "perform airborne attacks in an area by jumping off a solid obstacle." },
     },
         // Phraeglurk
-    { }, // to implement (and then update descriptions)
+    { 
+        { 0, passive_t::phraeglurk_regen, "GOD NOW enhances your natural health regeneration" },
+        { 0, passive_t::phraeglurk_health, "GOD NOW enhances your total health" },
+    }, // to implement (and then update descriptions)
 };
 COMPILE_CHECK(ARRAYSZ(god_passives) == NUM_GODS);
 

@@ -385,12 +385,18 @@ const vector<god_power> god_powers[NUM_GODS] =
     },
 
     // Phraeglurk
-    { { 0, "Phraeglurk's first disgusting blessing" },
-      { 1, "Phraeglurk's second disgusting blessing" },
-      { 2, "Phraeglurk's third disgusting blessing" },
-      { 3, "Phraeglurk's fourth disgusting blessing" },
-      { 4, "Phraeglurk's fifth disgusting blessing"},
-      { 5, "Phraeglurk's sixth disgusting blessing"},
+    { { 0, "Phraeglurk will reinforce your health and health regeneration." },
+      { 0, "Phraeglurk will \"gift\" you with the effects of his glorious plague." },
+      { 2, "[POWER 1]" },
+      { 3, "Phraeglurk will warp your body to a larger size.",
+              "Your body has returned to its previous size.",
+              "Phraeglurk will warp your body to a larger size." },
+      { 4, "[POWER 2]" },
+      { 5, "[AURA]" },
+      { 5, "Phraeglurk will warp your body to a truly terrifying size.",
+              "Your body has returned to its larger proportions.",
+              "Phraeglurk will warp your body to a truly terrifying size." },
+      { 6, "[MEGA POWER]" },
     },
 };
 
@@ -2441,6 +2447,16 @@ static void _gain_piety_point()
            god_speaks(you.religion,
                       "You may now remember your ancestor's life.");
         }
+        if (you_worship(GOD_PHRAEGLURK) && have_passive(passive_t::phraeglurk_regen)) 
+        {
+          mprf(MSGCH_GOD, "Your health regeneration quickens!");
+        }
+        if (you_worship(GOD_PHRAEGLURK) && have_passive(passive_t::phraeglurk_health)) 
+        {
+          mprf(MSGCH_GOD, "Your maximum health grows!");
+          //Piety change affects HP via Phraeglurk
+          calc_hp(true, true);
+        }
     }
 
     // The player's symbol depends on Beogh piety.
@@ -2581,6 +2597,8 @@ void lose_piety(int pgn)
 #endif
             }
         }
+        //Piety change affects HP via Phraeglurk
+        calc_hp(true, true);
 #ifdef USE_TILE_LOCAL
         tiles.layout_statcol();
         redraw_screen();
