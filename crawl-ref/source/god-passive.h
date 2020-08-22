@@ -260,6 +260,10 @@ enum class passive_t
     // Phraeglurk boosts health and health regen
     phraeglurk_regen,
     phraeglurk_health,
+
+    // Phraeglurk passively causes plague worms to be released from the player
+    // on taking damage
+    phraeglurk_plague_worm_release
 };
 
 enum ru_interference

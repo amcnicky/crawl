@@ -24,3 +24,5 @@ void treant_release_fauna(monster& mons);
 void check_grasping_roots(actor& act, bool quiet = false);
 
 void guardian_golem_bond(monster& mons);
+
+void plague_worm_death_explosion(monster& mons);

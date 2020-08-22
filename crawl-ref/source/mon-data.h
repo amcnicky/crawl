@@ -2447,6 +2447,20 @@ DUMMY(MONS_CRAB, 't', LIGHTGREY, "crab", TILEP_MONS_FIRE_CRAB)
     {TILEP_MONS_TORPOR_SNAIL}, TILE_CORPSE_TORPOR_SNAIL
 },
 
+//Phraeglurk only - no poly, no xp - no incentive to scum
+{
+    MONS_PLAGUE_WORM, 'w', LIGHTGREY, "plague worm",
+    M_NO_SKELETON | M_SEE_INVIS | M_NO_POLY_TO | M_NO_EXP_GAIN,
+    MR_RES_ROTTING,
+    0, MONS_WORM, MONS_PLAGUE_WORM, MH_NATURAL, 40,
+    { {AT_BITE, AF_ROT, 4}, AT_NO_ATK, AT_NO_ATK, AT_NO_ATK },
+    2, 20,
+    4, 4, MST_NO_SPELLS, true, S_SILENT,
+    I_BRAINLESS, HT_AMPHIBIOUS, 10, DEFAULT_ENERGY,
+    MONUSE_NOTHING, SIZE_TINY, MON_SHAPE_SNAIL,
+    {TILEP_MONS_PLAGUE_WORM}, TILE_CORPSE_PLAGUE_WORM
+},
+
 // dummy genus monster; not using DUMMY since it's also a dummy species
 {
     MONS_ELEPHANT_SLUG, 'w', WHITE, "elephant slug",

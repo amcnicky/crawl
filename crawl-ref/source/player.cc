@@ -3782,11 +3782,10 @@ int get_real_hp(bool trans, bool rotted)
     if (trans && player_equip_unrand(UNRAND_ETERNAL_TORMENT))
         hitp = hitp * 4 / 5;
 #endif
-
     // Some gods give you extra hp.
     if (have_passive(passive_t::phraeglurk_health) && you_worship(GOD_PHRAEGLURK))
     {
-        hitp = hitp*((10+(piety_rank(you.piety)))/10);   
+        hitp = (hitp*(10+(piety_rank(you.piety))))/10;   
     }
 
     return max(1, hitp);

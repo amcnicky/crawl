@@ -387,16 +387,16 @@ const vector<god_power> god_powers[NUM_GODS] =
     // Phraeglurk
     { { 0, "Phraeglurk will reinforce your health and health regeneration." },
       { 0, "Phraeglurk will \"gift\" you with the effects of his glorious plague." },
-      { 2, "[POWER 1]" },
+      { 1, "Your plagued body will occasionally leak plague worms upon taking damage." },
+      { 2, "You may intentionally release a swarm of plague worms." },
       { 3, "Phraeglurk will warp your body to a larger size.",
               "Your body has returned to its previous size.",
               "Phraeglurk will warp your body to a larger size." },
-      { 4, "[POWER 2]" },
-      { 5, "[AURA]" },
+      { 4, "Your body will leak deadly miasma, moreso upon taking damage." },
       { 5, "Phraeglurk will warp your body to a truly terrifying size.",
               "Your body has returned to its larger proportions.",
               "Phraeglurk will warp your body to a truly terrifying size." },
-      { 6, "[MEGA POWER]" },
+      { 6, "Phraeglurk will unleash a terrifying death plague at your request." },
     },
 };
 
@@ -2388,7 +2388,7 @@ static void _gain_piety_point()
         // Redraw piety display and, in case the best skill is Invocations,
         // redraw the god title.
         you.redraw_title = true;
-
+        mprf(MSGCH_GOD, "Piety rank up detected!");
         const int rank = piety_rank();
         take_note(Note(NOTE_PIETY_RANK, you.religion, rank));
         for (const auto& power : get_god_powers(you.religion))
@@ -2454,8 +2454,8 @@ static void _gain_piety_point()
         if (you_worship(GOD_PHRAEGLURK) && have_passive(passive_t::phraeglurk_health)) 
         {
           mprf(MSGCH_GOD, "Your maximum health grows!");
-          //Piety change affects HP via Phraeglurk
-          calc_hp(true, true);
+          //logic for growing health embedded within player.cc, triggered here by calc_hp
+          calc_hp(true, false);
         }
     }
 

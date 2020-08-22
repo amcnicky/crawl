@@ -1129,6 +1129,17 @@ static void _setup_inner_flame_explosion(bolt & beam, const monster& origin,
                                                      : KILL_MON_MISSILE;
 }
 
+static void _setup_plague_worm_explosion(bolt& beam, const monster& origin)
+{
+    _setup_base_explosion(beam, origin);
+    beam.flavour = BEAM_MIASMA;
+    beam.damage  = dice_def(3, 10 + piety_rank(you.piety));
+    beam.name    = "loud spray of plague-filled liquid";
+    beam.explode_noise_msg = "You hear a slimy splat!";
+    beam.colour  = LIGHTGREY;
+    beam.ex_size = 2;
+}
+
 static bool _explode_monster(monster* mons, killer_type killer,
                              bool pet_kill, bool wizard)
 {
@@ -1168,6 +1179,12 @@ static bool _explode_monster(monster* mons, killer_type killer,
     {
         _setup_bennu_explosion(beam, *mons);
         sanct_msg = "By Zin's power, the bennu's fires are quelled.";
+    }
+    else if (type == MONS_PLAGUE_WORM)
+    {
+        _setup_plague_worm_explosion(beam, *mons);
+        sanct_msg = "By Zin's power, the plague worm dissapates into the ether.";
+        //not sure I can see this msg getting triggered but better safe than sorry
     }
     else if (mons->has_ench(ENCH_INNER_FLAME))
     {
@@ -1875,6 +1892,7 @@ item_def* monster_die(monster& mons, killer_type killer,
         || mons.type == MONS_LURKING_HORROR
         || (mons.type == MONS_FULMINANT_PRISM && mons.prism_charge > 0)
         || mons.type == MONS_BENNU
+        || mons.type == MONS_PLAGUE_WORM
         || mons.has_ench(ENCH_INNER_FLAME))
     {
         did_death_message =
@@ -2488,7 +2506,10 @@ item_def* monster_die(monster& mons, killer_type killer,
                 killer,
                 mummy_curse_power(mons.type));
     }
-
+    else if (mons.type == MONS_PLAGUE_WORM)
+    {
+        plague_worm_death_explosion(mons);
+    }
     // Necromancy
     if (!was_banished && !mons_reset)
     {

@@ -1888,6 +1888,11 @@ pillar of salt
 
 A pillar of salt shaped like a statue, but worked by no living hands.
 %%%%
+plague worm
+
+A repulsive spawn of Phraeglurk's creation, it is generally grown within his
+most devout followers. Filled to the brim with a ferocious plague.
+%%%%
 plant
 
 A plant that has adapted to grow in the unpleasant dungeon environment,

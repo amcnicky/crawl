@@ -89,5 +89,8 @@ enum zap_type
     ZAP_AGONY_RANGE,
     ZAP_DISPEL_UNDEAD_RANGE,
     ZAP_TREMORSTONE,
+    /*
+    ZAP_PLAGUE_EXPLOSION, --remove when not needed
+    */
     NUM_ZAPS
 };

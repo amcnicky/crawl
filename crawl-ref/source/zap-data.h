@@ -1357,5 +1357,27 @@ _mon_hex_zap(ZAP_DRAIN_MAGIC, BEAM_DRAIN_MAGIC),
     true,
     0 // Noise comes from explosion
 },
+/*
+{
+    ZAP_PLAGUE_EXPLOSION,
+    "plague explosion",
+    200,
+    new calcdice_calculator<3, 14, 3, 5>, //not expecting this to be a player spell
+    new tohit_calculator<40>,
+    new dicedef_calculator<3, 6, 1, 12>, 
+    new tohit_calculator<40>,
+    LIGHTGREY,
+    false,
+    BEAM_VIRULENCE,
+    DCHAR_FIRED_MISSILE,
+    false,
+    false,
+    true,
+    0 // Noise comes from explosion
+},  
+
+TODO - remove after implementing plague explosion
+
+*/ 
 
 };

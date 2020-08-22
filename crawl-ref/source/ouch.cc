@@ -25,6 +25,7 @@
 #include "beam.h"
 #include "chardump.h"
 #include "colour.h"
+#include "coordit.h"
 #include "delay.h"
 #include "dgn-event.h"
 #include "end.h"
@@ -62,6 +63,7 @@
 #include "state.h"
 #include "stringutil.h"
 #include "teleport.h"
+#include "terrain.h"
 #include "transform.h"
 #include "tutorial.h"
 #include "view.h"
@@ -647,6 +649,44 @@ static void _powered_by_pain(int dam)
     }
 }
 
+static void _maybe_release_plague_worms(int dam)
+{
+    if(have_passive(passive_t::phraeglurk_plague_worm_release)
+    
+        && dam>0    && you.form == transformation::none
+        && ((dam*(2+(piety_rank(you.piety)-2))) > you.hp))
+        //2 piety ranks - dam must exceed 50%   current_hp
+        //3 piety ranks - dam must exceed 33%   current_hp
+        //4 piety ranks - dam must exceed 25%   current_hp
+        //5 piety ranks - dam must exceed 20%   current_hp
+        //6 piety ranks - dam must exceed 16.6% current_hp
+    {
+        mpr("A vicious plague worm struggles free from your wound.");
+        vector<coord_def> candidate_spaces;
+        for (adjacent_iterator ai(you.pos(), true); ai; ++ai)
+        {
+            if (!cell_is_solid(*ai) && !monster_at(*ai))
+                {
+                    candidate_spaces.push_back(*ai);
+                }
+         
+        }
+        if(candidate_spaces.size()==0)
+        {
+            mpr("A plague worm tries to wriggle out but there's no room!");    
+        } else
+        {
+            mpr("A vicious plague worm struggles free from your wound."); 
+            shuffle_array(candidate_spaces); //even chance for each space to be considered 1st 
+            monster* worm = create_monster(
+                mgen_data(MONS_PLAGUE_WORM, BEH_FRIENDLY,candidate_spaces[0],
+                  MHITNOT, MG_NONE, GOD_PHRAEGLURK));
+            worm->add_ench(ENCH_SHORT_LIVED);
+        }  
+    }   else return;
+return;
+}
+
 static void _maybe_fog(int dam)
 {
     const int minpiety = have_passive(passive_t::hit_smoke)
@@ -977,6 +1017,7 @@ void ouch(int dam, kill_method_type death_type, mid_t source, const char *aux,
             _maybe_spawn_monsters(dam, death_type, source);
             _maybe_spawn_rats(dam, death_type);
             _maybe_fog(dam);
+            _maybe_release_plague_worms(dam);
             _powered_by_pain(dam);
             if (sanguine_armour_valid())
                 activate_sanguine_armour();

@@ -114,6 +114,9 @@ enum monster_type                      // menv[].type
     MONS_ROCK_WORM,
     MONS_SPINY_WORM,
 #endif
+#if TAG_MAJOR_VERSION > 34
+    MONS_PLAGUE_WORM,
+#endif
     MONS_WYVERN,
 #if TAG_MAJOR_VERSION > 34
     MONS_DRAKE,                 // genus
@@ -122,7 +125,7 @@ enum monster_type                      // menv[].type
     MONS_RIME_DRAKE,
     MONS_SWAMP_DRAKE,
     MONS_DEATH_DRAKE,
-#if TAG_MAJOR_VERSION > 34
+#if TAG_MAJOR_VERSION > 34           
     MONS_WIND_DRAKE,
     MONS_DRAGON,                // genus
 #endif
@@ -1064,6 +1067,7 @@ enum monster_type                      // menv[].type
     MONS_MAGGIE,
     MONS_NAMELESS,
     MONS_PALENTONGA,
+    MONS_PLAGUE_WORM,           // Phraeglurk - adolescent death drake?
 #endif
 
     NUM_MONSTERS,               // used for polymorph

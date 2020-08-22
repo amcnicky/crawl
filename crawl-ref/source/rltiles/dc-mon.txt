@@ -165,6 +165,7 @@ dart_slug MONS_DART_SLUG
 %rim 0
 torpor_snail MONS_TORPOR_SNAIL
 %rim 1
+plague_worm MONS_PLAGUE_WORM
 
 ## Flying insects ('y')
 vampire_mosquito MONS_VAMPIRE_MOSQUITO

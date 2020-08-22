@@ -491,5 +491,8 @@ enum spell_type : int
     SPELL_DISPEL_UNDEAD_RANGE,
     SPELL_FROZEN_RAMPARTS,
     SPELL_ABSOLUTE_ZERO,
+    /*
+    SPELL_PLAGUE_EXPLOSION, --remove when not needed
+    */
     NUM_SPELLS
 };
