@@ -294,20 +294,6 @@ x.G.x
 ..@..
 ENDMAP
 
-# Simple decision for the player on whether the altar is worth stepping on
-# or otherwise avoiding (digging etc) one or more traps
-NAME:  amcnicky_altar_trapped
-TAGS:  no_monster_gen
-DEPTH: D:3-
-SUBST: p:~., q:~....., r:~.......
-MAP
-xxxxx
-x...xxxx.
-x.C.~pqr.
-x...xxxx.
-xxxxx
-ENDMAP
-
 # Gold given fairly modest weightings, could be lowered further if
 # determined that this would be too much of a bump to the player
 # Could also add a chance to subst gold for enemies
@@ -317,8 +303,8 @@ ENDMAP
 NAME:   amcnicky_altar_gilded
 TAGS:   transparent
 DEPTH:  D:3-, Lair, Orc, Elf, Crypt
-NSUBST: p = *=.$:45
-NSUBST: q = *=.$:15
+NSUBST: p = *=. $:45
+NSUBST: q = *=. $:15
 MAP
 .........
 .mmmmmmm.
@@ -332,32 +318,25 @@ MAP
 ENDMAP
 
 # Chance of rolling all % items: 61%
-NAME:   amcnicky_altar_medium_temple
+NAME:   amcnicky_altar_inner_sanctum
 TAGS:   no_monster_gen
 DEPTH:  D:3-, Lair, Orc, Elf, Crypt
-SUBST:  p:%%%%%*, q:%%%%%%%*, r:%%%%%*, s:xx+, u:xx+, y:...wwwl, z:...wwwl
+SUBST:  p:%%%%%*, q:%%%%%%%*, r:%%%%%*, s:.+, u:.+, y:...wwwl, z:...www
+NSUBST: 0 = 2:9 / 1: 98 / 4: 0 / 4: .0 / *:..0
+NSUBST: ' = 3:. / 3:xx. / *:x
 MAP
-     ............
-    ..............
-   ................
-  ....xxsxxxxuxx....
- ....xxx.xxx..xxx....
-....xxxx.zzz..xxxx...
-...xxxG.......Gxxx...
-...xxx.....0....Gx...
-...xx..0...0.....x...
-...x..yyyyyyy.9.px...
-...+..yyyyyyy..Cqx...
-...x..yyyyyyy.9.rx...
-...xx..0...0.....x...
-...xxx.....0....Gx...
-...xxxG.......Gxxx...
-....xxxx.zzz..xxxx...
- ....xxx.xxx..xxx....
-  ....xxsxxxxuxx....
-   ................
-    ..............
-     ............
+..'x0...x'..
+..'xuxxux'..
+''.00.....''
+xxz'xssx'0xx
+.uzxpyyrx0u0
+.x.sy00ys.x.
+.x.sy00ys.x.
+0u0xqyyCxzu.
+xx0'xssx'zxx
+''.....00.''
+..'xuxxux'..
+..'x...0x'..
 ENDMAP
 
 ##############################################################################
@@ -457,7 +436,7 @@ ENDMAP
 # all measures I can think of to stop can_overwrite messing up level
 # traversal with this vault since it can overwrite.
 NAME:     amcnicky_altar_lugonu_corruption
-TAGS:     transparent can_overwrite no_monster_gen
+TAGS:     transparent no_monster_gen
 DEPTH:    D:3-, Vaults, Lair, Orc, Elf, Crypt, Depths, Slime:1-4, Shoals,\
             Spider, Snake, Swamp
 # Lugonu cares not about moderate vault placement
@@ -467,7 +446,6 @@ MARKER:   q  = lua:fog_machine { cloud_type="purple smoke", walk_dist=1, \
 FTILE:    .upqrG1@ = FLOOR_NERVES
 KFEAT:    p = altar_lugonu
 KFEAT:    r = enter_abyss
-KPROP:    p = no_cloud_gen
 MONS:     lurking horror / thrashing horror
 MONS:     spatial vortex / shining eye
 MONS:     chaos spawn / spatial vortex
@@ -487,13 +465,18 @@ SUBST:  2 = 2:80 3:10 4:10
 SUBST:  3 = 3:80 4:20
 validate {{ return has_exit_from_glyph('r') }}
 MAP
- @@@q.
-@.1.1..
-@1...Gq.
-@u.p.rG.
-@1...Gq.
-@.1.1..
- @@@q.
+xxxxxxxxxxxx
+xxxxxxxxxxxx
+xxx....xxxxx
+xx.......xxx
+xx........xx
+xx.......xxx
+xx.......xxx
+xxxx.....xxx
+xxxxx...xxxx
+xxxxxx..xx..
+.xx.........
+............
 ENDMAP
 
 ### Altars possibly to Beogh #################################################
