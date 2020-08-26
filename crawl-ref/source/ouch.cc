@@ -661,7 +661,6 @@ static void _maybe_release_plague_worms(int dam)
         //5 piety ranks - dam must exceed 20%   current_hp
         //6 piety ranks - dam must exceed 16.6% current_hp
     {
-        mpr("A vicious plague worm struggles free from your wound.");
         vector<coord_def> candidate_spaces;
         for (adjacent_iterator ai(you.pos(), true); ai; ++ai)
         {

@@ -1539,6 +1539,12 @@ int player_res_poison(bool calc_unid, bool temp, bool items)
             rp++;
     }
 
+    // religion impacts:
+    if(have_passive(passive_t::phraeglurk_rot_poison_resistance))
+    {
+        rp++;
+    }
+
     // mutations:
     rp += you.get_mutation_level(MUT_POISON_RESISTANCE, temp);
     rp += you.get_mutation_level(MUT_SLIMY_GREEN_SCALES, temp) == 3 ? 1 : 0;
@@ -6184,6 +6190,12 @@ rot_resistance player::res_rotting(bool temp) const
     if (get_mutation_level(MUT_ROT_IMMUNITY)
         || is_nonliving(temp)
         || temp && get_form()->res_rot())
+    {
+        return ROT_RESIST_FULL;
+    }
+
+    //religion effects
+    if(have_passive(passive_t::phraeglurk_rot_poison_resistance))
     {
         return ROT_RESIST_FULL;
     }

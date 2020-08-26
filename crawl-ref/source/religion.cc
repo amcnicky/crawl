@@ -387,7 +387,7 @@ const vector<god_power> god_powers[NUM_GODS] =
     // Phraeglurk
     { { 0, "Phraeglurk will reinforce your health and health regeneration." },
       { 0, "Phraeglurk will \"gift\" you with the effects of his glorious plague." },
-      { 1, "Your plagued body will occasionally leak plague worms upon taking damage." },
+      { 1, "Your infested body will occasionally leak plague worms upon taking damage." },
       { 2, "You may intentionally release a swarm of plague worms." },
       { 3, "Phraeglurk will warp your body to a larger size.",
               "Your body has returned to its previous size.",
@@ -450,7 +450,8 @@ bool is_evil_god(god_type god)
            || god == GOD_YREDELEMNUL
            || god == GOD_BEOGH
            || god == GOD_LUGONU
-           || god == GOD_DITHMENOS;
+           || god == GOD_DITHMENOS
+           || god == GOD_PHRAEGLURK;
 }
 
 bool is_good_god(god_type god)

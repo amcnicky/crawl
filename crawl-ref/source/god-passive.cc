@@ -428,7 +428,8 @@ static const vector<god_passive> god_passives[] =
     { 
         { 0, passive_t::phraeglurk_regen, "GOD NOW enhances your natural health regeneration" },
         { 0, passive_t::phraeglurk_health, "GOD NOW enhances your total health" },
-        { 1, passive_t::phraeglurk_plague_worm_release, "Damage taken will sometimes release plague worms from your body."}
+        { 0, passive_t::phraeglurk_rot_poison_resistance, "GOD NOW gifts you resistance to poison and rot"},
+        { 1, passive_t::phraeglurk_plague_worm_release, "Damage taken will sometimes release plague worms from your body."},
     },
 };
 COMPILE_CHECK(ARRAYSZ(god_passives) == NUM_GODS);

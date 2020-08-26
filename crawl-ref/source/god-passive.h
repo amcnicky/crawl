@@ -261,6 +261,9 @@ enum class passive_t
     phraeglurk_regen,
     phraeglurk_health,
 
+    //Phraeglurk provides rPois and rRot
+    phraeglurk_rot_poison_resistance,
+
     // Phraeglurk passively causes plague worms to be released from the player
     // on taking damage
     phraeglurk_plague_worm_release

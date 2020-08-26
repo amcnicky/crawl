@@ -1208,9 +1208,3 @@ void guardian_golem_bond(monster& mons)
         }
     }
 }
-
-void plague_worm_death_explosion(monster& mons)
-{
-    check_place_cloud(CLOUD_MIASMA, mons.pos(), 3, &mons);
-    
-}
