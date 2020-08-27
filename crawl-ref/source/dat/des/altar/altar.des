@@ -429,53 +429,59 @@ cccyy..yycc
      @@
 ENDMAP
 
-# Using the 'can_overwrite' tag to simulate Lugonu corrupting the dungeon
-# validate possibly not needed, but better safe than sorry to check that
-# we can still traverse whatever Lugonu has chosen to put their foot in.
-# The use of this many @s is also probably overkill, but want to take
-# all measures I can think of to stop can_overwrite messing up level
-# traversal with this vault since it can overwrite.
+# Authors note: this could be a good candidate for expansion into a group
+# of vault layouts that share a weight allocation, each with a different
+# 'pattern' of hand-crafted corruption layouts
+#
 NAME:     amcnicky_altar_lugonu_corruption
 TAGS:     transparent no_monster_gen
-DEPTH:    D:3-, Vaults, Lair, Orc, Elf, Crypt, Depths, Slime:1-4, Shoals,\
-            Spider, Snake, Swamp
 # Lugonu cares not about moderate vault placement
-MARKER:   q  = lua:fog_machine { cloud_type="purple smoke", walk_dist=1, \
-            size=1, pow_max=5, delay=10, buildup_amnt=7, buildup_time=7, \
-            spread_rate=2, start_clouds=1, colour="pruple" }
-FTILE:    .upqrG1@ = FLOOR_NERVES
+DEPTH:    D:3-, Vaults, Lair, Orc, Elf, Crypt, Depths, Slime:1-4, Shoals,\
+            Spider, Snake, Swamp, Zot:1-4
+FTILE:    'upqrzq : FLOOR_NERVES_RED / FLOOR_NERVES_BLUE / FLOOR_NERVES_GREEN \
+            / FLOOR_NERVES_CYAN / FLOOR_NERVES_MAGENTA / FLOOR_NERVES_BROWN \
+            / FLOOR_NERVES_LIGHTGRAY / FLOOR_NERVES_DARKGRAY \
+            / FLOOR_NERVES_LIGHTBLUE / FLOOR_NERVES_LIGHTGREEN \
+            / FLOOR_NERVES_LIGHTCYAN / FLOOR_NERVES_LIGHTRED \
+            / FLOOR_NERVES_LIGHTMAGENTA / FLOOR_NERVES_YELLOW \
+            / FLOOR_NERVES_WHITE
+NSUBST:   ' = 4:z / 4:xcz / *:c
+NSUBST:   z = 1=p / 1=r / 1=q / 2=pz / 2=rz / 4=pzzz / 4=rzzz / 4=qzzz
+NSUBST:   . = 1=0009 
 KFEAT:    p = altar_lugonu
 KFEAT:    r = enter_abyss
-MONS:     lurking horror / thrashing horror
-MONS:     spatial vortex / shining eye
-MONS:     chaos spawn / spatial vortex
-MONS:     ufetubus / floating eye
-SUBST: . = .:75 p:10 r:5 1:10
-: if you.absdepth() <4 then
-SUBST: 1:4
+# Currently using lurking horrors, whose threat (due to %health dmg) should
+# be relevant regardless of where this vault appears. We do however generate
+# more of them as we go deeper
+# Both depth triggers add on average 2 more LHs
+: if crawl.x_chance_in_y(you.absdepth() - 6, 16) then
+NSUBST:   z = 2:qz / 4:qzzz
 : end
-: if you.absdepth() <6 then
-SUBST: 1:3
+: if crawl.x_chance_in_y(you.absdepth() - 6, 48) then
+NSUBST:   z = 2:qz / 4:qzzz
 : end
-: if you.absdepth() <10 then
-SUBST: 1:2
-: end
-SUBST:  1 = 1:80 2:10 3:5 4:5
-SUBST:  2 = 2:80 3:10 4:10
-SUBST:  3 = 3:80 4:20
-validate {{ return has_exit_from_glyph('r') }}
+KMONS:    q = lurking_horror
+MARKER:   r = lua:fog_machine { cloud_type="purple smoke", walk_dist=1, \
+            size=1, pow_max=5, delay=10, buildup_amnt=7, buildup_time=7, \
+            spread_rate=2, start_clouds=1, colour="purple" }
+TILE:     c : WALL_ABYSS_BROWN / WALL_ABYSS_GREEN \
+          / WALL_ABYSS_CYAN / WALL_ABYSS_BLUE / WALL_ABYSS_MAGENTA \
+          / WALL_ABYSS_LIGHTRED / WALL_ABYSS_YELLOW / WALL_ABYSS_LIGHTGREEN \
+          / WALL_ABYSS_LIGHTCYAN / WALL_ABYSS_LIGHTBLUE \
+          / WALL_ABYSS_LIGHTMAGENTA / WALL_ABYSS_DARKGRAY \
+          / WALL_ABYSS_LIGHTGRAY / WALL_ABYSS_WHITE
 MAP
-xxxxxxxxxxxx
-xxxxxxxxxxxx
-xxx....xxxxx
-xx.......xxx
-xx........xx
-xx.......xxx
-xx.......xxx
-xxxx.....xxx
-xxxxx...xxxx
-xxxxxx..xx..
-.xx.........
+xxccccccxxxx
+xcc''''ccxxx
+xc'zzzz''ccx
+c'zzzzzzz''c
+c'zzzzzzzz'c
+c'zzzzzzz''c
+c'zzzzzzz'cx
+xc''zzzzz'cx
+xxxx'zzz''xx
+xxxxx'zz''x.
+.xx.zzzzzz..
 ............
 ENDMAP
 
