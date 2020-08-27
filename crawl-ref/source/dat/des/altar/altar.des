@@ -322,7 +322,7 @@ NAME:   amcnicky_altar_inner_sanctum
 TAGS:   no_monster_gen
 DEPTH:  D:3-, Lair, Orc, Elf, Crypt
 SUBST:  p:%%%%%*, q:%%%%%%%*, r:%%%%%*, s:.+, u:.+, y:...wwwl, z:...www
-NSUBST: 0 = 2:9 / 1: 98 / 4: 0 / 4: .0 / *:..0
+NSUBST: 0 = 2:9 / 1:98 / 4:0 / 4:.0 / *:..0
 NSUBST: ' = 3:. / 3:xx. / *:x
 MAP
 ..'x0...x'..
