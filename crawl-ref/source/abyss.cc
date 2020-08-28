@@ -1790,15 +1790,19 @@ static void _initialise_level_corrupt_seeds(int power, monster* mons = nullptr, 
 
     const int aux_seed_radius = 4;
 
-    dprf("Placing %d corruption seeds (power: %d)", nseeds, power);
+
 
     // The corruption centred on the player is free.
     if (is_monster_version)
     {
-        _place_corruption_seed(mons->pos(), high + 300, true);
+        dprf("Placing %d corruption seeds (power: %d)", nseeds, power);
+        _place_corruption_seed(mons->pos(), random_range(low, high, 2) + 100, true);
+
     } else //is player version
     {
+        dprf("Placing %d corruption seeds (power: %d)", nseeds, power);
         _place_corruption_seed(you.pos(), high + 300, false);
+        
     }
 
 
@@ -1817,7 +1821,7 @@ static void _initialise_level_corrupt_seeds(int power, monster* mons = nullptr, 
         {
             if (is_monster_version)
             {
-                    _place_corruption_seed(where, random_range(low, high, 2) + 300, true);
+                    _place_corruption_seed(where, random_range(low, high, 2) + 100, true);
             } else //is player version
             {
                    _place_corruption_seed(where, random_range(low, high, 2) + 300, false);
@@ -2147,12 +2151,19 @@ static void _corrupt_square(const corrupt_env &cenv, const coord_def &c)
     _corrupt_square_flavor(cenv, c);
 }
 
-static void _corrupt_level_features(const corrupt_env &cenv)
+static void _corrupt_level_features(const corrupt_env &cenv, bool is_monster_version = false)
 {
     vector<coord_def> corrupt_seeds;
+    if(is_monster_version)
+    {
+        for (const map_marker *mark : env.markers.get_all(MAT_CORRUPTION_NEXUS_MONS))
+            corrupt_seeds.push_back(mark->pos);
+    } else //is player version, so use the usual NEXUS
+    {
+        for (const map_marker *mark : env.markers.get_all(MAT_CORRUPTION_NEXUS))
+            corrupt_seeds.push_back(mark->pos); 
+    }
 
-    for (const map_marker *mark : env.markers.get_all(MAT_CORRUPTION_NEXUS))
-        corrupt_seeds.push_back(mark->pos);
 
     for (rectangle_iterator ri(MAPGEN_BORDER); ri; ++ri)
     {
@@ -2177,12 +2188,21 @@ static void _corrupt_level_features(const corrupt_env &cenv)
             (idistance <= 7) ? (corrupt_perc_chance + 1000) / 2 :
             max(10, 380 - 150 * idistance / 13);
 
-        const int roll = random2(1000);
-
-        if (roll < corrupt_perc_chance && _is_grid_corruptible(*ri))
-            _corrupt_square(cenv, *ri);
-        else if (roll < corrupt_flavor_chance && _is_grid_corruptible(*ri))
-            _corrupt_square_flavor(cenv, *ri);
+        if(is_monster_version) //monster version is less likely to corrupt tiles
+        {
+            const int roll = random2(3000);
+            if (roll < corrupt_perc_chance && _is_grid_corruptible(*ri))
+                _corrupt_square(cenv, *ri);
+            else if (roll < corrupt_flavor_chance && _is_grid_corruptible(*ri))
+                _corrupt_square_flavor(cenv, *ri);
+        } else //is player version
+        {
+            const int roll = random2(1000);
+            if (roll < corrupt_perc_chance && _is_grid_corruptible(*ri))
+                _corrupt_square(cenv, *ri);
+            else if (roll < corrupt_flavor_chance && _is_grid_corruptible(*ri))
+                _corrupt_square_flavor(cenv, *ri);
+        }
     }
 }
 
@@ -2280,12 +2300,12 @@ bool lugonu_corrupt_level_mons(int power, monster mons)
 
     corrupt_env cenv;
     _corrupt_choose_colours(&cenv);
-    _corrupt_level_features(cenv);
-    run_corruption_effects_mons_version(20);
+    _corrupt_level_features(cenv, true);
+    run_corruption_effects_mons_version(40);
 
 #ifndef USE_TILE_LOCAL
     // Allow extra time for the flash to linger.
-    scaled_delay(1000);
+    scaled_delay(300);
 #endif
 
     return true;

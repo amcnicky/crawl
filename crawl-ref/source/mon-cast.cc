@@ -2215,7 +2215,7 @@ static bool _mons_call_of_chaos(const monster& mon, bool check_only = false)
         mons.name(DESC_THE).c_str(),
         silenced(mons.pos()) ? "silent" : "terrible");
 
-    lugonu_corrupt_level_mons(10, mons);
+    lugonu_corrupt_level_mons(15, mons);
  }
 
 static void _set_door(set<coord_def> door, dungeon_feature_type feat)
