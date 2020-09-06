@@ -342,7 +342,6 @@ static const ability_def Ability_List[] =
     { ABIL_EVOKE_THUNDER, "Evoke Thunderclouds",
       5, 0, 0, {fail_basis::evo, 60, 2}, abflag::none },
 
-
     { ABIL_END_TRANSFORMATION, "End Transformation",
       0, 0, 0, {}, abflag::none },
 

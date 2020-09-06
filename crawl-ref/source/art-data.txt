@@ -1414,6 +1414,14 @@ LIFE:     1
 INSCRIP:  rRot
 BOOL:     drain, evil, special, no_upgrade
 
+ENUM:	  BINDING
+NAME:	  Leyaxin's binding
+OBJ:	  OBJ_JEWELLERY/AMU_NOTHING
+FB_BRAND: AMU_GUARDIAN_SPIRIT
+COLOUR:   ETC_UNHOLY
+TILE:     urand_binding
+BOOL:	  evil, special
+
 # This entry must always be last.
 ENUM:   DUMMY2
 NAME:   DUMMY UNRANDART 2

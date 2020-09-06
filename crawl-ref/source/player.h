@@ -402,6 +402,10 @@ public:
     map<int,int> last_pickup;
     int last_unequip;
 
+    // Artefact interaction properties for multi-turn state
+    int ritual_start_hp;
+    int ritual_failed_attempts;
+
     // ---------------------------
     // Volatile (same-turn) state:
     // ---------------------------

@@ -4,6 +4,8 @@
 
 #include "act-iter.h"
 #include "god-passive.h"
+#include "mgen-data.h" //for Leyaxin summon
+#include "mon-place.h" //for Leyaxin summon
 
 static void _end_weapon_brand()
 {
@@ -45,6 +47,73 @@ static void _end_death_channel()
 static void _redraw_armour()
 {
     you.redraw_armour_class = true;
+}
+
+static void _end_ritual()
+{
+    ASSERT(you.ritual_start_hp);
+    if(((you.hp*4)+1) < you.ritual_start_hp) //successful ritual
+    {
+      const monster_type mon = MONS_BRIMSTONE_FIEND; //eventually should be Leyaxin
+
+      mgen_data mg(mon, BEH_FRIENDLY, you.pos(), MHITYOU,
+                   MG_AUTOFOE, you.religion);
+      mg.set_summoned(&you, 3 + random2(3), 0);
+      mg.extra_flags |= (MF_NO_REWARD | MF_HARD_RESET);
+
+      monster *m = create_monster(mg);
+
+      if (m)
+      {
+          mprf("Your sacrifice of %d vitality releases Leyaxin from his prison within the amulet! ",
+           (you.ritual_start_hp-you.hp));
+
+          m->add_ench(mon_enchant(ENCH_FAKE_ABJURATION, 6)); //remove this?
+      }
+      else
+          //TODO: is this even possible to achieve?
+          mprf("The ritual is successful but something prevents Leyaxin's summon!");
+    } else //unsuccessful ritual
+    {
+      mprf("Your sacrifice is insufficient - the ritual fails!");
+      monster_type guard = MONS_PROGRAM_BUG; //to be upgraded based on failed attempts
+      switch (you.ritual_failed_attempts){
+        case 0:
+            guard = MONS_ANGEL;
+            mprf("A divine voice calls out, \"Who tampers with that demon's prison!\"");
+            break;
+        case 1:
+            guard = MONS_ANGEL;
+            mprf("A divine voice calls out, \"Cease your tampering at once!\"");
+            break;
+        case 2:
+            guard = MONS_DAEVA;
+            mprf("A divine voice calls out, \"You've tampered with the wrong prison!\"");
+            break;
+        case 3:
+            guard = MONS_DAEVA;
+            mprf("A divine voice calls out, \"Die for your unholy tampering!\"");
+            break;
+        case 4:
+            guard = MONS_SERAPH;
+            mprf("A divine voice calls out, \"Your tampering is unforgiveable.\"");
+            break;
+        default:
+            guard = MONS_SERAPH;
+            mprf("A divine voice calls out, \"Your tampering is unforgiveable.\"");
+            break;
+      }
+      you.ritual_failed_attempts++;
+
+      mgen_data mg(guard, BEH_HOSTILE, you.pos());
+      mg.set_summoned(&you, 0, 0);
+      mg.extra_flags |= (MF_NO_REWARD | MF_HARD_RESET);
+      monster *m = create_monster(mg);
+      if(!m)
+      {
+        mprf("Something prevents the arrival of the prison's holy guards.");
+      }
+    }
 }
 
 // properties of the duration.
@@ -547,6 +616,11 @@ static const duration_def duration_data[] =
       "stab", "stabbing",
       "You are ready to backstab.", D_DISPELLABLE,
       {{ "You feel less ready to backstab.", }}},
+    { DUR_RITUAL,
+      RED, "Ritual",
+      "Leyaxin's Ritual", "Ritual",
+      "You are mid-ritual.", D_NO_FLAGS,
+      {{ "Your ritual concludes.", _end_ritual}}},
 
     // The following are visible in wizmode only, or are handled
     // specially in the status lights and/or the % or @ screens.

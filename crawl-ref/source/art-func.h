@@ -41,6 +41,7 @@
 #include "nearby-danger.h" // For Zhor
 #include "player.h"
 #include "player-stats.h"
+#include "prompt.h"        // For Leyaxin's Binding
 #include "showsymb.h"      // For Cigotuvi's Embrace
 #include "spl-cast.h"      // For evokes
 #include "spl-damage.h"    // For the Singing Sword.
@@ -1551,4 +1552,61 @@ static void _SALAMANDER_unequip(item_def * /* item */, bool * show_msgs)
 static void _SALAMANDER_world_reacts(item_def * /* item */)
 {
     _manage_fire_shield();
+}
+
+////////////////////////////////////////////////////
+
+static void _BINDING_equip(item_def * /* item */, bool * show_msgs,
+                              bool /* unmeld */)
+{
+    _equip_mpr(show_msgs, "An eerie voice whispers, \"Set me free\".");
+}
+
+static void _BINDING_unequip(item_def * /* item */, bool * show_msgs)
+{
+   _equip_mpr(show_msgs, "How dare you desert me!");
+}
+
+static bool _evoke_leyaxins_binding()
+{
+    if (!yesno("Are you sure you want to begin this dangerous ritual?", false, 'n'))
+    {
+        return false;
+    }
+
+    if (!yesno("Very sure? Failure could alert divine forces.", false, 'n'))
+    {
+        return false;
+    }
+
+    if (you.get_mutation_level(MUT_NO_LOVE))
+    {
+        mpr("You are hated by all, and Leyaxin rejects your help.");
+        return false;
+    }
+
+    if (!x_chance_in_y(you.skill(SK_EVOCATIONS, 100), 1700))
+    {
+        mpr("You fail to evoke the binding.");
+        return false;
+    }
+
+    you.set_duration(DUR_RITUAL, 2);
+    mpr("The blood ritual begins!");
+
+    //TODO: A more elegant way than global state for tracking ritual success?
+    you.ritual_start_hp = you.hp;
+    did_god_conduct(DID_EVIL, 3);
+
+    return true;
+}
+
+static bool _BINDING_evoke(item_def */*item*/, bool* did_work, bool* unevokable)
+{
+    if (_evoke_leyaxins_binding())
+    {
+        *did_work = true;
+        practise_evoking(1);
+    }
+    return false;
 }

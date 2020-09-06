@@ -4979,6 +4979,9 @@ player::player()
     exp_docked.init(0);
     exp_docked_total.init(0);
 
+    ritual_start_hp         = 0;
+    ritual_failed_attempts  = 0;
+
     mutation.init(0);
     innate_mutation.init(0);
     temp_mutation.init(0);
