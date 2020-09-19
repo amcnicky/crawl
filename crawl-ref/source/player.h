@@ -52,6 +52,7 @@
 #define PETRIFIED_BY_KEY "petrified_by"
 #define NOXIOUS_BOG_KEY "noxious_bog_pow"
 #define FROZEN_RAMPARTS_KEY "frozen_ramparts_position"
+#define SPECTRAL_GUARD_KEY "spectral_guard"
 
 // display/messaging breakpoints for penalties from Ru's MUT_HORROR
 #define HORROR_LVL_EXTREME  3

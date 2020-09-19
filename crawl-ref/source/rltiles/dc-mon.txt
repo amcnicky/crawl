@@ -1039,6 +1039,7 @@ lost_soul MONS_LOST_SOUL /*'*'*/
 drowned_soul MONS_DROWNED_SOUL
 flayed_ghost MONS_FLAYED_GHOST
 %sdir mon/nonliving
+spectral_guard MONS_SPECTRAL_GUARD
 %rim 1
 insubstantial_wisp MONS_INSUBSTANTIAL_WISP
 

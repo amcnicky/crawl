@@ -162,6 +162,7 @@ enum monster_type                      // menv[].type
     MONS_DANCING_WEAPON,
 #if TAG_MAJOR_VERSION > 34
     MONS_SPECTRAL_WEAPON,
+    MONS_SPECTRAL_GUARD,
 #endif
     MONS_HARPY,
 #if TAG_MAJOR_VERSION == 34
@@ -1064,6 +1065,7 @@ enum monster_type                      // menv[].type
     MONS_MAGGIE,
     MONS_NAMELESS,
     MONS_PALENTONGA,
+    MONS_SPECTRAL_GUARD,
 #endif
 
     NUM_MONSTERS,               // used for polymorph

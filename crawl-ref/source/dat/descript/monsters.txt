@@ -2210,6 +2210,10 @@ spectral weapon
 A spirit drawn from a weapon — it never strikes on its own. Damage done to it
 will be partially mirrored onto the caster.
 %%%%
+spectral guard
+
+A spirit summoned to your defense by the glaive of the Guard.
+%%%%
 spellforged servitor
 
 A magical construct woven with a portion of a conjurer's magic and bonded with

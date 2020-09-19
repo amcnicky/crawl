@@ -8209,11 +8209,13 @@ void refresh_weapon_protection()
 }
 
 /**
- * Refreshes a player's spectral weaapon on hit.
+ * Refreshes a player's spectral weapon on hit.
+ * Glaive of the guard has a stronger effect.
  */
 void handle_spectral_brand()
 {
-    const int pow = you.skill(SK_EVOCATIONS, 4);
+    const int scale = (you.weapon()->unrand_idx) == UNRAND_GUARD ? 6 : 4;
+    const int pow = you.skill(SK_EVOCATIONS, scale);
     if (you.skill(SK_EVOCATIONS) > 0 && !find_spectral_weapon(&you))
         cast_spectral_weapon(&you, pow, you.religion);
 }

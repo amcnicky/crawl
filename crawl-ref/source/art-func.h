@@ -1528,6 +1528,97 @@ static void _EMBRACE_world_reacts(item_def *item)
 
 ////////////////////////////////////////////////////
 
+static void _summon_guard_to_player_pos()
+{
+    mprf("PASSED! entering summon");
+    // same as spectral weapon cast
+    const int pow = you.skill(SK_EVOCATIONS, 6);
+    const int dur = min(2 + random2(1 + div_rand_round(pow, 25)), 4);
+    mgen_data mg(MONS_SPECTRAL_WEAPON, BEH_FRIENDLY,you.pos(), you.mindex());
+    mg.set_summoned(&you, dur, 0, GOD_NO_GOD);
+    monster *mons = create_monster(mg);
+    if(mons)
+    {
+        string summon_message_string = random_choose_weighted(
+                                   3, "The glaive of the Guard summons reinforcements!",
+                                   2, "Your glaive conjures an ally!",
+                                   1, "A hulking spirit is called to your aid!");
+        mpr(summon_message_string);
+        you.props[SPECTRAL_GUARD_KEY] = true;
+    }
+}
+
+/**
+ * Decide whether to summon a spectral guard.
+ * Given that this function has been called, we know that tension is
+ * sufficient to warrant a guard summon, however first we provide a
+ * hefty base fail chance, plus a secondary fail chance based on
+ * tension. This is done so that the guard can be a rare extra rather
+ * than a reliable gameplay staple, which would likely be tedious or OP).
+ * Summon duration scales with evocations in line with the spectral
+ * brand.
+ */
+static void _maybe_summon_guard_to_player_pos(int tension_tier)
+{
+    // base fail chance
+    mpr("being called to coinflip");
+    if(coinflip())
+    {
+        return;
+    } else
+    {
+        mprf("passed coinflip, trying one-in at tension tier %d", tension_tier);
+        // extra fail chance which falls away with tension
+        int one_in;
+        ASSERT(tension_tier > 3);
+        switch (tension_tier)
+            {
+            case 4: one_in = 20; break;
+            case 5: one_in = 18; break;
+            case 6: one_in = 15; break;
+            case 7: one_in = 12; break;
+            case 8: one_in = 9; break;
+            case 9: one_in = 6; break;
+            case 10: one_in = 3; break;
+            default: one_in = 2; break; // not even sure tension can be this large
+            }
+        mprf("looking for one in %d", one_in);
+        if(one_chance_in(one_in))
+        {
+            _summon_guard_to_player_pos();
+        }
+    }
+}
+
+static void _GUARD_melee_effects(item_def* /* weapon */, actor* attacker,
+                                   actor* /* defender */, bool /* mondied */,
+                                int /* dam */)
+{
+    // First we check if there's a need to reset the guard prop
+    // TODO: implement a way of resetting the prop to false
+    mprf("swinging the weapon with key = %d",you.props[SPECTRAL_GUARD_KEY].get_bool());
+    // Don't act if already guarded or at 0 tension or if wielded by a mons
+    if (you.props[SPECTRAL_GUARD_KEY].get_bool() == true || get_tension(GOD_NO_GOD) == 0
+        || !attacker->is_player())
+    {
+        return;
+    } else
+    {
+        // aligning to singing sword tiers for intuition
+        int tension_tier = get_tension(GOD_NO_GOD)/20;
+        if(tension_tier < 4)
+        {
+            return;
+        } else
+        {
+            _maybe_summon_guard_to_player_pos(tension_tier);
+        }
+    }
+}
+
+
+////////////////////////////////////////////////////
+
 static void _manage_fire_shield()
 {
     // Melt ice armour entirely.
