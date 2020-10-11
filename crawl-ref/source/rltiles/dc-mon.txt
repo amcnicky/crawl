@@ -441,6 +441,10 @@ saltling MONS_SALTLING
 %rim 1
 # For the Cigotuvi WizLab
 flesh_golem MONS_FLESH_GOLEM
+# For amcnicky_snake_necromancer
+%rim 0
+%sdir mon/vault
+naga_golem MONS_NAGA_GOLEM
 
 ## Statues and statue-like things (also '8')
 %sdir mon/unique
@@ -572,6 +576,8 @@ hellbinder MONS_HELLBINDER
 ## From a floating vault (mu_elemental_laboratory)
 %rim 0
 master_elementalist MONS_MASTER_ELEMENTALIST
+## From a snake ending (amcnicky_snake_necromancer)
+necromancer_snake MONS_NECROMANCER_SNAKE
 %sdir mon/humanoids
 %rim 1
 ## From an entry vault

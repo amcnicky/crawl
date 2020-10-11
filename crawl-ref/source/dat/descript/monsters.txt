@@ -2722,6 +2722,14 @@ bog mummy
 An undead figure preserved by the brackish waters of a bog. It has begun to
 decay heavily, and looks fragile.
 %%%%
+brotherhood necromancer
+
+An evil wizard who is devoted to the practice of death magic, the mastery of
+unholy energies, and the raising of corpses into a parody of life.
+
+It wears the robes associated with an organisation calling itself the
+Brotherhood of the Snake.
+%%%%
 captured wizard
 
 A wild-eyed wizard whose tongue has been cut out, frantically mumbling and
@@ -2819,6 +2827,10 @@ A huge black bat.
 microbat
 
 A bat that, despite its name, is not any smaller than a megabat.
+%%%%
+naga golem
+
+An unholy construction made from the corpses of multiple nagas.
 %%%%
 # Sprint only, too unhinged for regular games...
 oklob plant annihilator

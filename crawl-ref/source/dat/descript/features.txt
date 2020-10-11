@@ -979,6 +979,11 @@ A sealed sarcophagus
 
 An ancient sarcophagus. It is sealed shut.
 %%%%
+# amcnicky_snake_necromancer
+A necromantic experiment
+
+An ultra-hard glass tank. It contains a disgusting experiment in progress.
+%%%%
 # Desolation
 An endless expanse of salt
 

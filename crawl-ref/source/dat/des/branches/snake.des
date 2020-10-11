@@ -1475,3 +1475,97 @@ cc...cc..cc......cc..cc......cc..cc...cc
                  @....@
                    cc
 ENDMAP
+
+################################################################################
+# In which minmay_snake_end_coiled is invaded by a band of crafty necromancers.
+# Given a rare weighting due to the novelty.
+# Still plenty of snakes of course...
+
+NAME:   amcnicky_snake_necromancer
+PLACE:  Snake:$
+TAGS:   no_monster_gen no_rotate no_vmirror
+ORIENT: southwest
+WEIGHT: 4
+MONS:   naga zombie / naga skeleton / nothing w:20
+MONS:   naga warrior zombie / naga warrior skeleton / \
+        naga sharpshooter zombie / naga sharpshooter skeleton / nothing w:20
+MONS:   naga mage zombie / naga ritualist skeleton / naga mage / \
+        naga ritualist / nothing w:20
+MONS:   guardian serpent / salamander mystic w:5 / naga ritualist w:5 / \
+        nothing
+MONS:   nagaraja w:30 / naga warrior w:5 / naga sharpshooter w:5
+MONS:   anaconda zombie / black mamba zombie / \
+        anaconda skeleton / black mamba skeleton / \
+        anaconda / black mamba / \
+        shock serpent w:5 / mana viper
+MONS:   wraith / nothing w:5
+KMONS:  z = naga tile:mons_naga_golem \
+        name:naga_golem n_rpl n_des n_noc;
+KMONS:  Z = necromancer tile:mons_necromancer_snake \
+        name:brotherhood_necromancer n_rpl n_des n_noc;
+FTILE:  :-_.+;pHzZS = floor_crypt
+FTILE:  O = dngn_necro_floor_base
+FTILE:  q = dngn_necro_floor_T
+KITEM:  O = serpentine rune of Zot
+SUBST:  s:mc
+SUBST:  u:mc
+SUBST:  y:mc
+SUBST:  H:mc.
+NSUBST: r = 4:+ / *:c
+NSUBST: ; = 10:1 / 20:2 / *=34566.....
+NSUBST: : = 20:1 / 10:2 / *=1S..
+: dgn.delayed_decay(_G, 'S', 'naga skeleton')
+: dgn.delayed_decay(_G, 'D', 'human skeleton')
+NSUBST: - = 1:Z / 4:7 / 8:3456 / *:.
+NSUBST: _ = 2:Z / 4:7 / 8:3456 / *:.
+KFEAT:  p = granite_statue
+:set_feature_name("granite_statue", "necromantic experiment")
+TILE:   p = dngn_necro_research_vat
+MAP
+xxxxxxxxxxxxxxxxxxc..@.cxxxxxxxxxxxxxxxxxx
+xxxxxxxxxxxxxxxxxxc....cxxxxxxxxxxxxxxxxxx
+xxxxxxxxxxxxxxxxxcc....ccxxxxxxxxxxxxxxxxx
+xxxxxxxxxxxxxxxxxc......cxxxxxxxxxxxxxxxxx
+xxxxxxxxxxxxxxxxxc.;;;;.cxxxxxxxxxxxxxxxxx
+xxxxxxxxxxxxxxxxxc.;;;;.cxxxccccccccxxxxxx
+xxxxxxxxxxxxcccccc.;;;;.ccccc......cccxxxx
+xxxxxxxxccccc........................ccccc
+xxxxxcccc....;;;....HH........;;;.........
+xxxccc.......;;;....HH........;;;........@
+xxcc............................;.........
+xxc..........sssss......uuuuuu......cccccc
+xcc.;;;;..cccc;;;s......u::::uccv+vccxxxxx
+xc..;;;;.cc;;;;;;+..;;;;u::::ccxv.vvvvvxxx
+xc.......cc;;;;;;+..;;;;u::::ccxv+vmmmvxxx
+xcc.......cccc;;;s......u::::ucxv..mzmvxxx
+xxc..........sssss......uuuuuucxvvvmmmvxxx
+xxcc.........................cccccvvvvvxxx
+xxxccc.........;;;;.HH...;;;;....ccccxxxxx
+xxxcccccc......;;;;.HH...;;;;.......cccxxx
+xccc::::ccccc.........................ccxx
+cc::::::::::cmmmmm......yyyyyy....;;;..cxx
+c::::::::::::::::m......y;;;;ycc..;;;..ccx
+c::::::::::::::::m......+;;;;;;cc.......cx
+c::::::::::::::::.......+;;;;;;cc.......cx
+c::::::::::::::::.......y;;;;ycc.......ccx
+cc::::::::::cmmmm.......yyyyyy...;;;...cxx
+xccc::::ccccc.....;;;;...........;;;..ccxx
+xxxcccccc.........;;HH....;;;;......cccxxx
+xxxccc..;;;;........HH....;;;;...vvvvxxxxx
+xxcc....;;;;.vvvvv...........vvvvvvvvvvvxx
+xxc.......vvvvmmmv..;;..vvvvvvmpppqpppmvvx
+xcc......vvmmm...m..;;..v;;_zZzmmmOmmmZ_vv
+xc.......+.+Zm...m......v;;______________v
+xc.......vvmmmz.Dm......v;;____zZz_zZz___v
+xcc..;;;;.vvvvmmmv......v;;.____________vv
+xxc..;;;;..rcvvvvvrrrrrrvv..--_________vvx
+xxcc.......r-------------v..-----...._vvxx
+xxxccc.....r-------------v..;;........vvxx
+xxxxxccccccc-------------v..;;.........vxx
+xxxxxxxcmmmc.------------v.............vxx
+xxxxxxxcmpz....cmmmmmmmmmmvvvvvvvvvvv..vxx
+xxxxxxxcmpZ;;;.........................vxx
+xxxxxxxcmpz;;;.cmmmmmmmmmmv...........vvxx
+xxxxxxxcmmmccccc::::::::::vvvvvvvvvvvvvxxx
+xxxxxxxcccccxxxcccccccccccvxxxxxxxxxxxxxxx
+ENDMAP

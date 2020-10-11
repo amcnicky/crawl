@@ -252,6 +252,12 @@ dimension_edge DNGN_DIMENSION_EDGE
 ## The disco ball in pan_disco_hall.
 disco_ball DNGN_DISCO_BALL
 
+## Decoration for amcnicky_snake_necromancer
+necro_research_vat_1 DNGN_NECRO_RESEARCH_VAT
+necro_research_vat_2
+necro_floor_base DNGN_NECRO_FLOOR_BASE
+necro_floor_T DNGN_NECRO_FLOOR_T
+
 # A couple of placeholders in case we absolutely need
 # to add some more tiles for vault design.
 # (In response to error messages, basically.)
