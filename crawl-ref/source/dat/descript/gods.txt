@@ -124,6 +124,17 @@ from ambient magical power, are provided with magical energy to empower their
 devices so long as they use them to assert Pakellas' supremacy. Pakellas will
 grant devout worshippers access to increasingly powerful devices.
 %%%%
+Palaiset
+
+Palaiset the Golden Queen is an ancient pharaoh, ascended to divinity through
+an incomparable sacrifice of slave-worshippers upon her physical death. Forever
+seeking ressurection to the mortal plane, her worshippers lose focus on all
+tasks aside from obtaining the power of the Runes of Zot for her and will no 
+longer earn experience through killing, instead being granted experience 
+directly upon descending to new depths and collecting runes. Survive this 
+daring journey and return your Queen to life!
+PRTODO: make this snappier
+%%%%
 Qazlal
 
 Qazlal Stormbringer is a violent god of tempests, who delights in unleashing
@@ -360,6 +371,19 @@ Sufficiently devout followers will receive new devices from Pakellas, and may
 eventually petition Pakellas to personally charge one of their devices beyond
 its normal limits.
 %%%%
+Palaiset powers
+
+Followers of the Golden Queen care less for clearing the dungeon of its
+inhabitants, and are granted powers to aid in a more direct descent. Their
+skin turns golden and metallic as piety increases, and the ritual crypts of her
+slave-worshippers may be pulled from the earth to constrict enemies.
+At great cost, Palaiset's serpent Aphis can burrow beneath her followers to
+drag them through the underworld to a previously defined ritual site.
+
+Should 3 or 15 Runes of Zot be obtained, followers may use them to reincarnate
+Palaiset at different levels of power, sacrificing their own soul to become one
+with the living God-Queen.
+%%%%
 Qazlal powers
 
 Followers of Qazlal are protected from all clouds. As a follower of Qazlal
@@ -581,6 +605,10 @@ Those that offend Pakellas will find themselves completely unable to make use
 of their devices for the duration of Pakellas's displeasure. Those who abandon
 Pakellas altogether will also continue to be unable to regenerate their magical
 power so long as Pakellas' attention remains on them.
+%%%%
+Palaiset wrath
+
+PRTODO: wrath design and implementation
 %%%%
 Qazlal wrath
 

@@ -280,6 +280,9 @@ enum ability_type
     ABIL_STOP_RECALL = 1500,
     ABIL_LAST_RELIGIOUS_ABILITY = ABIL_STOP_RECALL,
 
+    // PRTODO:
+    // phylactery god abilities
+
     // General divine (pseudo) abilities.
     ABIL_RENOUNCE_RELIGION,
     ABIL_CONVERT_TO_BEOGH,

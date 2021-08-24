@@ -71,6 +71,10 @@ Pakellas lastname
 
 Pakellas the Inventive
 %%%%
+Palaiset lastname
+
+Palaiset the Golden Queen
+%%%%
 Uskayaw lastname
 
 Uskayaw the Reveller

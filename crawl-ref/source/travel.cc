@@ -2271,6 +2271,9 @@ static god_type _god_from_initial(const char god_initial)
 #if TAG_MAJOR_VERSION == 34
         case 'P': return GOD_PAKELLAS;
 #endif
+#if TAG_MAJOR_VERSION > 34
+        case 'P': return GOD_PALAISET;
+#endif
         case 'Q': return GOD_QAZLAL;
         case 'R': return GOD_RU;
         case 'S': return GOD_SIF_MUNA;

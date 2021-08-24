@@ -387,6 +387,15 @@ const vector<god_power> god_powers[NUM_GODS] =
              "summon a storm of heavenly clouds to empower your attacks",
              "summon a storm of heavenly clouds" },
     },
+
+    // Palaiset PRTODO: finish descriptions
+    {   { 0, "Palaiset passively turns your skin to gold" },
+        { 0, "Palaiset can be resurrected to great power using the magic of 3 runes"},
+        { 0, "Palaiset can be resurrected to enourmous power using the magic of 15 runes"},
+        { 2, "Palaiset grants you willpower and speed when a rune is in sight"},
+        { 3, "Palaiset constriction/movement escape ability" },
+        { 5, "Palaiset cTele ability" },
+    },
 };
 
 vector<god_power> get_god_powers(god_type god)
@@ -2241,7 +2250,8 @@ string god_name(god_type which_god, bool long_name)
 #endif
     case GOD_USKAYAW:       return "Uskayaw";
     case GOD_HEPLIAKLQANA:  return "Hepliaklqana";
-    case GOD_WU_JIAN:     return "Wu Jian";
+    case GOD_WU_JIAN:       return "Wu Jian";
+    case GOD_PALAISET:      return "Palaiset";
     case GOD_JIYVA: // This is handled at the beginning of the function
     case GOD_ECUMENICAL:    return "an unknown god";
     case NUM_GODS:          return "Buggy";
@@ -3212,6 +3222,9 @@ void excommunication(bool voluntary, god_type new_god)
         if (player_in_branch(BRANCH_ARENA))
             okawaru_end_duel();
         break;
+
+    case GOD_PALAISET:
+        simple_god_message(" is upset that her wrath isn't implemented (PRTODO).", old_god);
 
     default:
         break;
@@ -4264,6 +4277,7 @@ void handle_god_time(int /*time_delta*/)
         case GOD_JIYVA:
         case GOD_WU_JIAN:
         case GOD_SIF_MUNA:
+        case GOD_PALAISET:
             if (one_chance_in(17))
                 lose_piety(1);
             break;
@@ -4352,6 +4366,7 @@ int god_colour(god_type god) // mv - added
 
     case GOD_GOZAG:
     case GOD_XOM:
+    case GOD_PALAISET: //PRTODO: green and change her to emerald queen?
         return YELLOW;
 
     case GOD_NEMELEX_XOBEH:
@@ -4460,6 +4475,9 @@ colour_t god_message_altar_colour(god_type god)
 
     case GOD_GOZAG:
         return random_choose(YELLOW, BROWN);
+
+    case GOD_PALAISET:
+        return YELLOW; //PRTODO: align with eventual colour theme
 
     case GOD_QAZLAL:
     case GOD_RU:

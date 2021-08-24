@@ -2,6 +2,7 @@
 No ability ability
 
 If you get this description, it is a bug.
+PRTODO: ability descriptions
 %%%%
 Spit Poison ability
 

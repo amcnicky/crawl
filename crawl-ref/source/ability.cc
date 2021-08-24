@@ -630,6 +630,8 @@ static vector<ability_def> &_get_ability_list()
         { ABIL_WU_JIAN_WALLJUMP, "Wall Jump",
             0, 0, 0, {}, abflag::berserk_ok },
 
+        // PRTODO: quite a bit in this file, once abilities are hashed out
+
         { ABIL_STOP_RECALL, "Stop Recall", 0, 0, 0, {fail_basis::invo}, abflag::none },
         { ABIL_RENOUNCE_RELIGION, "Renounce Religion",
             0, 0, 0, {fail_basis::invo}, abflag::none },

@@ -239,6 +239,10 @@ static const char *divine_title[][8] =
     // Wu Jian -- animal/chinese martial arts monk theme
     {"Wooden Rat",          "Young Dog",             "Young Crane",              "Young Tiger",
         "Young Dragon",     "Red Sash",               "Golden Sash",              "Sifu"},
+
+    // Palaiset -- worship/Egypt theme
+    {"Slave",       "Worshipper",             "Scribe",              "Priest",
+        "Ritual Master",           "High Priest",               "Vizier",                "Grand Vizier"},
 };
 COMPILE_CHECK(ARRAYSZ(divine_title) == NUM_GODS);
 
@@ -982,6 +986,11 @@ static formatted_string _describe_god_powers(god_type which_god)
         break;
     }
 #endif
+
+    case GOD_PALAISET:
+        have_any = true;
+        desc.cprintf("PRTODO: passives and descriptions.\n");
+        break;
 
     case GOD_LUGONU:
         have_any = true;

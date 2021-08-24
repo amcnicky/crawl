@@ -432,6 +432,9 @@ static peeve_map divine_peeves[] =
     peeve_map(),
     // GOD_WU_JIAN,
     peeve_map(),
+    // GOD_PALAISET,
+    // PRTODO: hates backtracking?
+    peeve_map(),
 };
 
 string get_god_dislikes(god_type which_god)
@@ -938,6 +941,10 @@ static like_map divine_likes[] =
         { DID_KILL_HOLY, KILL_HOLY_RESPONSE },
         { DID_KILL_NONLIVING, KILL_NONLIVING_RESPONSE },
     },
+        // GOD_PALAISET
+    {
+        like_map(), //PRTODO: implement likes
+    },
 };
 
 /**
@@ -1071,6 +1078,9 @@ string get_god_likes(god_type which_god)
         break;
     case GOD_ASHENZARI:
         likes.emplace_back("you bind yourself with curses");
+        break;
+    case GOD_PALAISET:
+        likes.emplace_back("you descend the dungeon without killing");
     default:
         break;
     }
