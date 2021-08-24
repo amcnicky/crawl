@@ -2437,8 +2437,12 @@ item_def* monster_die(monster& mons, killer_type killer,
 
     if (!mons_reset)
     {
-        _give_experience(player_xp, monster_xp, killer, killer_index,
-                pet_kill, was_visible, mons.xp_tracking);
+        // Palaiset prevents xp from being earned via kills
+        if (!you_worship(GOD_PALAISET))
+        {
+            _give_experience(player_xp, monster_xp, killer, killer_index,
+                    pet_kill, was_visible, mons.xp_tracking);
+        }
     }
     return corpse;
 }
