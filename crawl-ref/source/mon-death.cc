@@ -372,6 +372,16 @@ static void _give_player_experience(int experience, killer_type killer,
         _beogh_spread_experience(experience / 2);
 }
 
+// Should this function go in religion.cc?
+// Grouping with other xp granting funcs for now
+void palaiset_grant_experience(int player_exp,
+                                    xp_tracking_type xp_tracking)
+{
+    killer_type palaiset_xp_kill_type = KILL_NONE;
+    _give_player_experience(player_exp, palaiset_xp_kill_type,
+                            false, false, xp_tracking);
+}
+
 static void _give_experience(int player_exp, int monster_exp,
                              killer_type killer, int killer_index,
                              bool pet_kill, bool was_visible,

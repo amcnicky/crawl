@@ -8,6 +8,7 @@
 #include "item-def.h"
 #include "killer-type.h"
 #include "tag-version.h"
+#include "xp-tracking-type.h"
 
 #define ORIG_MONSTER_KEY "orig_monster_key"
 #define ELVEN_ENERGIZE_KEY "elven_twin_energize"
@@ -83,3 +84,5 @@ bool mons_felid_can_revive(const monster* mons);
 void mons_felid_revive(monster* mons);
 
 bool mons_bennu_can_revive(const monster* mons);
+
+void palaiset_grant_experience(int player_exp, xp_tracking_type xp_tracking);

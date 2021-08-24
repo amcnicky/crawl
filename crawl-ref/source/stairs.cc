@@ -29,6 +29,7 @@
 #include "mapmark.h"
 #include "message.h"
 #include "mon-death.h"
+#include "monster.h" // Palaiset xp
 #include "movement.h"
 #include "notes.h"
 #include "orb-type.h"
@@ -257,6 +258,31 @@ static void _complete_zig()
     you.zigs_completed++;
 }
 
+static void _calculate_and_grant_palaiset_xp()
+{
+    /*
+    1. Only grant xp on levels the first time they are descended from
+    2. Handle shafts (grant all xp in between?) Make followers immune to shafts?
+    */
+    mpr("Palaiset grants you experience for descending the dungeon");
+    float xp_factor = 0.6f;
+    description_level_type desc_type = DESC_PLAIN;
+    for (rectangle_iterator ri(1); ri; ++ri)
+    {
+        monster* mon = monster_at(*ri);
+    if (mon 
+        &&  mons_gives_xp(*mon, you)
+        && mons_class_gives_xp(mon->type)
+        && !mon->is_summoned()
+        && !mon->has_ench(ENCH_FAKE_ABJURATION)
+        && !mon->friendly())
+        {
+            palaiset_grant_experience(exper_value(*mon)*xp_factor,
+                                                mon->xp_tracking);
+        }
+    }
+}
+
 void leaving_level_now(dungeon_feature_type stair_used)
 {
     if (stair_used == DNGN_EXIT_ZIGGURAT)
@@ -274,6 +300,8 @@ void leaving_level_now(dungeon_feature_type stair_used)
         vault_list.push_back("[exit]");
 #endif
     }
+
+    _calculate_and_grant_palaiset_xp();
 
     dungeon_events.fire_position_event(DET_PLAYER_CLIMBS, you.pos());
     dungeon_events.fire_event(DET_LEAVING_LEVEL);
@@ -668,7 +696,7 @@ void floor_transition(dungeon_feature_type how,
     you.clear_fearmongers();
     dec_frozen_ramparts(you.duration[DUR_FROZEN_RAMPARTS]);
 
-    // Fire level-leaving trigger.
+    // Fire level-leaving trigger. Includes Palaiset xp if relevant.
     leaving_level_now(how);
 
     // Not entirely accurate - the player could die before
