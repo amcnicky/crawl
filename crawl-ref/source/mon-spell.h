@@ -1700,6 +1700,14 @@ static const mon_spellbook mspell_list[] =
       }
     },
 
+    // arachnids ('s')
+    {  MST_MORLOTH,
+      { //placeholder
+       { SPELL_BATTLECRY, 100, MON_SPELL_VOCAL },
+       { SPELL_SMITING, 64, MON_SPELL_PRIEST },
+      }
+    },    
+
     // ('w') Slugs and worms.
     {  MST_GASTRONOK,
       {

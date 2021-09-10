@@ -130,6 +130,9 @@ quokka MONS_QUOKKA
 %sdir mon/animals
 
 ## Spiders and insects ('s')
+%sdir mon/unique
+morloth MONS_MORLOTH
+%sdir mon/animals
 scorpion MONS_SCORPION
 emperor_scorpion MONS_EMPEROR_SCORPION
 tarantella MONS_TARANTELLA

@@ -387,8 +387,13 @@ WEIGHT: 50
 
 NAME:   uniq_arachne
 DEPTH:  Spider:2-
-WEIGHT: 50
+WEIGHT: 40
 : place_unique(_G, "Arachne")
+
+NAME:   uniq_morloth
+DEPTH:  Spider:2-
+WEIGHT: 30
+: place_unique(_G, "Morloth")
 
 NAME:   uniq_dissolution
 DEPTH:  Slime:2-
