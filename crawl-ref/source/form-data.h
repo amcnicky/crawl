@@ -317,7 +317,7 @@ static const form_entry formdata[] =
     transformation::butterfly, MONS_BUTTERFLY, "Butterfly", "butterfly-form", "butterfly",
     "a sentient butterfly, fluttering by.",
     EQF_PHYSICAL, MR_NO_FLAGS,
-    DEFAULT_DURATION, 0, 0, SIZE_SMALL, 4,
+    DEFAULT_DURATION, 0, 0, SIZE_TINY, 4,
     0, 0, 0, true, 0, false, 3,
     SPWPN_NORMAL, LIGHTRED, "Delicate wings", { "hit", "stroke", "tickle", "nudge" },
     FC_ENABLE, FC_DEFAULT, FC_ENABLE, false,
