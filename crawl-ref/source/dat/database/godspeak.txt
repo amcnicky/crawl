@@ -788,6 +788,10 @@ Yredelemnul welcome
 
 Yredelemnul says: Carry the black torch! Rouse the idle dead!
 %%%%
+Yib welcome
+
+The darkness whispers: Slay for the power of the many my child.
+%%%%
 Zin penance
 
 Zin castigates you for your disobedience of the Law.

@@ -94,6 +94,7 @@ static const char *_god_wrath_adjectives[] =
     "memory",           // Hepliaklqana (unused)
     "rancor",           // Wu Jian
     "fiery vengeance",  // Ignis
+    "disappointment", // Yib
 };
 COMPILE_CHECK(ARRAYSZ(_god_wrath_adjectives) == NUM_GODS);
 
@@ -2176,6 +2177,13 @@ static bool _uskayaw_retribution()
     return true;
 }
 
+static bool _yib_retribution()
+{
+    //TODO
+    simple_god_message("Why am I not implemented!!?!");
+    return true;
+}
+
 bool divine_retribution(god_type god, bool no_bonus, bool force)
 {
     ASSERT(god != GOD_NO_GOD);
@@ -2222,6 +2230,7 @@ bool divine_retribution(god_type god, bool no_bonus, bool force)
     case GOD_USKAYAW:       do_more = _uskayaw_retribution(); break;
     case GOD_WU_JIAN:       do_more = _wu_jian_retribution(); break;
     case GOD_IGNIS:         do_more = _ignis_retribution(); break;
+    case GOD_YIB:         do_more = _yib_retribution(); break;
 
     case GOD_ASHENZARI:
     case GOD_ELYVILON:

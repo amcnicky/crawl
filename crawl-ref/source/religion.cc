@@ -397,6 +397,18 @@ const vector<vector<god_power>> & get_all_god_powers()
             { 1, ABIL_IGNIS_FOXFIRE, "call a swarm of foxfires against your foes" },
             { 7, ABIL_IGNIS_RISING_FLAME, "rocket upward and away" },
         },
+
+        // Yib
+        {   // TODO
+            {  0, "Level 0 Power Description"},
+            {  0, "Level 1 Power Description"},
+            {  0, "Level 2 Power Description"},
+            {  0, "Level 3 Power Description"},
+            {  0, "Level 4 Power Description"},
+            {  0, "Level 5 Power Description"},
+            {  0, "Level 6 Power Description"},
+            {  0, "Level 7 Power Description"},
+        },
     };
     static bool god_powers_init = false;
 
@@ -2395,6 +2407,7 @@ string god_name(god_type which_god, bool long_name)
     case GOD_HEPLIAKLQANA:  return "Hepliaklqana";
     case GOD_WU_JIAN:       return "Wu Jian";
     case GOD_IGNIS:         return "Ignis";
+    case GOD_YIB:         return "Yib";
     case GOD_JIYVA: // This is handled at the beginning of the function
     case GOD_ECUMENICAL:    return "an unknown god";
     case NUM_GODS:          return "Buggy";
@@ -3037,6 +3050,7 @@ int initial_wrath_penance_for(god_type god)
         case GOD_NEMELEX_XOBEH:
         case GOD_TROG:
         case GOD_XOM:
+        case GOD_YIB:
             return 50;
         case GOD_FEDHAS:
         case GOD_KIKUBAAQUDGHA:
@@ -3385,6 +3399,10 @@ void excommunication(bool voluntary, god_type new_god)
         }
         break;
 
+    case GOD_YIB:
+        simple_god_message("todo: leaving desc and effects aren't implemented", old_god);
+        break;
+
     default:
         break;
     }
@@ -3493,6 +3511,7 @@ static bool _god_rejects_loveless(god_type god)
     case GOD_HEPLIAKLQANA:
     case GOD_FEDHAS:
     case GOD_YREDELEMNUL:
+    case GOD_YIB:
         return true;
     default:
         return false;
@@ -3958,6 +3977,14 @@ static void _join_cheibriados()
     notify_stat_change();
 }
 
+// Setup for joining one of the many cults of Yib
+// TODO: not yet implemented
+static void _join_yib()
+{
+    simple_god_message(" gets upset that joining effects are not yet"
+                        "implemented.");
+}
+
 /// What special things happen when you join a god?
 static const map<god_type, function<void ()>> on_join = {
     { GOD_BEOGH, update_player_symbol },
@@ -4395,6 +4422,7 @@ void handle_god_time(int /*time_delta*/)
         case GOD_JIYVA:
         case GOD_WU_JIAN:
         case GOD_SIF_MUNA:
+        case GOD_YIB:
             if (one_chance_in(17))
                 lose_piety(1);
             break;
@@ -4491,6 +4519,7 @@ int god_colour(god_type god) // mv - added
         return YELLOW;
 
     case GOD_NEMELEX_XOBEH:
+    case GOD_YIB:
         return LIGHTMAGENTA;
 
     case GOD_SIF_MUNA:
@@ -4576,6 +4605,7 @@ colour_t god_message_altar_colour(god_type god)
         return RED;
 
     case GOD_NEMELEX_XOBEH:
+    case GOD_YIB:
         return LIGHTMAGENTA;
 
     case GOD_SIF_MUNA:
@@ -4953,6 +4983,7 @@ static bool _is_temple_god(god_type god)
     case GOD_BEOGH:
     case GOD_JIYVA:
     case GOD_IGNIS:
+    case GOD_YIB:
         return false;
 
     default:

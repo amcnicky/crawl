@@ -204,6 +204,14 @@ playthings with which to toy. Many choose to follow Xom in the hope of
 receiving fabulous rewards and mighty powers, but Xom is nothing if not
 capricious. There is nothing a follower can do to influence Xom's mood.
 %%%%
+Yib
+
+Readers of the word of Yib are granted membership to one of Yib's many secret
+cults. Slaying in the name of this mysterious entity reveals other cultists
+hiding amongst the dungeon's denizens, and enhances the progress of a powerful
+ritual. Completing the ritual offers unparalleled, but shortlived, power and
+resets the ritual's progress.
+%%%%
 Yredelemnul
 
 Yredelemnul the Dark is a god worshipped by those who seek powers over death
@@ -463,6 +471,17 @@ with gifts, while at other times this capricious god could decide to “spice
 things up a little” and send worshippers to their doom. If such toys of Xom
 prove to be interesting, so much the better; if not, well, there'll be other
 playthings...
+%%%%
+Yib powers
+
+Membership to a cult of Yib reveals the frightening truth about how widespread
+Yib's followers already are and begins a heralding ritual. Initially, slaying
+powerful creatures may encourage other cultists to remove their diguises and
+lend their aid. As the ritual progresses, you will be a mutated in a unique way
+and will gain the ability to pro-actively call for cultists to reveal
+themselves. Completing the ritual will enable a ferrocious transformation at
+the cost of entirely resetting your status in the cult, leaving you ready to
+begin the ritual once more.
 %%%%
 Yredelemnul powers
 
