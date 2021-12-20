@@ -23,6 +23,7 @@ enum poly_power_type
     PPT_MORE,
     PPT_SAME,
     PPT_SLIME,
+    PPT_CULT,
 };
 
 void monster_drop_things(

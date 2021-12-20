@@ -1175,6 +1175,8 @@ enum monster_type                      // env.mons[].type
     RANDOM_MODERATE_OOD, // +5 depth, AKA '9' glyph on maps
     RANDOM_SUPER_OOD, // *2 + 4 depth, AKA '8'
 
+    RANDOM_CULTIST, // For Yib cultist reveals
+
     WANDERING_MONSTER = 3500, // only used in monster placement routines - forced limit checks {dlb}
 };
 COMPILE_CHECK(NUM_MONSTERS < MONS_NO_MONSTER);

@@ -978,6 +978,12 @@ static formatted_string _describe_god_powers(god_type which_god)
         desc.cprintf("You are resistant to fire.\n");
         break;
 
+    case GOD_YIB:
+        have_any = true;
+        desc.cprintf("You may embolden creatures to reveal themselves as cultists upon "
+                        "slaying strong foes.\n");
+        break;
+
     default:
         break;
     }

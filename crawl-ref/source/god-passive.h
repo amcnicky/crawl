@@ -260,6 +260,9 @@ enum class passive_t
     // rF+
     resist_fire,
 
+    // Yib followers may embolden cultists to reveal themselves
+    reveal_cultist,
+
     // Yredelemnul reaping
     reaping,
 

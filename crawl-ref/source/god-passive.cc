@@ -424,8 +424,10 @@ static const vector<god_passive> god_passives[] =
         { 0, passive_t::resist_fire, "resist fire." },
     }, // TODO
 
-    // Yib - TODO: implement
-    { },
+    // Yib
+    { 
+        {1, passive_t::reveal_cultist, "have a chance to reveal cultists when slaying dangerous foes."},
+    },
 };
 COMPILE_CHECK(ARRAYSZ(god_passives) == NUM_GODS);
 

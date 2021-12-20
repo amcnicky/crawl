@@ -595,10 +595,21 @@ bool monster_polymorph(monster* mons, monster_type targetc,
         targetc = target_types[random2(target_types.size())];
     }
 
-    if (power != PPT_SLIME && !_valid_morph(mons, targetc))
+    if (targetc == RANDOM_CULTIST)
+    {
+        // TODO: make some cultists instead of butterflies
+        // maybe a tentacle for very powerful cultists?
+        targetc = MONS_BUTTERFLY;        
+    }
+
+    if (power != PPT_SLIME && !_valid_morph(mons, targetc)
+            && power != PPT_CULT
+        )
         return simple_monster_message(*mons, " looks momentarily different.");
 
+    mprf("about to change monster");
     change_monster_type(mons, targetc);
+    mprf("monster changed");
 
     bool can_see = you.can_see(*mons);
 
