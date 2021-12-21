@@ -1145,6 +1145,9 @@ enum monster_type                      // env.mons[].type
     MONS_STRANGE_MACHINE,
     MONS_SPECTATOR,
     MONS_BOUND_SOUL,
+    MONS_CULTIST,
+    MONS_DOOMKIN,
+    MONS_MASTER_OF_WHISPERS,
 #endif
 
     NUM_MONSTERS,               // used for polymorph

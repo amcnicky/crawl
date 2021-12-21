@@ -589,6 +589,9 @@ killer_klown_green
 killer_klown_purple
 killer_klown_red
 killer_klown_yellow
+cultist MONS_CULTIST
+doomkin MONS_DOOMKIN
+master_whispers MONS_MASTER_OF_WHISPERS
 %sdir mon/vault
 ## From a Lair ending
 %rim 0

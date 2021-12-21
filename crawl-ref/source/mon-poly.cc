@@ -597,9 +597,12 @@ bool monster_polymorph(monster* mons, monster_type targetc,
 
     if (targetc == RANDOM_CULTIST)
     {
-        // TODO: make some cultists instead of butterflies
-        // maybe a tentacle for very powerful cultists?
-        targetc = MONS_BUTTERFLY;        
+        // TODO: change to be based on invo/kill
+        // maybe a tentacle for very powerful cultists? 
+        targetc = random_choose_weighted(   32, MONS_CULTIST,
+                                            8, MONS_DOOMKIN,
+                                            4, MONS_MASTER_OF_WHISPERS
+        );
     }
 
     if (power != PPT_SLIME && !_valid_morph(mons, targetc)
@@ -607,15 +610,32 @@ bool monster_polymorph(monster* mons, monster_type targetc,
         )
         return simple_monster_message(*mons, " looks momentarily different.");
 
-    mprf("about to change monster");
     change_monster_type(mons, targetc);
-    mprf("monster changed");
+    if (power == PPT_CULT){
+        mons->attitude = ATT_FRIENDLY;
+    }
+
 
     bool can_see = you.can_see(*mons);
 
     // Messaging
     bool player_messaged = true;
-    if (could_see)
+    if (could_see && power == PPT_CULT)
+    {
+        string verb = "";
+        string obj = can_see ? mons_type_name(targetc, DESC_A)
+                             : "something you cannot see";
+        // TODO: have some more variety and fun here
+        if (mons->is_shapeshifter())
+            verb = "takes its true form as ";
+        else if (_jiyva_slime_target(targetc))
+            verb = "sheds its jelly disguise and reveals as ";
+        else
+            verb = "reveals as ";
+
+        mprf("%s %s%s!", old_name_the.c_str(), verb.c_str(), obj.c_str());
+    } 
+    else if (could_see)
     {
         string verb = "";
         string obj = can_see ? mons_type_name(targetc, DESC_A)

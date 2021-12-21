@@ -410,7 +410,7 @@ static bool _reveal_cultist(coord_def where)
         return 0;
     monster* mon = monster_at(where);
     ASSERT(mon);
-    mprf("%s reveals as a cultist!", mon->name(DESC_THE).c_str());
+    // messages regarding this transform are handled within mon-poly
     monster_polymorph(mon,RANDOM_CULTIST,PPT_CULT);
     return 1;
 }
