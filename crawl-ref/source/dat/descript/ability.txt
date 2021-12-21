@@ -807,6 +807,13 @@ Sends you floating upward and, after a short delay for Ignis to gather enough
 power, blasts you through the ceiling and into the level above. This ability
 may only be used once.
 %%%%
+Word of Yib ability
+
+Channels the truth of the devourer beyond the stars, causing a chance
+(decreasing with relative monster strength), for the creatures around you
+to cast off their disguises and reveal their true identity as fellow cultists
+of Yib.
+%%%%
 Hop ability
 
 Hops toward a chosen destination, landing somewhere nearby. After using this

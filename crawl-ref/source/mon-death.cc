@@ -371,50 +371,6 @@ static void _give_experience(int player_exp, int monster_exp,
     _give_monster_experience(monster_exp, killer_index);
 }
 
-// Does this kill have enough influence to trigger monsters
-// in LOS of a Yib worshipper to reveal as cultists?
-static bool _calculate_kill_influence(monster *mon)
-{
-    // TODO: implement influence based the monster being tough
-    // and also on invocations
-    return true;
-}
-
-static bool _cultistable(coord_def where)
-{
-    monster* mon = monster_at(where);
-    if (mon == nullptr || mon->cannot_act() 
-        || mons_is_projectile(mon->type)
-        || mon->asleep() || mons_is_confused(*mon))
-    {
-        return false;
-    }
-
-    return _calculate_kill_influence(mon) > 0;
-}
-
-/**
- * Causes mosters within line of sight of the 
- * player to have a chance to reveal that they were cultists all along!
- * Based on Invo and the relative strength of the
- * slain monster to both the player and the observer
- */
-static bool _reveal_cultist(coord_def where)
-{
-    // TODO: implement properly, but for now just print to
-    // demonstrate that we can reach this point
-    // For this demo, this sould trigger on all observers
-    // within LOS of the player
-    // Also, does the power on polymorph matter?
-    if (!_cultistable(where))
-        return 0;
-    monster* mon = monster_at(where);
-    ASSERT(mon);
-    // messages regarding this transform are handled within mon-poly
-    monster_polymorph(mon,RANDOM_CULTIST,PPT_CULT);
-    return 1;
-}
-
 /**
  * Makes an item into gold. Praise Gozag!
  *
@@ -982,7 +938,7 @@ void fire_monster_death_event(monster* mons,
     {
         // KILL_MISC would be an infinite loop since polymorphing is KILL_MISC
         // TODO: there are probably other types of KILL that shouldn't trigger
-        int count = apply_area_visible(_reveal_cultist,you.pos());    
+        int count = apply_area_visible(yib_reveal_cultist,you.pos());    
     }
 
 

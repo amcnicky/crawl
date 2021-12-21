@@ -204,3 +204,6 @@ void okawaru_end_duel();
 vector<coord_def> find_slimeable_walls();
 spret jiyva_oozemancy(bool fail);
 void jiyva_end_oozemancy();
+
+bool yib_reveal_cultist(coord_def where);
+spret yib_mass_reveal(bool fail);

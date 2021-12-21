@@ -313,6 +313,9 @@ enum ability_type
     ABIL_STOP_RECALL = 1500,
     ABIL_LAST_RELIGIOUS_ABILITY = ABIL_STOP_RECALL,
 
+    // Yib
+    ABIL_YIB_MASS_REVEAL,
+
     // General divine (pseudo) abilities.
     ABIL_RENOUNCE_RELIGION,
     ABIL_CONVERT_TO_BEOGH,

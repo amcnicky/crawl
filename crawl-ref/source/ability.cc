@@ -651,6 +651,10 @@ static vector<ability_def> &_get_ability_list()
             0, 0, 12, -1, {fail_basis::invo}, abflag::quiet_fail },
         { ABIL_IGNIS_RISING_FLAME, "Rising Flame",
             0, 0, 0, -1, {fail_basis::invo}, abflag::none },
+        
+        // Yib MP, HP, piety, and range.
+        { ABIL_YIB_MASS_REVEAL , "Word of Yib",
+            6, 0, 8, -1, {fail_basis::invo, 60, 4, 25}, abflag::none },
 
         { ABIL_STOP_RECALL, "Stop Recall",
             0, 0, 0, -1, {fail_basis::invo}, abflag::none },
@@ -2102,6 +2106,7 @@ unique_ptr<targeter> find_ability_targeter(ability_type ability)
     case ABIL_QAZLAL_DISASTER_AREA: // Doesn't account for explosions hitting
                                     // areas behind glass.
     case ABIL_RU_APOCALYPSE:
+    case ABIL_YIB_MASS_REVEAL:
         return make_unique<targeter_maybe_radius>(&you, LOS_NO_TRANS, LOS_RADIUS);
      case ABIL_LUGONU_CORRUPT:
         return make_unique<targeter_maybe_radius>(&you, LOS_DEFAULT, LOS_RADIUS);
@@ -3362,6 +3367,9 @@ static spret _do_ability(const ability_def& abil, bool fail, dist *target,
         you.set_duration(DUR_RISING_FLAME, 2 + random2(3));
         you.one_time_ability_used.set(GOD_IGNIS);
         return spret::success;
+
+    case ABIL_YIB_MASS_REVEAL:
+        return yib_mass_reveal(fail);
 
     case ABIL_RENOUNCE_RELIGION:
         if (yesno("Really renounce your faith, foregoing its fabulous benefits?",

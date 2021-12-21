@@ -6110,3 +6110,78 @@ void jiyva_end_oozemancy()
         if (env.grid(*ri) == DNGN_SLIMY_WALL && is_temp_terrain(*ri))
             revert_terrain_change(*ri, TERRAIN_CHANGE_SLIME);
 }
+
+
+// Does this kill have enough influence to trigger monsters
+// in LOS of a Yib worshipper to reveal as cultists?
+static bool _calculate_kill_influence(monster *mon)
+{
+    // TODO: implement influence based the monster being tough
+    // and also on invocations
+    return true;
+}
+
+static bool _cultistable(coord_def where)
+{
+    monster* mon = monster_at(where);
+    if (mon == nullptr || mon->cannot_act() 
+        || mons_is_projectile(mon->type)
+        || mon->asleep() || mons_is_confused(*mon))
+    {
+        return false;
+    }
+
+    return _calculate_kill_influence(mon) > 0;
+}
+
+static bool _act_cultistable(const actor *act)
+{
+    if (act->is_player())
+        return false;
+    return _cultistable(act->pos());
+}
+
+/**
+ * Causes mosters within line of sight of the 
+ * player to have a chance to reveal that they were cultists all along!
+ * Based on Invo and the relative strength of the
+ * slain monster to both the player and the observer
+ */
+bool yib_reveal_cultist(coord_def where)
+{
+    // TODO: implement properly, but for now just print to
+    // demonstrate that we can reach this point
+    // For this demo, this sould trigger on all observers
+    // within LOS of the player
+    // Also, does the power on polymorph matter?
+    if (!_cultistable(where))
+        return 0;
+    monster* mon = monster_at(where);
+    ASSERT(mon);
+    // messages regarding this transform are handled within mon-poly
+    monster_polymorph(mon,RANDOM_CULTIST,PPT_CULT);
+    return 1;
+}
+
+spret yib_mass_reveal(bool fail)
+{
+    int count = apply_area_visible(_cultistable, you.pos());
+    if (!count)
+        if (!yesno("There's no one around to hear Yib's truth. Invoke Yib anyway?",
+                   true, 'n'))
+        {
+            canned_msg(MSG_OK);
+            return spret::abort;
+        }
+
+    targeter_radius hitfunc(&you, LOS_DEFAULT);
+    if (stop_attack_prompt(hitfunc, "Mass Reveal", _act_cultistable))
+        return spret::abort;
+
+    fail_check();
+
+    mpr("TODO: spooky mass reveal desc.");
+
+    apply_area_visible(yib_reveal_cultist, you.pos());
+    return spret::success;
+}

@@ -403,7 +403,7 @@ const vector<vector<god_power>> & get_all_god_powers()
             {  0, "Level 0 Power Description"},
             {  0, "Level 1 Power Description"},
             {  0, "Level 2 Power Description"},
-            {  0, "Level 3 Power Description"},
+            {  0, ABIL_YIB_MASS_REVEAL, "reveal nearby enemies as fellow cultists"},
             {  0, "Level 4 Power Description"},
             {  0, "Level 5 Power Description"},
             {  0, "Level 6 Power Description"},
