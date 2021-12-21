@@ -654,7 +654,9 @@ static vector<ability_def> &_get_ability_list()
         
         // Yib MP, HP, piety, and range.
         { ABIL_YIB_MASS_REVEAL , "Word of Yib",
-            6, 0, 8, -1, {fail_basis::invo, 60, 4, 25}, abflag::none },
+            6, 0, 8, -1, {fail_basis::invo}, abflag::none },
+        { ABIL_YIB_SWAP_POSITION, "Rend Reality",
+            4, 0, 6, -1, {fail_basis::invo}, abflag::none},
 
         { ABIL_STOP_RECALL, "Stop Recall",
             0, 0, 0, -1, {fail_basis::invo}, abflag::none },
@@ -3370,6 +3372,9 @@ static spret _do_ability(const ability_def& abil, bool fail, dist *target,
 
     case ABIL_YIB_MASS_REVEAL:
         return yib_mass_reveal(fail);
+    
+    case ABIL_YIB_SWAP_POSITION:
+        return yib_swap_position(fail);
 
     case ABIL_RENOUNCE_RELIGION:
         if (yesno("Really renounce your faith, foregoing its fabulous benefits?",

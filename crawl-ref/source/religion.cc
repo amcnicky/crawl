@@ -399,12 +399,13 @@ const vector<vector<god_power>> & get_all_god_powers()
         },
 
         // Yib
-        {   // TODO
+        {   // TODO - theme this whole thing as a brainphage?
+            // something more original than a cult? cult for now
             {  0, "Level 0 Power Description"},
             {  0, "Level 1 Power Description"},
             {  0, "Level 2 Power Description"},
             {  0, ABIL_YIB_MASS_REVEAL, "reveal nearby enemies as fellow cultists"},
-            {  0, "Level 4 Power Description"},
+            {  0, ABIL_YIB_SWAP_POSITION, "rend reality to move to the position of a friendly cultist"},
             {  0, "Level 5 Power Description"},
             {  0, "Level 6 Power Description"},
             {  0, "Level 7 Power Description"},

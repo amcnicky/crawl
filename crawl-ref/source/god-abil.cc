@@ -6185,3 +6185,98 @@ spret yib_mass_reveal(bool fail)
     apply_area_visible(yib_reveal_cultist, you.pos());
     return spret::success;
 }
+
+/**
+ * Activate Yib's swap position ability, swapping the player
+ * with a targeted friendly cultist & potentially confusing monsters adjacent
+ * to the target.
+ *
+ * @param fail      Whether the effect should fail after checking validity.
+ * @return          Whether the ability succeeded, failed, or was aborted.
+ *
+ * Code largely taken from Usk's finale, just aimed at allies and tweaked
+ * accordingly.
+ */
+spret yib_swap_position(bool fail)
+{
+    ASSERT(!crawl_state.game_is_arena());
+
+    // query for location:
+    dist beam;
+
+    monster* mons;
+
+    while (1)
+    {
+        direction_chooser_args args;
+        args.mode = TARG_YIB_FRIENDLY_CULTIST;
+        args.needs_path = false;
+        args.top_prompt = "Aiming: <white>TODO: better name than swap position</white>";
+        args.self = confirm_prompt_type::cancel;
+        targeter_smite tgt(&you);
+        args.hitfunc = &tgt;
+        direction(beam, args);
+        if (crawl_state.seen_hups)
+        {
+            clear_messages();
+            mpr("Cancelling TODO: swap position name due to HUP.");
+            return spret::abort;
+        }
+
+        if (!beam.isValid || beam.target == you.pos())
+        {
+            canned_msg(MSG_OK);
+            return spret::abort;   // early return
+        }
+
+        mons = monster_at(beam.target);
+        if (!mons || !you.can_see(*mons))
+        {
+            clear_messages();
+            mpr("You can't perceive a target there!");
+            continue;
+        }
+
+        if (!check_moveto(beam.target, "move", false))
+        {
+            // try again (messages handled by check_moveto)
+        }
+        else if (you.see_cell_no_trans(beam.target))
+        {
+            // Grid in los, no problem.
+            break;
+        }
+        else if (you.trans_wall_blocking(beam.target))
+        {
+            clear_messages();
+            canned_msg(MSG_SOMETHING_IN_WAY);
+        }
+        else
+        {
+            clear_messages();
+            canned_msg(MSG_CANNOT_SEE);
+        }
+    }
+
+    fail_check();
+
+    ASSERT(mons);
+
+    // remove the target. Not a kill - it was the player all along!
+    mprf("You were diguised as %s this whole time!", mons->name(DESC_THE, false).c_str());
+
+    // throw_monster_bits can cause mons to be killed already, e.g. via pain
+    // bond or dismissing summons
+    if (mons->alive())
+        monster_die(*mons, KILL_NONE, NON_MONSTER, false);
+
+    if (!mons->alive())
+        move_player_to_grid(beam.target, false);
+    else
+        mpr("You spring back to your original position.");
+
+    crawl_state.cancel_cmd_again();
+    crawl_state.cancel_cmd_repeat();
+
+    return spret::success;
+}

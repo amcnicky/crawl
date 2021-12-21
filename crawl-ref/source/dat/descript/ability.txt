@@ -814,6 +814,13 @@ Channels the truth of the devourer beyond the stars, causing a chance
 to cast off their disguises and reveal their true identity as fellow cultists
 of Yib.
 %%%%
+Rend Reality ability
+
+Forcefully collide a fragment of a more beneficial timeline with the
+physical dungeon. Observers will experience this as you having stood
+at the position of another cultist all along, which of course is a terribly
+confusing affair for them.
+%%%%
 Hop ability
 
 Hops toward a chosen destination, landing somewhere nearby. After using this

@@ -2758,6 +2758,13 @@ static bool _want_target_monster(const monster *mon, targ_mode_type mode,
             && unpacifiable_reason(*mon).empty();
     case TARG_BEOGH_GIFTABLE:
         return beogh_can_gift_items_to(mon);
+    case TARG_YIB_FRIENDLY_CULTIST:
+        return (mon->friendly() && 
+            (
+                        (mon->type == MONS_CULTIST)
+                ||    (mon->type == MONS_DOOMKIN)
+                ||    (mon->type == MONS_MASTER_OF_WHISPERS)
+            ));
     case TARG_MOVABLE_OBJECT:
         return false;
     case TARG_MOBILE_MONSTER:
