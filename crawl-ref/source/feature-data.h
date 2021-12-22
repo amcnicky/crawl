@@ -224,6 +224,13 @@ static feature_def feat_defs[] =
 },
 
 {
+    DNGN_YIB_MALIGN_RIFT, "small rift in the fabric of space", "malign_rift",
+    DCHAR_ARCH, NUM_DCHAR_TYPES,
+    COLOUR_IS(ETC_YIB),
+    FFT_NONE, MF_FLOOR,
+},
+
+{
     DNGN_LAVA, "some lava", "lava",
     DCHAR_WAVY, NUM_DCHAR_TYPES,
     COLOUR_IS(RED),

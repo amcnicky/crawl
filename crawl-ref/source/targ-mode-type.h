@@ -8,7 +8,7 @@ enum targ_mode_type
     TARG_HOSTILE,
     TARG_HOSTILE_SUBMERGED, // Target hostiles including submerged ones
     TARG_BEOGH_GIFTABLE,    // For Beogh followers who can be given gifts
-    TARG_YIB_FRIENDLY_CULTIST,
+    TARG_YIB_FRIENDLY_CULTIST, // For Yib to target cultists only
     TARG_MOVABLE_OBJECT,    // Movable objects only
     TARG_MOBILE_MONSTER,    // Non-stationary monsters
     TARG_NUM_MODES

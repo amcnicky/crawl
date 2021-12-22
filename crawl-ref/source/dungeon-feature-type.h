@@ -57,6 +57,7 @@ enum dungeon_feature_type
     DNGN_ORCISH_IDOL,
     DNGN_GRANITE_STATUE,
     DNGN_MALIGN_GATEWAY,
+    DNGN_YIB_MALIGN_RIFT,
 
 #if TAG_MAJOR_VERSION == 34
     DNGN_LAVA            = 30,

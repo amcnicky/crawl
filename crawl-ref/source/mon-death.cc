@@ -938,7 +938,16 @@ void fire_monster_death_event(monster* mons,
     {
         // KILL_MISC would be an infinite loop since polymorphing is KILL_MISC
         // TODO: there are probably other types of KILL that shouldn't trigger
-        int count = apply_area_visible(yib_reveal_cultist,you.pos());    
+        apply_area_visible(yib_reveal_cultist,you.pos());    
+    }
+
+    // Under Yib, monster death also has a chance to start tearing rifts
+    // in reality, which the player can then blink to.
+    // TODO: check the player has the correct passive
+    // TODO: check any other appropriate conditions on this happening
+    if(killer != KILL_MISC)
+    {
+        apply_area_visible(yib_reveal_rift,you.pos());
     }
 
 

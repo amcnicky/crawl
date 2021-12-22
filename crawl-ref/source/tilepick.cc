@@ -453,6 +453,8 @@ tileidx_t tileidx_feature_base(dungeon_feature_type feat)
         return TILE_DNGN_PORTAL_EXPIRED;
     case DNGN_MALIGN_GATEWAY:
         return TILE_DNGN_STARRY_PORTAL;
+    case DNGN_YIB_MALIGN_RIFT:
+        return TILE_DNGN_STARRY_PORTAL;
 
     // altars
     case DNGN_ALTAR_ZIN:

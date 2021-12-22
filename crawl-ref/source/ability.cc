@@ -656,7 +656,9 @@ static vector<ability_def> &_get_ability_list()
         { ABIL_YIB_MASS_REVEAL , "Word of Yib",
             6, 0, 8, -1, {fail_basis::invo}, abflag::none },
         { ABIL_YIB_SWAP_POSITION, "Rend Reality",
-            4, 0, 6, -1, {fail_basis::invo}, abflag::none},
+            4, 0, 4, -1, {fail_basis::invo}, abflag::none},
+        { ABIL_YIB_RIFTWALK, "Riftwalk",
+            4, 0, 4, -1, {fail_basis::invo}, abflag::none},
 
         { ABIL_STOP_RECALL, "Stop Recall",
             0, 0, 0, -1, {fail_basis::invo}, abflag::none },
@@ -2109,6 +2111,8 @@ unique_ptr<targeter> find_ability_targeter(ability_type ability)
                                     // areas behind glass.
     case ABIL_RU_APOCALYPSE:
     case ABIL_YIB_MASS_REVEAL:
+    case ABIL_YIB_SWAP_POSITION:
+    case ABIL_YIB_RIFTWALK:
         return make_unique<targeter_maybe_radius>(&you, LOS_NO_TRANS, LOS_RADIUS);
      case ABIL_LUGONU_CORRUPT:
         return make_unique<targeter_maybe_radius>(&you, LOS_DEFAULT, LOS_RADIUS);
@@ -3375,6 +3379,9 @@ static spret _do_ability(const ability_def& abil, bool fail, dist *target,
     
     case ABIL_YIB_SWAP_POSITION:
         return yib_swap_position(fail);
+
+    case ABIL_YIB_RIFTWALK:
+        return yib_riftwalk(fail);
 
     case ABIL_RENOUNCE_RELIGION:
         if (yesno("Really renounce your faith, foregoing its fabulous benefits?",

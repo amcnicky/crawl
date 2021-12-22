@@ -206,5 +206,7 @@ spret jiyva_oozemancy(bool fail);
 void jiyva_end_oozemancy();
 
 bool yib_reveal_cultist(coord_def where);
+bool yib_reveal_rift(coord_def where);
 spret yib_mass_reveal(bool fail);
 spret yib_swap_position(bool fail);
+spret yib_riftwalk(bool fail);

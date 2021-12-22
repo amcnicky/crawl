@@ -316,6 +316,7 @@ enum ability_type
     // Yib
     ABIL_YIB_MASS_REVEAL,
     ABIL_YIB_SWAP_POSITION,
+    ABIL_YIB_RIFTWALK,
 
     // General divine (pseudo) abilities.
     ABIL_RENOUNCE_RELIGION,

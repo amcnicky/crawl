@@ -2661,6 +2661,8 @@ void get_feature_desc(const coord_def &pos, describe_info &inf, bool include_ext
     }
     else if (feat == DNGN_MALIGN_GATEWAY)
         long_desc += "\nMoving into it will do damage and cause you to blink.";
+    else if (feat == DNGN_YIB_MALIGN_RIFT)
+        long_desc += "\nFollowers of Yib can phase to this location.";
     else if (feat == DNGN_TRANSPORTER)
     {
         long_desc += make_stringf(
