@@ -424,6 +424,8 @@ static peeve_map divine_peeves[] =
     peeve_map(),
     // GOD_IGNIS,
     peeve_map(),
+    // GOD_YIB
+    peeve_map(),
 };
 
 string get_god_dislikes(god_type which_god)
@@ -926,6 +928,14 @@ static like_map divine_likes[] =
     },
     // GOD_IGNIS,
     like_map(),
+    // GOD_YIB,
+    {
+        { DID_KILL_LIVING, KILL_LIVING_RESPONSE },
+        { DID_KILL_UNDEAD, KILL_UNDEAD_RESPONSE },
+        { DID_KILL_DEMON, KILL_DEMON_RESPONSE },
+        { DID_KILL_HOLY, KILL_HOLY_RESPONSE },
+        { DID_KILL_NONLIVING, KILL_NONLIVING_RESPONSE },
+    },
 };
 
 /**

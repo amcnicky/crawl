@@ -2254,6 +2254,7 @@ static god_type _god_from_initial(const char god_initial)
     switch (toupper_safe(god_initial))
     {
         case '1': return GOD_SHINING_ONE;
+        case '2': return GOD_YIB;
         case 'A': return GOD_ASHENZARI;
         case 'B': return GOD_BEOGH;
         case 'C': return GOD_CHEIBRIADOS;

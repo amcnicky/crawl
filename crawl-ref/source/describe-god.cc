@@ -243,6 +243,10 @@ static const char *divine_title[][8] =
     // Ignis -- fire/candles theme
     {"Extinguished",          "Last Ember",             "Glowing Coal",              "Thurifer",
         "Hearthfire",     "Furnace",               "Raging Flame",              "Inferno"},
+
+    // Yib - cult/ritual/malign theme
+    {"Initiate",          "Prospect",             "Devotee",              "Cultist",
+        "High Cultist",     "Ritual Master",               "Lord Librarian",              "Herald"},
 };
 COMPILE_CHECK(ARRAYSZ(divine_title) == NUM_GODS);
 

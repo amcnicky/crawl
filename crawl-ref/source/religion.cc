@@ -398,6 +398,11 @@ const vector<vector<god_power>> & get_all_god_powers()
             { 1, ABIL_IGNIS_FOXFIRE, "call a swarm of foxfires against your foes" },
             { 7, ABIL_IGNIS_RISING_FLAME, "rocket upward and away" },
         },
+
+        // Yib
+        {
+            //TODO
+        }
     };
     static bool god_powers_init = false;
 
@@ -2401,6 +2406,7 @@ string god_name(god_type which_god, bool long_name)
     case GOD_HEPLIAKLQANA:  return "Hepliaklqana";
     case GOD_WU_JIAN:       return "Wu Jian";
     case GOD_IGNIS:         return "Ignis";
+    case GOD_YIB:         return "Yib";
     case GOD_JIYVA: // This is handled at the beginning of the function
     case GOD_ECUMENICAL:    return "an unknown god";
     case NUM_GODS:          return "Buggy";
@@ -3043,6 +3049,7 @@ int initial_wrath_penance_for(god_type god)
         case GOD_NEMELEX_XOBEH:
         case GOD_TROG:
         case GOD_XOM:
+        case GOD_YIB:
             return 50;
         case GOD_FEDHAS:
         case GOD_KIKUBAAQUDGHA:
@@ -4522,6 +4529,8 @@ int god_colour(god_type god) // mv - added
         return LIGHTGREEN;
 #endif
 
+    case GOD_YIB:
+        return MAGENTA;
     case GOD_NO_GOD:
     case NUM_GODS:
     case GOD_RANDOM:
@@ -4620,6 +4629,9 @@ colour_t god_message_altar_colour(god_type god)
 
     case GOD_IGNIS:
         return random_choose(WHITE, YELLOW);
+
+    case GOD_YIB:
+        return MAGENTA;
 
     default:
         return YELLOW;
@@ -4959,6 +4971,7 @@ static bool _is_temple_god(god_type god)
     case GOD_BEOGH:
     case GOD_JIYVA:
     case GOD_IGNIS:
+    case GOD_YIB:
         return false;
 
     default:
