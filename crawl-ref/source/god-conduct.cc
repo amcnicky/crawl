@@ -80,6 +80,7 @@ static const char *conducts[] =
     "Kill Slime", "Kill Plant", "Was Hasty", "Attack In Sanctuary",
     "Kill Artificial", "Exploration", "Seen Monster",
     "Sacrificed Love", "Channel", "Hurt Foe", "Use Wizardly Item",
+    "Kill During Ritual",
 };
 COMPILE_CHECK(ARRAYSZ(conducts) == NUM_CONDUCTS);
 
@@ -930,11 +931,8 @@ static like_map divine_likes[] =
     like_map(),
     // GOD_YIB,
     {
-        { DID_KILL_LIVING, KILL_LIVING_RESPONSE },
-        { DID_KILL_UNDEAD, KILL_UNDEAD_RESPONSE },
-        { DID_KILL_DEMON, KILL_DEMON_RESPONSE },
-        { DID_KILL_HOLY, KILL_HOLY_RESPONSE },
-        { DID_KILL_NONLIVING, KILL_NONLIVING_RESPONSE },
+        { DID_KILL_RITUAL, KILL_LIVING_RESPONSE },
+        // TODO: implement a KILL_RITUAL_RESPONSE
     },
 };
 

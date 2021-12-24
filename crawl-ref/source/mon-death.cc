@@ -1406,6 +1406,21 @@ static void _fire_kill_conducts(monster &mons, killer_type killer,
     // Cheibriados hates fast monsters.
     if (cheibriados_thinks_mons_is_fast(mons) && !mons.cannot_act())
         did_kill_conduct(DID_KILL_FAST, mons);
+
+    // Yib likes killing things, but only when there's a ritual active
+    if ((yib_ritual_is_active)
+    &&
+        (   
+              (holiness & MH_DEMONIC) // DID_KILL_DEMON
+        ||  (holiness & (MH_NATURAL | MH_PLANT)) // DID_KILL_LIVING and
+                    // also DID_KILL_NATURAL_EVIL
+        ||  (holiness & MH_UNDEAD) // DID_KILL_UNDEAD
+        ||  (holiness & MH_NONLIVING) // DID_KILL_NONLIVING        
+        )
+    )
+    {
+        did_kill_conduct(DID_KILL_RITUAL, mons);
+    }
 }
 
 item_def* monster_die(monster& mons, const actor *killer, bool silent,

@@ -39,5 +39,6 @@ enum conduct_type
     DID_CHANNEL,                          // Pakellas
     DID_HURT_FOE,                         // Uskayaw
     DID_WIZARDLY_ITEM,                    // Trog
+    DID_KILL_RITUAL,                    // Yib
     NUM_CONDUCTS
 };

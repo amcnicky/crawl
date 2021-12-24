@@ -991,6 +991,12 @@ static void _inc_gift_timeout(int val)
         you.gift_timeout += val;
 }
 
+bool yib_ritual_is_active()
+{
+    return true;
+    // TODO: implement a way of checking if the current ritual is active or not
+}
+
 // These are sorted in order of power.
 // monsteres here come from genera: n, z, V and W
 // - Vampire mages are excluded because they worship scholarly Kiku
@@ -4458,6 +4464,7 @@ void handle_god_time(int /*time_delta*/)
         case GOD_YREDELEMNUL:
         case GOD_GOZAG:
         case GOD_XOM:
+        case GOD_YIB:
             // Gods without normal piety do nothing each tick.
             return;
 
