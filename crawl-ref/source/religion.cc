@@ -2412,7 +2412,7 @@ string god_name(god_type which_god, bool long_name)
     case GOD_HEPLIAKLQANA:  return "Hepliaklqana";
     case GOD_WU_JIAN:       return "Wu Jian";
     case GOD_IGNIS:         return "Ignis";
-    case GOD_YIB:         return "Yib";
+    case GOD_YIB:           return "Yib";
     case GOD_JIYVA: // This is handled at the beginning of the function
     case GOD_ECUMENICAL:    return "an unknown god";
     case NUM_GODS:          return "Buggy";
@@ -2587,8 +2587,9 @@ void set_piety(int piety)
     ASSERT(piety >= 0);
     ASSERT(piety <= MAX_PIETY);
 
-    // Ru max piety is 6*
-    if (you_worship(GOD_RU) && piety > piety_breakpoint(5))
+    // Ru and Yib max piety is 6*
+    if ((you_worship(GOD_RU) || you_worship(GOD_YIB))
+     && piety > piety_breakpoint(5))
         piety = piety_breakpoint(5);
 
     // We have to set the exact piety value this way, because diff may
@@ -2636,7 +2637,7 @@ static void _gain_piety_point()
     }
 
     // slow down gain at upper levels of piety
-    if (!you_worship(GOD_RU))
+    if (!(you_worship(GOD_RU)||you_worship(GOD_YIB)))
     {
         if (you.piety >= MAX_PIETY
             || you.piety >= piety_breakpoint(5) && one_chance_in(3)
@@ -2650,6 +2651,7 @@ static void _gain_piety_point()
     {
         // Ru piety doesn't modulate or taper and Ru doesn't give gifts.
         // Ru max piety is 160 (6*)
+        // Same for Yib
         if (you.piety >= piety_breakpoint(5))
             return;
     }
@@ -3977,6 +3979,16 @@ static void _join_cheibriados()
     notify_stat_change();
 }
 
+/// Setup when joining the secret cult of Yib.
+static void _join_yib()
+{
+    // see _join_ru
+    // TODO: implement adding all the you.props
+    mprf("TODO: implement adding all the you.props");
+
+    _make_empty_vec(you.props[YIB_AVAILABLE_RITUAL_KEY], SV_INT);
+}
+
 /// What special things happen when you join a god?
 static const map<god_type, function<void ()>> on_join = {
     { GOD_BEOGH, update_player_symbol },
@@ -3998,6 +4010,7 @@ static const map<god_type, function<void ()>> on_join = {
     { GOD_PAKELLAS, _join_pakellas },
 #endif
     { GOD_RU, _join_ru },
+    { GOD_YIB, _join_yib },
     { GOD_TROG, join_trog_skills },
     { GOD_ZIN, _join_zin },
 };

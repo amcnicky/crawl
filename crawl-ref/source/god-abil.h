@@ -73,6 +73,8 @@ const char * const GOZAG_SHOP_COST_KEY       = "gozag_shop_cost_%d";
 #define ASHENZARI_BASE_PIETY 2
 #define ASHENZARI_PIETY_SCALE 168
 
+#define YIB_AVAILABLE_RITUAL_KEY "yib_available_rituals"
+
 struct bolt;
 class stack_iterator;
 
