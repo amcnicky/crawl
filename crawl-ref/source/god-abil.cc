@@ -6110,3 +6110,121 @@ void jiyva_end_oozemancy()
         if (env.grid(*ri) == DNGN_SLIMY_WALL && is_temp_terrain(*ri))
             revert_terrain_change(*ri, TERRAIN_CHANGE_SLIME);
 }
+
+void yib_reset_ritual_timer(bool clear_timer, bool faith_penalty)
+{
+    ASSERT(you.props.exists(YIB_RITUAL_PROGRESS_KEY));
+    ASSERT(you.props.exists(YIB_RITUAL_DELAY_KEY));
+
+    // raise the delay if there's an active sacrifice, and more so the more
+    // often you pass on a sacrifice and the more piety you have.
+    const int base_delay = 90;
+    int delay = you.props[YIB_RITUAL_DELAY_KEY].get_int();
+    int added_delay;
+    if (clear_timer)
+    {
+        added_delay = 0;
+        delay = base_delay;
+    }
+    else
+    {
+        // if you rejected a ritual, take a fixed penalty delay
+        added_delay = 40;
+
+        if (faith_penalty)
+        {
+            // An even longer delay for faith removal
+            added_delay += 20;
+            delay = base_delay;
+        }
+    }
+
+    delay = div_rand_round((delay + added_delay) * (3 - you.faith()), 3);
+    if (crawl_state.game_is_sprint())
+        delay /= SPRINT_MULTIPLIER;
+
+    you.props[YIB_RITUAL_DELAY_KEY] = delay;
+    you.props[YIB_RITUAL_PROGRESS_KEY] = 0;
+}
+
+
+/**
+ * Chooses three distinct rituals to offer the player, store them in
+ * available_rituals, and print a message to the player letting them
+ * know that their new rituals are ready.
+ * Follows Ru code quite closely.
+ */
+void yib_offer_new_rituals()
+{
+    /*
+    _ru_expire_sacrifices();
+
+    vector<ability_type> possible_sacrifices = _get_possible_sacrifices();
+
+    // for now we'll just pick three at random
+    int num_sacrifices = possible_sacrifices.size();
+
+    const int num_expected_offers = 3;
+
+    // This can't happen outside wizmode, but may as well handle gracefully
+    if (num_sacrifices < num_expected_offers)
+        return;
+
+    ASSERT(you.props.exists(AVAILABLE_SAC_KEY));
+    CrawlVector &available_sacrifices
+        = you.props[AVAILABLE_SAC_KEY].get_vector();
+
+    for (int sac_num = 0; sac_num < num_expected_offers; ++sac_num)
+    {
+        // find the cheapest available sacrifice, in case we're close to ru's
+        // max piety. (minimize 'wasted' piety in those cases.)
+        const ability_type min_piety_sacrifice
+            = accumulate(possible_sacrifices.begin(),
+                         possible_sacrifices.end(),
+                         ABIL_RU_REJECT_SACRIFICES,
+                         [](ability_type a, ability_type b) {
+                             return get_sacrifice_piety(a)
+                                  < get_sacrifice_piety(b) ? a : b;
+                         });
+        const int min_piety = get_sacrifice_piety(min_piety_sacrifice);
+        const int piety_cap = max(179, you.piety + min_piety);
+
+        dprf("cheapest sac %d (%d piety); cap %d",
+             min_piety_sacrifice, min_piety, piety_cap);
+
+        // XXX: replace this with random_if when that's merged
+        ability_type chosen_sacrifice
+            = _random_cheap_sacrifice(possible_sacrifices, piety_cap);
+
+        if (chosen_sacrifice < ABIL_FIRST_SACRIFICE ||
+                chosen_sacrifice > ABIL_FINAL_SACRIFICE)
+        {
+           chosen_sacrifice = _get_cheapest_sacrifice(possible_sacrifices);
+        }
+
+        if (chosen_sacrifice > ABIL_FINAL_SACRIFICE)
+        {
+            // We don't have three sacrifices to offer for some reason.
+            // Either the player is messing around in wizmode or has rejoined
+            // Ru repeatedly. In either case, we'll just stop offering
+            // sacrifices rather than crashing.
+            _ru_expire_sacrifices();
+            ru_reset_sacrifice_timer(false);
+            return;
+        }
+
+        // add it to the list of chosen sacrifices to offer, and remove it from
+        // the list of possibilities for the later sacrifices
+        available_sacrifices.push_back(chosen_sacrifice);
+        you.sacrifice_piety[chosen_sacrifice] =
+                                get_sacrifice_piety(chosen_sacrifice, false);
+        possible_sacrifices.erase(remove(possible_sacrifices.begin(),
+                                         possible_sacrifices.end(),
+                                         chosen_sacrifice),
+                                  possible_sacrifices.end());
+    }
+
+    */
+    simple_god_message(" believes you are ready to begin a new ritual.");
+    // included in default force_more_message
+}

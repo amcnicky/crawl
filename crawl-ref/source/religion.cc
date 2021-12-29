@@ -991,10 +991,12 @@ static void _inc_gift_timeout(int val)
         you.gift_timeout += val;
 }
 
-bool yib_ritual_is_active()
+int yib_ritual_is_active()
 {
-    return true;
-    // TODO: implement a way of checking if the current ritual is active or not
+    ASSERT(you.props.exists(YIB_RITUAL_ACTIVE_KEY));
+    int active = you.props[YIB_RITUAL_ACTIVE_KEY].get_int();
+    mprf("piety: %d", active);
+    return active;
 }
 
 // These are sorted in order of power.
@@ -3699,6 +3701,7 @@ static void _apply_monk_bonus()
         give_yred_bonus_zombies(2); // top up to **
     else
         gain_piety(35, 1, false);
+    // TODO: add in Yib treatment
 }
 
 /// Transfer some piety from an old good god to a new one, if applicable.
@@ -3846,6 +3849,26 @@ static void _set_initial_god_piety()
             you.piety = 130; // matches zealot with ecu bonus
         you.piety_hysteresis = 0;
         you.gift_timeout = 0;
+        break;
+
+    case GOD_YIB:
+        you.piety = 1; // no piety decay on Yib so no risk of excommunication
+        you.piety_hysteresis = 0;
+        you.gift_timeout = 0;
+
+        // I'd rather this be in on_join(), but then it overrides the
+        // monk bonus...
+        you.props[YIB_RITUAL_PROGRESS_KEY] = 0;
+        you.props[YIB_RITUAL_ACTIVE_KEY] = 0;
+        // offer the first sacrifice faster than normal
+        {
+            int delay = 50;
+            if (crawl_state.game_is_sprint())
+                delay /= SPRINT_MULTIPLIER;
+            you.props[YIB_RITUAL_DELAY_KEY] = delay;
+        }
+        //TODO: decide if this key is even needed
+        //you.props[RU_SACRIFICE_PENALTY_KEY] = 0;
         break;
 
     default:
@@ -4409,6 +4432,8 @@ void handle_god_time(int /*time_delta*/)
     {
         int delay;
         int sacrifice_count;
+        int yib_ritual_delay;
+        int yib_ritual_count;
         switch (you.religion)
         {
         case GOD_TROG:
@@ -4478,7 +4503,21 @@ void handle_god_time(int /*time_delta*/)
         case GOD_GOZAG:
         case GOD_XOM:
         case GOD_YIB:
-            // Gods without normal piety do nothing each tick.
+            ASSERT(you.props.exists(YIB_RITUAL_PROGRESS_KEY));
+            ASSERT(you.props.exists(YIB_RITUAL_DELAY_KEY));
+            ASSERT(you.props.exists(YIB_AVAILABLE_RITUAL_KEY));
+
+            yib_ritual_delay = you.props[YIB_RITUAL_DELAY_KEY].get_int();
+            yib_ritual_count = 
+                you.props[YIB_AVAILABLE_RITUAL_KEY].get_vector().size();
+
+            // 6* is max piety for Yib
+            if (yib_ritual_count == 0 && you.piety < piety_breakpoint(5)
+                && you.props[YIB_RITUAL_PROGRESS_KEY].get_int() 
+                    >= yib_ritual_delay)
+            {
+              yib_offer_new_rituals();
+            }
             return;
 
         case GOD_NO_GOD:

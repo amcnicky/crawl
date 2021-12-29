@@ -1023,7 +1023,13 @@ static update_flags player_view_update_at(const coord_def &gc)
             && cell_triggers_conduct(gc)
             && !player_in_branch(BRANCH_TEMPLE))
         {
-            did_god_conduct(DID_EXPLORATION, 2500);
+            if(you_worship(GOD_YIB) && yib_ritual_is_active()>0)
+            {
+                did_god_conduct(DID_EXPLORATION_RITUAL, 2500);
+            } else 
+            {
+                did_god_conduct(DID_EXPLORATION, 2500);
+            }
             const int density = env.density ? env.density : 2000;
             you.exploration += div_rand_round(1<<16, density);
             roll_trap_effects();

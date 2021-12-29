@@ -1408,7 +1408,8 @@ static void _fire_kill_conducts(monster &mons, killer_type killer,
         did_kill_conduct(DID_KILL_FAST, mons);
 
     // Yib likes killing things, but only when there's a ritual active
-    if ((yib_ritual_is_active)
+    if ((yib_ritual_is_active() == 1)
+    && (you_worship(GOD_YIB))
     &&
         (   
               (holiness & MH_DEMONIC) // DID_KILL_DEMON
@@ -1420,6 +1421,7 @@ static void _fire_kill_conducts(monster &mons, killer_type killer,
     )
     {
         did_kill_conduct(DID_KILL_RITUAL, mons);
+        mprf("piety gained from killing");
     }
 }
 
@@ -1994,6 +1996,15 @@ item_def* monster_die(monster& mons, killer_type killer,
                 int current_progress =
                         you.props[RU_SACRIFICE_PROGRESS_KEY].get_int();
                 you.props[RU_SACRIFICE_PROGRESS_KEY] = current_progress + 1;
+            }
+
+            if (gives_player_xp && you_worship(GOD_YIB) && you.piety < 200
+                && one_chance_in(2)) // TODO: progress speed will differ
+            {
+                ASSERT(you.props.exists(YIB_RITUAL_PROGRESS_KEY));
+                int current_progress =
+                        you.props[YIB_RITUAL_PROGRESS_KEY].get_int();
+                you.props[YIB_RITUAL_PROGRESS_KEY] = current_progress + 1;
             }
 
             // Randomly bless a follower.

@@ -74,6 +74,9 @@ const char * const GOZAG_SHOP_COST_KEY       = "gozag_shop_cost_%d";
 #define ASHENZARI_PIETY_SCALE 168
 
 #define YIB_AVAILABLE_RITUAL_KEY "yib_available_rituals"
+#define YIB_RITUAL_DELAY_KEY "yib_ritual_delay"
+#define YIB_RITUAL_PROGRESS_KEY "yib_ritual_progress"
+#define YIB_RITUAL_ACTIVE_KEY "yib_ritual_active"
 
 struct bolt;
 class stack_iterator;
@@ -206,3 +209,6 @@ void okawaru_end_duel();
 vector<coord_def> find_slimeable_walls();
 spret jiyva_oozemancy(bool fail);
 void jiyva_end_oozemancy();
+
+void yib_offer_new_rituals();
+void yib_reset_ritual_timer(bool clear_timer, bool faith_penalty);

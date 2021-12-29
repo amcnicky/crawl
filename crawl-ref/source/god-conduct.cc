@@ -80,7 +80,7 @@ static const char *conducts[] =
     "Kill Slime", "Kill Plant", "Was Hasty", "Attack In Sanctuary",
     "Kill Artificial", "Exploration", "Seen Monster",
     "Sacrificed Love", "Channel", "Hurt Foe", "Use Wizardly Item",
-    "Kill During Ritual",
+    "Kill During Ritual", "Explore During Ritual",
 };
 COMPILE_CHECK(ARRAYSZ(conducts) == NUM_CONDUCTS);
 
@@ -606,6 +606,11 @@ static const like_response KILL_UNDEAD_RESPONSE =
 static const like_response KILL_DEMON_RESPONSE =
     _on_kill("you kill demons", MH_DEMONIC);
 
+/// Response for killing anything durin Yib rituals.
+/// MH_DEMONIC used for piety bonus as it's a middle ground
+static const like_response KILL_RITUAL_RESPONSE =
+    _on_kill("you kill monsters during a ritual", MH_DEMONIC);
+
 /// Response for non-good gods that like killing (?) holies.
 static const like_response KILL_HOLY_RESPONSE =
     _on_kill("you kill holy beings", MH_HOLY);
@@ -931,8 +936,96 @@ static like_map divine_likes[] =
     like_map(),
     // GOD_YIB,
     {
-        { DID_KILL_RITUAL, KILL_LIVING_RESPONSE },
-        // TODO: implement a KILL_RITUAL_RESPONSE
+        { DID_KILL_RITUAL, KILL_RITUAL_RESPONSE },
+        // TODO: generally check all of this works
+        // should be during ritual = piety
+        // outside of ritual = progress
+        { DID_EXPLORATION_RITUAL,         
+        {
+            "you explore the world during a ritual", false, 0, 0, 0, nullptr,
+            [] (int &piety, int &, const monster* /*victim*/)
+            {
+                piety = 14;
+                // TODO: this piety number is the one that needs to vary
+                //  based on the type of ritual
+                mprf("piety gained from exploring");
+            }
+        } },
+        { DID_EXPLORATION,         
+        {
+            "you explore the world", false, 0, 0, 0, nullptr,
+            [] (int &piety, int &, const monster* /*victim*/)
+            {
+                piety = 0;
+                ASSERT(you.props.exists(YIB_RITUAL_PROGRESS_KEY));
+
+                if (one_chance_in(80))
+                    you.props[YIB_RITUAL_PROGRESS_KEY].get_int()++;
+                mprf("(expl trig: %d)",you.props[YIB_RITUAL_PROGRESS_KEY].get_int());
+            }
+        } },
+
+        { DID_KILL_LIVING, _on_kill("you kill living beings", MH_NATURAL, false,
+                                  [](int &piety, int &,
+                                     const monster* /*victim*/)
+            {
+                piety = 0;
+                ASSERT(you.props.exists(YIB_RITUAL_PROGRESS_KEY));
+
+                if (one_chance_in(2))
+                    you.props[YIB_RITUAL_PROGRESS_KEY].get_int()++;
+                mprf("(killing trig, progress: %d)",you.props[YIB_RITUAL_PROGRESS_KEY].get_int());
+            }
+        ) },
+        { DID_KILL_UNDEAD, _on_kill("you kill the undead", MH_UNDEAD, false,
+                                  [](int &piety, int &,
+                                     const monster* /*victim*/)
+            {
+                piety = 0;
+                ASSERT(you.props.exists(YIB_RITUAL_PROGRESS_KEY));
+
+                if (one_chance_in(2))
+                    you.props[YIB_RITUAL_PROGRESS_KEY].get_int()++;
+                mprf("(killing trig, progress: %d)",you.props[YIB_RITUAL_PROGRESS_KEY].get_int());
+            }
+        ) },
+        { DID_KILL_DEMON, _on_kill("you kill demons", MH_DEMONIC, false,
+                                  [](int &piety, int &,
+                                     const monster* /*victim*/)
+            {
+                piety = 0;
+                ASSERT(you.props.exists(YIB_RITUAL_PROGRESS_KEY));
+
+                if (one_chance_in(2))
+                    you.props[YIB_RITUAL_PROGRESS_KEY].get_int()++;
+                mprf("(killing trig, progress: %d)",you.props[YIB_RITUAL_PROGRESS_KEY].get_int());
+            }
+        ) },
+        { DID_KILL_HOLY, _on_kill("you kill holy beings", MH_HOLY, false,
+                                  [](int &piety, int &,
+                                     const monster* /*victim*/)
+            {
+                piety = 0;
+                ASSERT(you.props.exists(YIB_RITUAL_PROGRESS_KEY));
+
+                if (one_chance_in(2))
+                    you.props[YIB_RITUAL_PROGRESS_KEY].get_int()++;
+                mprf("(killing trig, progress: %d)",you.props[YIB_RITUAL_PROGRESS_KEY].get_int());
+            }
+        ) },
+        { DID_KILL_NONLIVING, _on_kill("you kill non-living beings"
+            , MH_NONLIVING, false,
+                                  [](int &piety, int &,
+                                     const monster* /*victim*/)
+            {
+                piety = 0;
+                ASSERT(you.props.exists(YIB_RITUAL_PROGRESS_KEY));
+
+                if (one_chance_in(2))
+                    you.props[YIB_RITUAL_PROGRESS_KEY].get_int()++;
+                mprf("(killing trig, progress: %d)",you.props[YIB_RITUAL_PROGRESS_KEY].get_int());
+            }
+        ) },
     },
 };
 

@@ -104,6 +104,8 @@ static bool _pray_ecumenical_altar()
         else
             gain_piety(20, 1, false);
 
+        //TODO: add Yib treatment in here
+
         mark_milestone("god.ecumenical", "prayed at an ecumenical altar.");
         return true;
     }
