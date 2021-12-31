@@ -40,6 +40,7 @@ enum class abflag
     card                = 0x00004000, // deck drawing (Nemelex)
     quiet_fail          = 0x00008000, // no message on failure
     souls               = 0x00010000, // ability costs reaped allies
+    ritual_start        = 0x00020000, // ability starts a ritual (Yib)
 
     // targeting flags
     dir_or_target       = 0x10000000, // uses DIR_NONE targeting

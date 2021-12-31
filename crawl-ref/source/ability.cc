@@ -651,6 +651,16 @@ static vector<ability_def> &_get_ability_list()
             0, 0, 12, -1, {fail_basis::invo}, abflag::quiet_fail },
         { ABIL_IGNIS_RISING_FLAME, "Rising Flame",
             0, 0, 0, -1, {fail_basis::invo}, abflag::none },
+        
+        // Yib
+        { ABIL_YIB_TEST_LITTLE, "Little Scary Ritual",
+            0, 0, 0, -1, {fail_basis::invo}, abflag::ritual_start },
+        { ABIL_YIB_TEST_MEDIUM, "Medium Scary Ritual",
+            0, 0, 0, -1, {fail_basis::invo}, abflag::ritual_start },
+        { ABIL_YIB_TEST_BIG, "Big Scary Ritual",
+            0, 0, 0, -1, {fail_basis::invo}, abflag::ritual_start },
+        { ABIL_YIB_REJECT_RITUALS, "Reject Rituals",
+            0, 0, 0, -1, {fail_basis::invo}, abflag::none },
 
         { ABIL_STOP_RECALL, "Stop Recall",
             0, 0, 0, -1, {fail_basis::invo}, abflag::none },
@@ -3363,6 +3373,20 @@ static spret _do_ability(const ability_def& abil, bool fail, dist *target,
         you.one_time_ability_used.set(GOD_IGNIS);
         return spret::success;
 
+    case ABIL_YIB_REJECT_RITUALS:
+        if (!yib_reject_rituals())
+            return spret::abort;
+        break;
+
+    case ABIL_YIB_TEST_LITTLE:
+    case ABIL_YIB_TEST_MEDIUM:
+    case ABIL_YIB_TEST_BIG:
+        yib_reset_ritual_timer(true,false);
+        you.props[YIB_RITUAL_PROGRESS_KEY] = 0;
+        you.props[YIB_RITUAL_ACTIVE_KEY] = 1;
+        mpr("You begin a scary ritual!");
+        return spret::success;
+
     case ABIL_RENOUNCE_RELIGION:
         if (yesno("Really renounce your faith, foregoing its fabulous benefits?",
                   false, 'n')
@@ -4007,6 +4031,18 @@ vector<ability_type> get_god_abilities(bool ignore_silence, bool ignore_piety,
         }
         if (any_sacrifices)
             abilities.push_back(ABIL_RU_REJECT_SACRIFICES);
+    }
+    if (you_worship(GOD_YIB) && you.props.exists(YIB_AVAILABLE_RITUAL_KEY))
+    {
+        bool any_rituals = false;
+        for (const auto& store : 
+            you.props[YIB_AVAILABLE_RITUAL_KEY].get_vector())
+        {
+            any_rituals = true;
+            abilities.push_back(static_cast<ability_type>(store.get_int()));
+        }
+        if (any_rituals)
+            abilities.push_back(ABIL_YIB_REJECT_RITUALS);
     }
     if (you_worship(GOD_ASHENZARI))
     {

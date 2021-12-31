@@ -100,6 +100,9 @@ static bool _player_sacrificed_arcana();
 // Load the sacrifice_def definition and the sac_data array.
 #include "sacrifice-data.h"
 
+// Load the ritual_def definition and the rit_data array.
+#include "ritual-data.h"
+
 /** Would a god currently allow using a one-time six-star ability?
  * Does not check whether the god actually grants such an ability.
  */
@@ -6111,14 +6114,90 @@ void jiyva_end_oozemancy()
             revert_terrain_change(*ri, TERRAIN_CHANGE_SLIME);
 }
 
+/**
+ * Choose a random ritual from those in the list.
+ *
+ * @param possible_rituals      The list of rituals to choose from.
+ * @return                      The ability_type of a valid ritual, or
+ *                              ABIL_YIB_REJECT_RITUALS if none were found
+ *                              (should never happen!)
+ */
+static ability_type _random_ritual(
+        const vector<ability_type> &possible_rituals)
+{
+    // XXX: replace this with random_if when that's merged
+    ability_type chosen_ritual = ABIL_YIB_REJECT_RITUALS;
+    int valid_rituals = 0;
+    for (auto ritual : possible_rituals)
+    {
+        //TODO: do we need to check if the ritual is valid here?
+        ++valid_rituals;
+        if (one_chance_in(valid_rituals))
+            chosen_ritual = ritual;
+    }
+
+    mprf("found %d valid rituals; chose %d",
+         valid_rituals, chosen_ritual);
+
+    return chosen_ritual;
+}
+
+/**
+ * Is the given ritual a valid one for Yib to offer to the player right now?
+ *
+ * @param ritual        The ritual in question.
+ * @return              Whether Yib can offer the player that ritual
+ */
+static bool _ritual_is_possible(ritual_def &ritual)
+{
+    // currently all rituals are possible for all species in all cases
+    return true;
+}
+
+/**
+ * Which rituals are valid for Yib to potentially present to the player?
+ *
+ * @return      A list of potential rituals.
+ */
+static vector<ability_type> _get_possible_rituals()
+{
+    vector<ability_type> possible_rituals;
+
+    for (auto ritual : rit_data)
+        if (_ritual_is_possible(ritual))
+            possible_rituals.push_back(ritual.ritual);
+
+    return possible_rituals;
+}
+
+static void _yib_expire_rituals()
+{
+    // Remove the offer of sacrifices after they've been offered for sufficient
+    // time or it's time to offer something new.
+    static const char *ritual_keys[] =
+    {
+        YIB_AVAILABLE_RITUAL_KEY,
+    };
+
+    for (auto key : ritual_keys)
+    {
+        ASSERT(you.props.exists(key));
+        you.props[key].get_vector().clear();
+    }
+
+    // Clear out stored ritual values.
+    /* TODO: figure out if we actually need an equivalent to this?
+    for (int i = 0; i < NUM_ABILITIES; ++i)
+        you.sacrifice_piety[i] = 0;
+    */
+}
+
 void yib_reset_ritual_timer(bool clear_timer, bool faith_penalty)
 {
     ASSERT(you.props.exists(YIB_RITUAL_PROGRESS_KEY));
     ASSERT(you.props.exists(YIB_RITUAL_DELAY_KEY));
 
-    // raise the delay if there's an active sacrifice, and more so the more
-    // often you pass on a sacrifice and the more piety you have.
-    const int base_delay = 90;
+    const int base_delay = 10; //TODO, much more sensible number here
     int delay = you.props[YIB_RITUAL_DELAY_KEY].get_int();
     int added_delay;
     if (clear_timer)
@@ -6129,7 +6208,8 @@ void yib_reset_ritual_timer(bool clear_timer, bool faith_penalty)
     else
     {
         // if you rejected a ritual, take a fixed penalty delay
-        added_delay = 40;
+        added_delay = 0;
+        // TODO: add here, was 40 previously
 
         if (faith_penalty)
         {
@@ -6156,75 +6236,85 @@ void yib_reset_ritual_timer(bool clear_timer, bool faith_penalty)
  */
 void yib_offer_new_rituals()
 {
-    /*
-    _ru_expire_sacrifices();
-
-    vector<ability_type> possible_sacrifices = _get_possible_sacrifices();
-
+    
+    _yib_expire_rituals();
+    
+    vector<ability_type> possible_rituals = _get_possible_rituals();
+    
     // for now we'll just pick three at random
-    int num_sacrifices = possible_sacrifices.size();
+    int num_rituals = possible_rituals.size();
 
     const int num_expected_offers = 3;
 
     // This can't happen outside wizmode, but may as well handle gracefully
-    if (num_sacrifices < num_expected_offers)
+    if (num_rituals < num_expected_offers)
         return;
 
-    ASSERT(you.props.exists(AVAILABLE_SAC_KEY));
-    CrawlVector &available_sacrifices
-        = you.props[AVAILABLE_SAC_KEY].get_vector();
+    ASSERT(you.props.exists(YIB_AVAILABLE_RITUAL_KEY));
+    CrawlVector &available_rituals
+        = you.props[YIB_AVAILABLE_RITUAL_KEY].get_vector();
 
-    for (int sac_num = 0; sac_num < num_expected_offers; ++sac_num)
+    for (int rit_num = 0; rit_num < num_expected_offers; ++rit_num)
     {
-        // find the cheapest available sacrifice, in case we're close to ru's
-        // max piety. (minimize 'wasted' piety in those cases.)
-        const ability_type min_piety_sacrifice
-            = accumulate(possible_sacrifices.begin(),
-                         possible_sacrifices.end(),
-                         ABIL_RU_REJECT_SACRIFICES,
-                         [](ability_type a, ability_type b) {
-                             return get_sacrifice_piety(a)
-                                  < get_sacrifice_piety(b) ? a : b;
-                         });
-        const int min_piety = get_sacrifice_piety(min_piety_sacrifice);
-        const int piety_cap = max(179, you.piety + min_piety);
-
-        dprf("cheapest sac %d (%d piety); cap %d",
-             min_piety_sacrifice, min_piety, piety_cap);
-
-        // XXX: replace this with random_if when that's merged
-        ability_type chosen_sacrifice
-            = _random_cheap_sacrifice(possible_sacrifices, piety_cap);
-
-        if (chosen_sacrifice < ABIL_FIRST_SACRIFICE ||
-                chosen_sacrifice > ABIL_FINAL_SACRIFICE)
+        //TODO: picking order shouldn't just be random?
+        ability_type chosen_ritual
+            = _random_ritual(possible_rituals);
+        /*
+        if (chosen_ritual < ABIL_FIRST_RITUAL ||
+                chosen_ritual > ABIL_FINAL_RITUAL)
         {
-           chosen_sacrifice = _get_cheapest_sacrifice(possible_sacrifices);
+           chosen_ritual = ABIL_YIB_REJECT_RITUALS;
         }
 
-        if (chosen_sacrifice > ABIL_FINAL_SACRIFICE)
+        if (chosen_ritual > ABIL_FINAL_RITUAL)
         {
-            // We don't have three sacrifices to offer for some reason.
-            // Either the player is messing around in wizmode or has rejoined
-            // Ru repeatedly. In either case, we'll just stop offering
-            // sacrifices rather than crashing.
-            _ru_expire_sacrifices();
-            ru_reset_sacrifice_timer(false);
+            // We don't have three rituals to offer for some reason.
+            // Probably the player is messing around in wizmode, so let's
+            // kust handle gracefully and not provide any rituals
+            _yib_expire_rituals();
+            yib_reset_ritual_timer(false, false);
             return;
         }
+        */
 
         // add it to the list of chosen sacrifices to offer, and remove it from
         // the list of possibilities for the later sacrifices
-        available_sacrifices.push_back(chosen_sacrifice);
-        you.sacrifice_piety[chosen_sacrifice] =
-                                get_sacrifice_piety(chosen_sacrifice, false);
-        possible_sacrifices.erase(remove(possible_sacrifices.begin(),
-                                         possible_sacrifices.end(),
-                                         chosen_sacrifice),
-                                  possible_sacrifices.end());
+        available_rituals.push_back(chosen_ritual);
+        /*possible_rituals.erase(remove(possible_rituals.begin(),
+                                         possible_rituals.end(),
+                                         chosen_ritual),
+                                  possible_rituals.end());
+        */
     }
 
-    */
     simple_god_message(" believes you are ready to begin a new ritual.");
     // included in default force_more_message
+}
+
+/**
+ * If forced_rejection is false, prompt the player if they want to reject the
+ * currently offered rituals. If true, or if the prompt is accepted,
+ * remove the currently offered rituals & increase the time until the next
+ * rituals will be offered.
+ *
+ * @param forced_rejection      Whether the rejection is caused by the removal
+ *                              of an amulet of faith, in which case there's
+ *                              no prompt & an increased rit time penalty.
+ * @return                      Whether the rituals were actually rejected.
+ */
+bool yib_reject_rituals(bool forced_rejection)
+{
+    if (!forced_rejection &&
+        !yesno("Do you really want to reject the rituals Yib is offering?",
+               false, 'n'))
+    {
+        canned_msg(MSG_OK);
+        return false;
+    }
+
+    yib_reset_ritual_timer(false, true);
+    _yib_expire_rituals();
+    simple_god_message(" will take longer to evaluate your readiness.");
+    // TODO: better message here
+    return true;
 }

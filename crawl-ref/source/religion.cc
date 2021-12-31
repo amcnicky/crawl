@@ -3862,7 +3862,8 @@ static void _set_initial_god_piety()
         you.props[YIB_RITUAL_ACTIVE_KEY] = 0;
         // offer the first sacrifice faster than normal
         {
-            int delay = 50;
+            // TODO: update these numbers
+            int delay = 5;
             if (crawl_state.game_is_sprint())
                 delay /= SPRINT_MULTIPLIER;
             you.props[YIB_RITUAL_DELAY_KEY] = delay;

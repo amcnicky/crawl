@@ -212,3 +212,4 @@ void jiyva_end_oozemancy();
 
 void yib_offer_new_rituals();
 void yib_reset_ritual_timer(bool clear_timer, bool faith_penalty);
+bool yib_reject_rituals(bool forced_rejection = false);
