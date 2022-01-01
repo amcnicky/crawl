@@ -6291,6 +6291,16 @@ void yib_offer_new_rituals()
     // included in default force_more_message
 }
 
+// Called after having chosen a ritual to remove choice abilities
+// from the ability list
+void yib_activate_ritual()
+{
+    yib_reset_ritual_timer(true, false);
+    _yib_expire_rituals();
+    you.piety = 1;
+    you.props[YIB_RITUAL_ACTIVE_KEY] = 1;
+}
+
 /**
  * If forced_rejection is false, prompt the player if they want to reject the
  * currently offered rituals. If true, or if the prompt is accepted,

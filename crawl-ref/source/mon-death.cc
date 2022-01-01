@@ -1421,7 +1421,7 @@ static void _fire_kill_conducts(monster &mons, killer_type killer,
     )
     {
         did_kill_conduct(DID_KILL_RITUAL, mons);
-        mprf("piety gained from killing");
+        mprf("kill p: %d", you.piety);
     }
 }
 

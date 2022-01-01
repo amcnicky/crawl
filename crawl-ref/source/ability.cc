@@ -3381,9 +3381,7 @@ static spret _do_ability(const ability_def& abil, bool fail, dist *target,
     case ABIL_YIB_TEST_LITTLE:
     case ABIL_YIB_TEST_MEDIUM:
     case ABIL_YIB_TEST_BIG:
-        yib_reset_ritual_timer(true,false);
-        you.props[YIB_RITUAL_PROGRESS_KEY] = 0;
-        you.props[YIB_RITUAL_ACTIVE_KEY] = 1;
+        yib_activate_ritual();
         mpr("You begin a scary ritual!");
         return spret::success;
 

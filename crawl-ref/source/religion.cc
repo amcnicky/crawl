@@ -995,7 +995,6 @@ int yib_ritual_is_active()
 {
     ASSERT(you.props.exists(YIB_RITUAL_ACTIVE_KEY));
     int active = you.props[YIB_RITUAL_ACTIVE_KEY].get_int();
-    mprf("piety: %d", active);
     return active;
 }
 

@@ -948,7 +948,7 @@ static like_map divine_likes[] =
                 piety = 14;
                 // TODO: this piety number is the one that needs to vary
                 //  based on the type of ritual
-                mprf("piety gained from exploring");
+                mprf("expl p: %d",you.piety);
             }
         } },
         { DID_EXPLORATION,         
@@ -959,9 +959,11 @@ static like_map divine_likes[] =
                 piety = 0;
                 ASSERT(you.props.exists(YIB_RITUAL_PROGRESS_KEY));
 
-                if (one_chance_in(80))
+                if (one_chance_in(80) && !yib_ritual_is_active())
+                {
                     you.props[YIB_RITUAL_PROGRESS_KEY].get_int()++;
-                mprf("(expl trig: %d)",you.props[YIB_RITUAL_PROGRESS_KEY].get_int());
+                    mprf("(expl trig: %d)",you.props[YIB_RITUAL_PROGRESS_KEY].get_int());
+                }
             }
         } },
 
@@ -972,9 +974,11 @@ static like_map divine_likes[] =
                 piety = 0;
                 ASSERT(you.props.exists(YIB_RITUAL_PROGRESS_KEY));
 
-                if (one_chance_in(2))
+                if (one_chance_in(2) && !yib_ritual_is_active())
+                {
                     you.props[YIB_RITUAL_PROGRESS_KEY].get_int()++;
-                mprf("(killing trig, progress: %d)",you.props[YIB_RITUAL_PROGRESS_KEY].get_int());
+                    mprf("(killing trig, progress: %d)",you.props[YIB_RITUAL_PROGRESS_KEY].get_int());
+                }
             }
         ) },
         { DID_KILL_UNDEAD, _on_kill("you kill the undead", MH_UNDEAD, false,
@@ -984,9 +988,11 @@ static like_map divine_likes[] =
                 piety = 0;
                 ASSERT(you.props.exists(YIB_RITUAL_PROGRESS_KEY));
 
-                if (one_chance_in(2))
+                if (one_chance_in(2) && !yib_ritual_is_active())
+                {
                     you.props[YIB_RITUAL_PROGRESS_KEY].get_int()++;
-                mprf("(killing trig, progress: %d)",you.props[YIB_RITUAL_PROGRESS_KEY].get_int());
+                    mprf("(killing trig, progress: %d)",you.props[YIB_RITUAL_PROGRESS_KEY].get_int());
+                }
             }
         ) },
         { DID_KILL_DEMON, _on_kill("you kill demons", MH_DEMONIC, false,
@@ -996,9 +1002,11 @@ static like_map divine_likes[] =
                 piety = 0;
                 ASSERT(you.props.exists(YIB_RITUAL_PROGRESS_KEY));
 
-                if (one_chance_in(2))
+                if (one_chance_in(2) && !yib_ritual_is_active())
+                {
                     you.props[YIB_RITUAL_PROGRESS_KEY].get_int()++;
-                mprf("(killing trig, progress: %d)",you.props[YIB_RITUAL_PROGRESS_KEY].get_int());
+                    mprf("(killing trig, progress: %d)",you.props[YIB_RITUAL_PROGRESS_KEY].get_int());
+                }
             }
         ) },
         { DID_KILL_HOLY, _on_kill("you kill holy beings", MH_HOLY, false,
@@ -1008,9 +1016,11 @@ static like_map divine_likes[] =
                 piety = 0;
                 ASSERT(you.props.exists(YIB_RITUAL_PROGRESS_KEY));
 
-                if (one_chance_in(2))
+                if (one_chance_in(2) && !yib_ritual_is_active())
+                {
                     you.props[YIB_RITUAL_PROGRESS_KEY].get_int()++;
-                mprf("(killing trig, progress: %d)",you.props[YIB_RITUAL_PROGRESS_KEY].get_int());
+                    mprf("(killing trig, progress: %d)",you.props[YIB_RITUAL_PROGRESS_KEY].get_int());
+                }
             }
         ) },
         { DID_KILL_NONLIVING, _on_kill("you kill non-living beings"
@@ -1021,9 +1031,11 @@ static like_map divine_likes[] =
                 piety = 0;
                 ASSERT(you.props.exists(YIB_RITUAL_PROGRESS_KEY));
 
-                if (one_chance_in(2))
+                if (one_chance_in(2) && !yib_ritual_is_active())
+                {
                     you.props[YIB_RITUAL_PROGRESS_KEY].get_int()++;
-                mprf("(killing trig, progress: %d)",you.props[YIB_RITUAL_PROGRESS_KEY].get_int());
+                    mprf("(killing trig, progress: %d)",you.props[YIB_RITUAL_PROGRESS_KEY].get_int());
+                }
             }
         ) },
     },

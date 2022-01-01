@@ -1023,10 +1023,10 @@ static update_flags player_view_update_at(const coord_def &gc)
             && cell_triggers_conduct(gc)
             && !player_in_branch(BRANCH_TEMPLE))
         {
-            if(you_worship(GOD_YIB) && yib_ritual_is_active()>0)
+            if(you_worship(GOD_YIB) && yib_ritual_is_active()==1)
             {
                 did_god_conduct(DID_EXPLORATION_RITUAL, 2500);
-            } else 
+            } else
             {
                 did_god_conduct(DID_EXPLORATION, 2500);
             }
