@@ -1424,6 +1424,14 @@ static void _tag_construct_char(writer &th)
     marshallString2(th, crawl_state.map);
 
     marshallByte(th, you.explore);
+
+    // configuration of ancient god for this character
+    marshallByte(th, you.ancient_god_name_key);
+    marshallByte(th, you.ancient_god_passive_key);
+    marshallByte(th, you.ancient_god_small_key);
+    marshallByte(th, you.ancient_god_cap_key);
+    marshallByte(th, you.ancient_god_like_key);
+    marshallByte(th, you.ancient_god_dislike_key);
 }
 
 /// is a custom scoring mechanism being stored?

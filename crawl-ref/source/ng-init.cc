@@ -482,3 +482,53 @@ void fix_up_jiyva_name()
     you.jiyva_second_name = make_name(rng::get_uint32(), MNAME_JIYVA);
     ASSERT(you.jiyva_second_name[0] == 'J');
 }
+
+static uint8_t _generate_ancient_god_name_key()
+{
+    return 1;
+}
+
+static uint8_t _generate_ancient_god_passive_key()
+{
+    return 1;
+}
+
+static uint8_t _generate_ancient_god_small_key()
+{
+    return 1;
+}
+
+static uint8_t _generate_ancient_god_cap_key()
+{
+    return 1;
+}
+
+static uint8_t _generate_ancient_god_like_key()
+{
+    return 1;
+}
+
+static uint8_t _generate_ancient_god_dislike_key()
+{
+    return 1;
+}
+
+/**
+ * Generate the following characteristics to be used for the game's
+ * Ancient god (if one should spawn)
+ * [God's name] 
+ * [Passive ability] 
+ * [Small ability] 
+ * [Capstone ability] 
+ * [Likes] 
+ * [Dislikes]
+ */
+void generate_ancient_god_attributes()
+{
+    you.ancient_god_name_key = _generate_ancient_god_name_key();
+    you.ancient_god_passive_key = _generate_ancient_god_passive_key();
+    you.ancient_god_small_key = _generate_ancient_god_small_key();
+    you.ancient_god_cap_key = _generate_ancient_god_cap_key();
+    you.ancient_god_like_key = _generate_ancient_god_like_key();
+    you.ancient_god_dislike_key = _generate_ancient_god_dislike_key();
+}

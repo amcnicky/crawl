@@ -249,6 +249,12 @@ public:
 
     god_type religion;
     string jiyva_second_name;       // Random second name of Jiyva
+    uint8_t ancient_god_name_key;       // attributes for ancient god configuration
+    uint8_t ancient_god_passive_key;    // [ancient god] passive ability
+    uint8_t ancient_god_small_key;      // [ancient god] small ability
+    uint8_t ancient_god_cap_key;        // [ancient god] capstone ability
+    uint8_t ancient_god_like_key;       // [ancient god] likes
+    uint8_t ancient_god_dislike_key;    // [ancient god] dislikes
     uint8_t piety;
     uint8_t piety_hysteresis;       // amount of stored-up docking
     uint8_t gift_timeout;
