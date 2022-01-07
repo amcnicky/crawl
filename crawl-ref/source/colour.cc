@@ -648,7 +648,6 @@ void init_element_colours()
                               {40,  LIGHTBLUE},
                               {40,  DARKGREY},
                             }));
-    ))
     // redefined by Lua later
     add_element_colour(new element_colour_calc(
                             ETC_DISCO, "disco", _etc_random

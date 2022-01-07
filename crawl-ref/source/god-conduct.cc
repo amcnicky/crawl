@@ -929,7 +929,7 @@ static like_map divine_likes[] =
     // GOD_IGNIS
     like_map(),
     // GOD_ANCIENT
-    like_map(,)
+    like_map(),
 };
 
 /**
