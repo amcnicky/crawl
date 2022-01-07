@@ -505,6 +505,14 @@ w:5
 ######################################
 # Welcome messages on game restoration
 ######################################
+AncientGod welcome
+
+AncientGod says: This needs to be generated dynamically.
+%%%%
+AncientGod penance
+
+AncientGod says: This also needs to be generated dynamically.
+%%%%
 Ashenzari welcome
 
 Ashenzari says: Partake of my vision. Partake of my curse.

@@ -424,6 +424,8 @@ static peeve_map divine_peeves[] =
     peeve_map(),
     // GOD_IGNIS,
     peeve_map(),
+    // GOD_ANCIENT
+    peeve_map(),
 };
 
 string get_god_dislikes(god_type which_god)
@@ -924,8 +926,10 @@ static like_map divine_likes[] =
         { DID_KILL_HOLY, KILL_HOLY_RESPONSE },
         { DID_KILL_NONLIVING, KILL_NONLIVING_RESPONSE },
     },
-    // GOD_IGNIS,
+    // GOD_IGNIS
     like_map(),
+    // GOD_ANCIENT
+    like_map(,)
 };
 
 /**
@@ -1066,6 +1070,7 @@ string get_god_likes(god_type which_god)
     case GOD_ZIN:
         likes.emplace_back("you donate money");
         break;
+    // TODO: implement randomised conducts
     default:
         break;
     }

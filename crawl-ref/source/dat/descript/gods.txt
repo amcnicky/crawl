@@ -2,6 +2,10 @@
 # Why should they worship this god? What are the advantages & limitations?
 # What's 'cool' about this god?
 %%%%
+AncientGod
+
+An ancient god we know so little about. TODO: generated
+%%%%
 Ashenzari
 
 While it seems inconceivable that the divine could be shackled, Ashenzari is
@@ -220,6 +224,10 @@ all gold gained, preferably followed by donations of more. In exchange,
 worshippers may invoke Zin's wrath upon sinners, and eventually gain various
 divine protections. Zin's followers can convert to Elyvilon or the Shining One
 while keeping some piety.
+%%%%
+AncientGod powers
+
+TODO: Generate powers message as well
 %%%%
 Ashenzari powers
 

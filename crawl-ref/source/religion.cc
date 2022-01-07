@@ -398,6 +398,11 @@ const vector<vector<god_power>> & get_all_god_powers()
             { 1, ABIL_IGNIS_FOXFIRE, "call a swarm of foxfires against your foes" },
             { 7, ABIL_IGNIS_RISING_FLAME, "rocket upward and away" },
         },
+
+        // Ancient God
+        {
+            // TODO
+        },
     };
     static bool god_powers_init = false;
 
@@ -3047,6 +3052,7 @@ int initial_wrath_penance_for(god_type god)
         case GOD_NEMELEX_XOBEH:
         case GOD_TROG:
         case GOD_XOM:
+        case GOD_ANCIENT:
             return 50;
         case GOD_FEDHAS:
         case GOD_KIKUBAAQUDGHA:
@@ -3393,6 +3399,11 @@ void excommunication(bool voluntary, god_type new_god)
             you.duration[DUR_RISING_FLAME] = 0;
             mpr("Your rising flame fizzles out.");
         }
+        break;
+    
+    case GOD_ANCIENT:
+        // TODO: think about which gifts need to be removed
+        simple_god_message(" thinks about TODO: undoing any gifts", old_god);
         break;
 
     default:
@@ -4455,6 +4466,8 @@ void handle_god_time(int /*time_delta*/)
         case GOD_YREDELEMNUL:
         case GOD_GOZAG:
         case GOD_XOM:
+            // Since ancient conducts may be severe, err on the side of no piety decay
+        case GOD_ANCIENT:
             // Gods without normal piety do nothing each tick.
             return;
 
@@ -4519,6 +4532,7 @@ int god_colour(god_type god) // mv - added
 
     case GOD_QAZLAL:
     case GOD_RU:
+    case GOD_ANCIENT:
         return BROWN;
 
 #if TAG_MAJOR_VERSION == 34
@@ -4610,6 +4624,9 @@ colour_t god_message_altar_colour(god_type god)
     case GOD_QAZLAL:
     case GOD_RU:
         return BROWN;
+
+    case GOD_ANCIENT:
+        return random_choose(BROWN, LIGHTGREY);
 
 #if TAG_MAJOR_VERSION == 34
     case GOD_PAKELLAS:
@@ -4963,6 +4980,7 @@ static bool _is_temple_god(god_type god)
     case GOD_BEOGH:
     case GOD_JIYVA:
     case GOD_IGNIS:
+    case GOD_ANCIENT:
         return false;
 
     default:

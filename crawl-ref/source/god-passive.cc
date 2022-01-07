@@ -422,7 +422,12 @@ static const vector<god_passive> god_passives[] =
     // Ignis
     {
         { 0, passive_t::resist_fire, "resist fire." },
-    }, // TODO
+    },
+
+    // AncientGod
+    {
+        // Very TODO
+    }
 };
 COMPILE_CHECK(ARRAYSZ(god_passives) == NUM_GODS);
 

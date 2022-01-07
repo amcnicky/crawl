@@ -220,6 +220,7 @@ enum dungeon_feature_type
     DNGN_ALTAR_HEPLIAKLQANA,
     DNGN_ALTAR_WU_JIAN,
     DNGN_ALTAR_IGNIS,
+    DNGN_ALTAR_ANCIENT,
     DNGN_ALTAR_ECUMENICAL,
 #endif
 
@@ -333,6 +334,7 @@ enum dungeon_feature_type
     DNGN_ENTER_ARENA,
     DNGN_EXIT_ARENA,
     DNGN_ALTAR_IGNIS,
+    DNGN_ALTAR_ANCIENT,
     DNGN_BROKEN_DOOR,
     DNGN_BROKEN_CLEAR_DOOR,
 #endif

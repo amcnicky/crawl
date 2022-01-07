@@ -83,6 +83,10 @@ Ignis lastname
 
 Ignis, the Dying Flame
 %%%%
+AncientGod lastname
+
+AncientGod, the Generate this Dynamically
+%%%%
 Wu Jian lastname
 
 the Wu Jian Council
