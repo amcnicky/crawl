@@ -6,7 +6,6 @@
 #pragma once
 
 #include <cstdint>
-#include "player.h"
 #include "ability-type.h"
 #include "god-passive.h"
 

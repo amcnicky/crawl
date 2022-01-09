@@ -2,14 +2,41 @@
  * @file
  * @brief Ancient God related functions.
 **/
+#include "AppHdr.h"
 
 #include "ancient-god.h"
+
 #include <cstdint>
 #include <cstring>
 #include "random.h"
 #include "player.h"
 #include "ability-type.h"
 #include "god-passive.h"
+#include "ancient-god-passive-type.h"
+
+const int NUM_ANCIENT_GOD_SMALLS = 8;
+const int NUM_ANCIENT_GOD_CAPS = 8;
+
+struct agod_passive
+{
+    passive_t passive;
+    string short_description;
+    string long_description;
+};
+
+struct agod_ability
+{
+    int lookup_index;
+    int lookup_type; // 0 for small abil, 1 for capstone
+    ability_type ability;
+};
+
+struct agod_mut
+{
+    int lookup_index;
+};
+
+#include "ancient-god-passive-data.h"
 
 // Initial generation functions - produces key values that are
 // looked up by lookup functions below. Effectively these key
@@ -17,29 +44,24 @@
 // what translates those keys into useable strings/abilities etc
 
 // Generation functions are called once at ng-init
-
-int NUM_ANCIENT_GOD_PASSIVES = 8;
-int NUM_ANCIENT_GOD_SMALLS = 8;
-int NUM_ANCIENT_GOD_CAPS = 8;
-
 uint8_t generate_ancient_god_name_key()
 {
-    return random_choose(1,2,3);
+    return random_range(1,3);
 }
 
 uint8_t generate_ancient_god_passive_key()
 {
-    return random_range(1,NUM_ANCIENT_GOD_PASSIVES);
+    return random_range(0,NUM_AGPS);
 }
 
 uint8_t generate_ancient_god_small_key()
 {
-    return random_range(1,NUM_ANCIENT_GOD_SMALLS);
+    return random_range(0,NUM_ANCIENT_GOD_SMALLS-1);
 }
 
 uint8_t generate_ancient_god_cap_key()
 {
-    return random_range(1,NUM_ANCIENT_GOD_CAPS);
+    return random_range(0,NUM_ANCIENT_GOD_CAPS-1);
 }
 
 uint8_t generate_ancient_god_like_key()
@@ -88,7 +110,7 @@ string ancient_god_name_extra()
 // use passive generation key to return the passive for this ancient god
 passive_t ancient_god_passive()
 {
-    return passive_t::umbra;
+    return ag_passive_data[AGP_SHROUD].passive;
 }
 
 // i.e. "ancient god now allows you to <return val>"
@@ -127,3 +149,5 @@ ability_type ancient_god_cap_ability()
 {
     return ABIL_QAZLAL_DISASTER_AREA;
 }
+
+COMPILE_CHECK(ARRAYSZ(ag_passive_data)==NUM_AGPS);
