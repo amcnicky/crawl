@@ -402,6 +402,10 @@ const vector<vector<god_power>> & get_all_god_powers()
 
         // Ancient God
         {
+            { 3, ancient_god_small_ability(), 
+                ancient_god_small_ability_description_short() },
+            { 6, ancient_god_cap_ability(),
+                ancient_god_cap_ability_description_short() },
         },
     };
     static bool god_powers_init = false;

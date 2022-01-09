@@ -1430,6 +1430,7 @@ static void _tag_construct_char(writer &th)
     marshallByte(th, you.ancient_god_passive_key);
     marshallByte(th, you.ancient_god_small_key);
     marshallByte(th, you.ancient_god_cap_key);
+    marshallByte(th, you.ancient_god_mut_key);
     marshallByte(th, you.ancient_god_like_key);
     marshallByte(th, you.ancient_god_dislike_key);
 }

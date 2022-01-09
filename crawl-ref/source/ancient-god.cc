@@ -12,7 +12,7 @@
 #include "player.h"
 #include "ability-type.h"
 #include "god-passive.h"
-#include "ancient-god-passive-type.h"
+#include "ancient-god-config-types.h"
 
 const int NUM_ANCIENT_GOD_SMALLS = 8;
 const int NUM_ANCIENT_GOD_CAPS = 8;
@@ -24,19 +24,26 @@ struct agod_passive
     string long_description;
 };
 
-struct agod_ability
+struct agod_ability_small
 {
-    int lookup_index;
-    int lookup_type; // 0 for small abil, 1 for capstone
     ability_type ability;
+    string short_description;
+    string long_description;
+};
+
+struct agod_ability_cap
+{
+    ability_type ability;
+    string short_description;
+    string long_description;
 };
 
 struct agod_mut
 {
-    int lookup_index;
+    mutation_type mutation;
 };
 
-#include "ancient-god-passive-data.h"
+#include "ancient-god-data.h"
 
 // Initial generation functions - produces key values that are
 // looked up by lookup functions below. Effectively these key
@@ -51,17 +58,22 @@ uint8_t generate_ancient_god_name_key()
 
 uint8_t generate_ancient_god_passive_key()
 {
-    return random_range(0,NUM_AGPS);
+    return random_range(0,NUM_AGP);
 }
 
 uint8_t generate_ancient_god_small_key()
 {
-    return random_range(0,NUM_ANCIENT_GOD_SMALLS-1);
+    return random_range(0,NUM_AGAS);
 }
 
 uint8_t generate_ancient_god_cap_key()
 {
-    return random_range(0,NUM_ANCIENT_GOD_CAPS-1);
+    return random_range(0,NUM_AGAC);
+}
+
+uint8_t generate_ancient_god_mut_key()
+{
+    return random_range(0,NUM_AGM);
 }
 
 uint8_t generate_ancient_god_like_key()
@@ -107,47 +119,71 @@ string ancient_god_name_extra()
     return "Bug! Please report: " + you.ancient_god_name_key;
 }
 
+/********************************************************
+*   Functions relating to ancient god passives
+********************************************************/
+
 // use passive generation key to return the passive for this ancient god
 passive_t ancient_god_passive()
 {
-    return ag_passive_data[AGP_SHROUD].passive;
+    return ag_passive_data[you.ancient_god_passive_key].passive;
 }
 
 // i.e. "ancient god now allows you to <return val>"
 const char* ancient_god_passive_description_short()
 {
-    switch(ancient_god_passive())
-    {
-        case passive_t::umbra:
-            return "create an umbra around yourself\n";
-        default:
-            return "your god passive descriptions are broken, please report this bug (1)\n";
-    }
-    return "your god passive descriptions are broken, please report this bug (2)\n";
+    return ag_passive_data[you.ancient_god_passive_key].short_description.c_str();
 }
 
 // i.e. in the ^ menu, how should the full description of the passive appear?
 // e.g. "You are resistant to fire"
 string ancient_god_passive_description_long()
 {
-    switch(ancient_god_passive())
-    {
-        case passive_t::umbra:
-            return "You have a dark and eerie umbra\n";
-        default:
-            return "your god passive descriptions are broken, please report this bug (3)\n";
-    }
-    return "your god passive descriptions are broken, please report this bug (4)\n";
+    return ag_passive_data[you.ancient_god_passive_key].long_description;
 }
+
+
+/********************************************************
+*   Functions relating to ancient god smaller abilities
+********************************************************/
 
 ability_type ancient_god_small_ability()
 {
-    return ABIL_OKAWARU_HEROISM;
+    return ag_ability_small_data[you.ancient_god_small_key].ability;
 }
+
+const char* ancient_god_small_ability_description_short()
+{
+    return ag_ability_small_data[you.ancient_god_small_key].short_description.c_str();
+}
+
+string ancient_god_small_ability_description_long()
+{
+    return ag_ability_small_data[you.ancient_god_small_key].long_description;
+}
+
+
+/********************************************************
+*   Functions relating to ancient god capstone abilities
+********************************************************/
 
 ability_type ancient_god_cap_ability()
 {
-    return ABIL_QAZLAL_DISASTER_AREA;
+    return ag_ability_cap_data[you.ancient_god_cap_key].ability;
 }
 
-COMPILE_CHECK(ARRAYSZ(ag_passive_data)==NUM_AGPS);
+const char* ancient_god_cap_ability_description_short()
+{
+    return ag_ability_cap_data[you.ancient_god_cap_key].short_description.c_str();
+}
+
+string ancient_god_cap_ability_description_long()
+{
+    return ag_ability_cap_data[you.ancient_god_cap_key].long_description;
+}
+
+
+COMPILE_CHECK(ARRAYSZ(ag_passive_data)==NUM_AGP);
+COMPILE_CHECK(ARRAYSZ(ag_ability_small_data)==NUM_AGAS);
+COMPILE_CHECK(ARRAYSZ(ag_ability_cap_data)==NUM_AGAC);
+COMPILE_CHECK(ARRAYSZ(ag_mut_data)==NUM_AGM);

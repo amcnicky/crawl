@@ -29,6 +29,7 @@ struct player_save_info
     uint8_t ancient_god_passive_key;
     uint8_t ancient_god_small_key;
     uint8_t ancient_god_cap_key;
+    uint8_t ancient_god_mut_key;
     uint8_t ancient_god_like_key;
     uint8_t ancient_god_dislike_key;
     game_type saved_game_type;

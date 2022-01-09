@@ -500,6 +500,7 @@ void generate_ancient_god_attributes()
     you.ancient_god_passive_key = generate_ancient_god_passive_key();
     you.ancient_god_small_key = generate_ancient_god_small_key();
     you.ancient_god_cap_key = generate_ancient_god_cap_key();
+    you.ancient_god_mut_key = generate_ancient_god_mut_key();
     you.ancient_god_like_key = generate_ancient_god_like_key();
     you.ancient_god_dislike_key = generate_ancient_god_dislike_key();
 }
