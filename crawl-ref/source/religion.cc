@@ -402,7 +402,6 @@ const vector<vector<god_power>> & get_all_god_powers()
 
         // Ancient God
         {
-            // TODO
         },
     };
     static bool god_powers_init = false;
@@ -2369,8 +2368,8 @@ string god_name(god_type which_god, bool long_name)
 
     if (which_god == GOD_ANCIENT)
     {
-        return god_name_ancient() +
-                (long_name? god_name_ancient_extra() : "");
+        return ancient_god_name() +
+                (long_name? ancient_god_name_extra() : "");
     }
 
     if (long_name)

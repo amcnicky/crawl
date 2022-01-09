@@ -6,6 +6,7 @@
 #include <cmath>
 
 #include "act-iter.h"
+#include "ancient-god.h"
 #include "areas.h"
 #include "artefact.h"
 #include "art-enum.h"
@@ -426,7 +427,7 @@ static const vector<god_passive> god_passives[] =
 
     // AncientGod
     {
-        // Very TODO
+        { 1, ancient_god_passive(), ancient_god_passive_description_short() },
     }
 };
 COMPILE_CHECK(ARRAYSZ(god_passives) == NUM_GODS);

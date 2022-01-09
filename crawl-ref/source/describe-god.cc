@@ -11,6 +11,7 @@
 
 #include "act-iter.h"
 #include "ability.h"
+#include "ancient-god.h"
 #include "branch.h"
 #include "cio.h"
 #include "database.h"
@@ -983,6 +984,9 @@ static formatted_string _describe_god_powers(god_type which_god)
         desc.cprintf("You are resistant to fire.\n");
         break;
 
+    case GOD_ANCIENT:
+        have_any = true;
+        desc.cprintf(string(ancient_god_passive_description_long()));
     default:
         break;
     }
