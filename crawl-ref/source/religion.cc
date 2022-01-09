@@ -18,6 +18,7 @@
 #include "ability.h"
 #include "acquire.h"
 #include "act-iter.h"
+#include "ancient-god.h"
 #include "areas.h"
 #include "attitude-change.h"
 #include "branch.h"
@@ -2366,6 +2367,12 @@ string god_name(god_type which_god, bool long_name)
                (long_name? " the Shapeless" : "");
     }
 
+    if (which_god == GOD_ANCIENT)
+    {
+        return god_name_ancient() +
+                (long_name? god_name_ancient_extra() : "");
+    }
+
     if (long_name)
     {
         const string shortname = god_name(which_god, false);
@@ -2406,8 +2413,8 @@ string god_name(god_type which_god, bool long_name)
     case GOD_HEPLIAKLQANA:  return "Hepliaklqana";
     case GOD_WU_JIAN:       return "Wu Jian";
     case GOD_IGNIS:         return "Ignis";
-    case GOD_ANCIENT:       return "TODO: Generate God Name";
-    case GOD_JIYVA: // This is handled at the beginning of the function
+    case GOD_JIYVA:         // This is handled at the beginning of the function
+    case GOD_ANCIENT:       // same as Jiyva
     case GOD_ECUMENICAL:    return "an unknown god";
     case NUM_GODS:          return "Buggy";
     }

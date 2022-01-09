@@ -25,6 +25,7 @@
 #include "stringutil.h"
 #include "tag-version.h"
 #include "unicode.h"
+#include "ancient-god.h"
 
 #ifdef DEBUG_DIAGNOSTICS
 #define DEBUG_TEMPLES
@@ -483,36 +484,6 @@ void fix_up_jiyva_name()
     ASSERT(you.jiyva_second_name[0] == 'J');
 }
 
-static uint8_t _generate_ancient_god_name_key()
-{
-    return 1;
-}
-
-static uint8_t _generate_ancient_god_passive_key()
-{
-    return 1;
-}
-
-static uint8_t _generate_ancient_god_small_key()
-{
-    return 1;
-}
-
-static uint8_t _generate_ancient_god_cap_key()
-{
-    return 1;
-}
-
-static uint8_t _generate_ancient_god_like_key()
-{
-    return 1;
-}
-
-static uint8_t _generate_ancient_god_dislike_key()
-{
-    return 1;
-}
-
 /**
  * Generate the following characteristics to be used for the game's
  * Ancient god (if one should spawn)
@@ -525,10 +496,10 @@ static uint8_t _generate_ancient_god_dislike_key()
  */
 void generate_ancient_god_attributes()
 {
-    you.ancient_god_name_key = _generate_ancient_god_name_key();
-    you.ancient_god_passive_key = _generate_ancient_god_passive_key();
-    you.ancient_god_small_key = _generate_ancient_god_small_key();
-    you.ancient_god_cap_key = _generate_ancient_god_cap_key();
-    you.ancient_god_like_key = _generate_ancient_god_like_key();
-    you.ancient_god_dislike_key = _generate_ancient_god_dislike_key();
+    you.ancient_god_name_key = generate_ancient_god_name_key();
+    you.ancient_god_passive_key = generate_ancient_god_passive_key();
+    you.ancient_god_small_key = generate_ancient_god_small_key();
+    you.ancient_god_cap_key = generate_ancient_god_cap_key();
+    you.ancient_god_like_key = generate_ancient_god_like_key();
+    you.ancient_god_dislike_key = generate_ancient_god_dislike_key();
 }

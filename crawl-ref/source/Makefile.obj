@@ -6,6 +6,7 @@ act-iter.o \
 actor-los.o \
 actor.o \
 adjust.o \
+ancient-god.o \
 areas.o \
 arena.o \
 artefact.o \
@@ -337,6 +338,7 @@ activity-interrupt-type.h.o \
 actor.h.o \
 ac-type.h.o \
 adjust.h.o \
+ancient-god.h.o \
 AppHdr.h.o \
 artefact-prop-type.h.o \
 art-enum.h.o \

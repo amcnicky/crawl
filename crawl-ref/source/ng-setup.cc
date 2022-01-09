@@ -649,6 +649,9 @@ static void _setup_generic(const newgame_def& ng,
     // Generate the second name of Jiyva
     fix_up_jiyva_name();
 
+    // Generate ancient god keys
+    generate_ancient_god_attributes();
+
     // Get rid of god companions left from previous games
     init_companions();
 
