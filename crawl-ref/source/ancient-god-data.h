@@ -2,13 +2,40 @@
 
 #include "enum.h"
 #include "tag-version.h"
+#include "stringutil.h"
+
+struct agod_passive
+{
+    passive_t passive;
+    const char* short_description;
+    string long_description;
+};
+
+struct agod_ability_small
+{
+    ability_type ability;
+    const char* short_description;
+    const char* long_description;
+};
+
+struct agod_ability_cap
+{
+    ability_type ability;
+    const char* short_description;
+    const char* long_description;
+};
+
+struct agod_mut
+{
+    mutation_type mutation;
+};
 
 agod_passive ag_passive_data[] = 
 {
-    {   //AG_P_SHROUD
-        passive_t::umbra,
-        "create an umbra around yourself\n",
-        "You have a dark and eerie umbra\n"
+    {   //AG_P_RESCUE_MAMMAL
+        passive_t::rescue_mammal,
+        "GOD NOW sends mammals to aid you in dangerous situations.\n",
+        "In dangerous situations, mammals may be sent to your aid.\n"
     },
 };
 
@@ -39,7 +66,7 @@ agod_mut ag_mut_data[] =
 
 // Adding names is easy - just increment NUM_AG_NAMES and add to the data array
 const int NUM_AG_NAMES = 81;
-string ag_name_data[] =
+const char* ag_name_data[] =
 {
     "Yib",
     "Ungoth",
@@ -115,7 +142,7 @@ string ag_name_data[] =
     "Dorlok",
     "Riefe",
     "Euquanauque",
-    "It That was Bound",
+    "It That Was Bound",
     "Nifargle",
     "Aaroden",
     "Iashol",
@@ -135,11 +162,40 @@ string ag_name_data[] =
 
 // See above comment on adding names - additions welcome.
 // I tried a version with the scroll name generator but hand crafted
-// felt better.
-const int NUM_AG_TITLES = 3;
-string ag_title_data[] =
+// felt better. Generally keeping away from elemental/ability based
+// titles since they may not match themeatically what ends up being
+// generated. A loose theme of crumbling/ancient/forgotten.
+const int NUM_AG_TITLES = 30;
+const char* ag_title_data[] =
 {
-    " the Coolest",
-    " Bringer of Chill",
-    " the Great Tester"
+    " the Forgotten",
+    " the Dreamer",
+    " the Darksky Raven",
+    " the Ancient",
+    " the Old",
+    " the Tired",
+    " the Venerable",
+    " the Grizzled",
+    " the Wasted",
+    " the Soulshark",
+    " the Soulbound",
+    " the Entombed",
+    " the Feaster",
+    " the Great Maw",
+    " Bane of the Living",
+    " Bane of the Dead",
+    " Demonsbane",
+    " the Lord of the Forgotten",
+    " the Queen of the Forgotten",
+    " the Forgotten Prince",
+    " the Forgotten Princess",
+    " the Deathsinger",
+    " the Five Eyes",
+    " the Eye from Before",
+    " the Great Shadow",
+    " the Horror from Beyond",
+    " the Unearthly Horror",
+    " the Horror in the Night",
+    " the Sunshine Terror",
+    " the Primordial Emptiness"
 };

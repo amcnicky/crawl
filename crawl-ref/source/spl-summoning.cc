@@ -3127,3 +3127,18 @@ spret summon_spiders(actor &agent, int pow, god_type god, bool fail)
 
     return spret::success;
 }
+
+bool ag_summon_mammal() //ancient god rescue_mammal passive
+{
+    // power based on invocations
+    monster_type mon = MONS_PROGRAM_BUG;
+
+    if (x_chance_in_y(10, 20))
+        mon = random_choose(MONS_BAT, MONS_RAT);
+    else
+        mon = MONS_QUOKKA;
+
+    if (create_monster(_pal_data(mon, 3, GOD_ANCIENT, SPELL_SUMMON_SMALL_MAMMAL)))
+        return true;
+    return false;
+}

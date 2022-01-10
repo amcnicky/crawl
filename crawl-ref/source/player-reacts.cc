@@ -457,6 +457,10 @@ void player_reacts_to_monsters()
     _update_cowardice();
     if (you_worship(GOD_USKAYAW))
         _handle_uskayaw_time(you.time_taken);
+    if (you_worship(GOD_ANCIENT) && have_passive(passive_t::rescue_mammal))
+    { 
+        ag_check_and_summon_mammal();
+    }
 }
 
 static bool _check_recite()

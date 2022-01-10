@@ -265,6 +265,9 @@ enum class passive_t
 
     // Immunity to spectral mist clouds
     r_spectral_mist,
+
+    // At high tension, your god may send mammals to rescue you
+    rescue_mammal,
 };
 
 enum ru_interference
@@ -312,3 +315,4 @@ bool wu_jian_post_move_effects(bool did_wall_jump,
                                const coord_def& initial_position);
 
 void okawaru_handle_duel();
+void ag_check_and_summon_mammal();

@@ -40,6 +40,7 @@
 #include "shout.h"
 #include "skills.h"
 #include "spl-clouds.h"
+#include "spl-summoning.h"
 #include "state.h"
 #include "stringutil.h"
 #include "tag-version.h"
@@ -1697,4 +1698,53 @@ void okawaru_handle_duel()
     if (!player_in_branch(BRANCH_ARENA) && you.duration[DUR_DUEL_COMPLETE])
         you.duration[DUR_DUEL_COMPLETE] = 0;
 
+}
+
+static void _print_rescue_mammal_message()
+{
+    simple_god_message(" sends a little friend to your aid!");
+}
+
+void ag_check_and_summon_mammal()
+{
+    int tension = get_tension(GOD_ANCIENT);
+    bool do_abil = false; //only try if there are hostiles in sight
+    // mainly used to make sure we don't interrupt resting when at very
+    // low health
+
+    for (radius_iterator ri(you.pos(), LOS_NO_TRANS, true);
+         ri; ++ri)
+    {
+        const monster* mon = monster_at(*ri);
+        if (!mon
+            || !mon->visible_to(&you)
+            // Plants/fungi don't count.
+            || (!mons_is_threatening(*mon) || mon->wont_attack())
+                && !mons_class_is_test(mon->type))
+        {
+            continue;
+        } else {
+            // i.e. there is at least one threatening monster in sight
+            do_abil = true;
+            break;
+        }   
+    }
+
+    if(do_abil == false)
+        return;
+
+    // do_abil was true hence there is a hostile monster in sight
+    if(tension>40 && one_chance_in(3))
+    { // high tension
+        ag_summon_mammal();
+        _print_rescue_mammal_message();
+    } else if (tension>20 && tension <= 60 && one_chance_in(12))
+    { // moderate tension
+        ag_summon_mammal();
+        _print_rescue_mammal_message();
+    } else if (tension>10 && tension <= 40 && one_chance_in(36))
+    { // low tension
+        ag_summon_mammal();
+        _print_rescue_mammal_message();
+    }
 }

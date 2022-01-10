@@ -4,7 +4,7 @@
 
 enum ag_passive_type
 {
-    AG_P_SHROUD,
+    AG_P_RESCUE_MAMMAL,
     NUM_AGP,
     MAX_AGP = 255,
 };

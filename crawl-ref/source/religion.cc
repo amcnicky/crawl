@@ -2372,8 +2372,7 @@ string god_name(god_type which_god, bool long_name)
 
     if (which_god == GOD_ANCIENT)
     {
-        return ancient_god_name() +
-                (long_name? ancient_god_title() : "");
+        return string(ancient_god_name()).append(long_name? ancient_god_title() : "");
     }
 
     if (long_name)
@@ -3808,6 +3807,17 @@ void initialize_ashenzari_props()
     }
 }
 
+void _ancient_god_debug_to_remove()
+{
+    mprf("name index: %d\n",you.ancient_god_name_key);
+    mprf("passive index: %d\n",you.ancient_god_passive_key);
+    mprf("small index: %d\n",you.ancient_god_small_key);
+    mprf("mut index: %d\n",you.ancient_god_mut_key);
+    mprf("cap index: %d\n",you.ancient_god_cap_key);
+    mprf("likes index: %d\n",you.ancient_god_like_key);
+    mprf("hates index: %d\n",you.ancient_god_dislike_key);
+}
+
 /// Handle basic god piety & related setup for a new-joined god.
 static void _set_initial_god_piety()
 {
@@ -3874,6 +3884,7 @@ static void _set_initial_god_piety()
 
     _apply_monk_bonus();
     _transfer_good_god_piety();
+    _ancient_god_debug_to_remove();
 }
 
 /// Setup when joining the greedy magnates of Gozag.

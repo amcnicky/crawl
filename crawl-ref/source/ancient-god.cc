@@ -13,32 +13,7 @@
 #include "ability-type.h"
 #include "god-passive.h"
 #include "ancient-god-config-types.h"
-
-struct agod_passive
-{
-    passive_t passive;
-    string short_description;
-    string long_description;
-};
-
-struct agod_ability_small
-{
-    ability_type ability;
-    string short_description;
-    string long_description;
-};
-
-struct agod_ability_cap
-{
-    ability_type ability;
-    string short_description;
-    string long_description;
-};
-
-struct agod_mut
-{
-    mutation_type mutation;
-};
+#include "religion.h"
 
 #include "ancient-god-data.h"
 
@@ -55,22 +30,22 @@ uint8_t generate_ancient_god_name_key()
 
 uint8_t generate_ancient_god_passive_key()
 {
-    return random_range(0,NUM_AGP);
+    return random_range(0,NUM_AGP-1);
 }
 
 uint8_t generate_ancient_god_small_key()
 {
-    return random_range(0,NUM_AGAS);
+    return random_range(0,NUM_AGAS-1);
 }
 
 uint8_t generate_ancient_god_cap_key()
 {
-    return random_range(0,NUM_AGAC);
+    return random_range(0,NUM_AGAC-1);
 }
 
 uint8_t generate_ancient_god_mut_key()
 {
-    return random_range(0,NUM_AGM);
+    return random_range(0,NUM_AGM-1);
 }
 
 uint8_t generate_ancient_god_like_key()
@@ -85,7 +60,7 @@ uint8_t generate_ancient_god_dislike_key()
 
 // Lookup function - all take generated ints and translate those into
 // which god you've randomised for your run!
-string ancient_god_name()
+const char* ancient_god_name()
 {
     // TODO a lot more in here - hash the key and then do some generation
     // and some hardcoding
@@ -95,7 +70,7 @@ string ancient_god_name()
 // don't store a key for this, just generate deterministically from the
 // other keys. Probably a better way of doing this.
 // Need to +1 to avoid multiplying by 0
-string ancient_god_title()
+const char* ancient_god_title()
 {
     int ancient_god_title_key = ((you.ancient_god_name_key + 1)
         * (you.ancient_god_passive_key + 1)
@@ -122,13 +97,17 @@ passive_t ancient_god_passive()
 // i.e. "ancient god now allows you to <return val>"
 const char* ancient_god_passive_description_short()
 {
-    return ag_passive_data[you.ancient_god_passive_key].short_description.c_str();
+    return ag_passive_data[you.ancient_god_passive_key].short_description;
 }
 
 // i.e. in the ^ menu, how should the full description of the passive appear?
 // e.g. "You are resistant to fire"
 string ancient_god_passive_description_long()
 {
+    if (you.piety<piety_breakpoint(1))
+    {
+        return "Gain more piety to discover this passive ability.\n";
+    }
     return ag_passive_data[you.ancient_god_passive_key].long_description;
 }
 
@@ -144,10 +123,14 @@ ability_type ancient_god_small_ability()
 
 const char* ancient_god_small_ability_description_short()
 {
-    return ag_ability_small_data[you.ancient_god_small_key].short_description.c_str();
+    if (you.piety<piety_breakpoint(3))
+    {
+        return "Gain more piety to discover this ability.";
+    }
+    return ag_ability_small_data[you.ancient_god_small_key].short_description;
 }
 
-string ancient_god_small_ability_description_long()
+const char* ancient_god_small_ability_description_long()
 {
     return ag_ability_small_data[you.ancient_god_small_key].long_description;
 }
@@ -164,10 +147,14 @@ ability_type ancient_god_cap_ability()
 
 const char* ancient_god_cap_ability_description_short()
 {
-    return ag_ability_cap_data[you.ancient_god_cap_key].short_description.c_str();
+    if (you.piety<piety_breakpoint(6))
+    {
+        return "Gain more piety to discover this significant ability.";
+    }
+    return ag_ability_cap_data[you.ancient_god_cap_key].short_description;
 }
 
-string ancient_god_cap_ability_description_long()
+const char* ancient_god_cap_ability_description_long()
 {
     return ag_ability_cap_data[you.ancient_god_cap_key].long_description;
 }

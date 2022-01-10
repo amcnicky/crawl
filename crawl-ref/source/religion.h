@@ -139,6 +139,8 @@ mgen_data hepliaklqana_ancestor_gen_data();
 string hepliaklqana_ally_name();
 int hepliaklqana_ally_hp();
 
+void _ancient_god_debug_to_remove(); //to remove
+
 void upgrade_hepliaklqana_ancestor(bool quiet_force = false);
 void upgrade_hepliaklqana_weapon(monster_type mtyp, item_def &item);
 void upgrade_hepliaklqana_shield(const monster& ancestor, item_def &item);
