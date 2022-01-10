@@ -18,6 +18,7 @@ uint8_t generate_ancient_god_like_key();
 uint8_t generate_ancient_god_dislike_key();
 string ancient_god_name();
 string ancient_god_name_extra();
+string ancient_god_title();
 passive_t ancient_god_passive();
 const char* ancient_god_passive_description_short();
 string ancient_god_passive_description_long();

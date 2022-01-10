@@ -14,9 +14,6 @@
 #include "god-passive.h"
 #include "ancient-god-config-types.h"
 
-const int NUM_ANCIENT_GOD_SMALLS = 8;
-const int NUM_ANCIENT_GOD_CAPS = 8;
-
 struct agod_passive
 {
     passive_t passive;
@@ -53,7 +50,7 @@ struct agod_mut
 // Generation functions are called once at ng-init
 uint8_t generate_ancient_god_name_key()
 {
-    return random_range(1,3);
+    return random_range(0,NUM_AG_NAMES-1);
 }
 
 uint8_t generate_ancient_god_passive_key()
@@ -92,32 +89,25 @@ string ancient_god_name()
 {
     // TODO a lot more in here - hash the key and then do some generation
     // and some hardcoding
-    switch (you.ancient_god_name_key)
-    {
-        case 1:
-            return "Coolgod";
-        case 2:
-            return "Chillgod";
-        case 3:
-            return "Testgod";
-    }
-    return "Bug! Please report: " + you.ancient_god_name_key;
+    return ag_name_data[you.ancient_god_name_key];
 }
 
-string ancient_god_name_extra()
+// don't store a key for this, just generate deterministically from the
+// other keys. Probably a better way of doing this.
+// Need to +1 to avoid multiplying by 0
+string ancient_god_title()
 {
-    // TODO base this on other god characteristics
-    switch (you.ancient_god_name_key)
-    {
-        case 1:
-            return " the coolest";
-        case 2:
-            return " the chillest";
-        case 3:
-            return " the testest";
-    }
-    return "Bug! Please report: " + you.ancient_god_name_key;
+    int ancient_god_title_key = ((you.ancient_god_name_key + 1)
+        * (you.ancient_god_passive_key + 1)
+        * (you.ancient_god_small_key + 1)
+        * (you.ancient_god_cap_key + 1)) % NUM_AG_TITLES;
+    ASSERT(ancient_god_title_key >= 0);
+    ASSERT(ancient_god_title_key < NUM_AG_TITLES);
+    // 0 to NUM_AG_TITLES-1 i.e. an index into the data array we can use.
+
+    return ag_title_data[ancient_god_title_key];
 }
+
 
 /********************************************************
 *   Functions relating to ancient god passives
@@ -182,8 +172,12 @@ string ancient_god_cap_ability_description_long()
     return ag_ability_cap_data[you.ancient_god_cap_key].long_description;
 }
 
-
+// Tracking via enums with these compile checks to ensure we always generate
+// a valid set of ancient god passive/abilities etc which is dynamic based
+// on the number of existing possibilities for those.
 COMPILE_CHECK(ARRAYSZ(ag_passive_data)==NUM_AGP);
 COMPILE_CHECK(ARRAYSZ(ag_ability_small_data)==NUM_AGAS);
 COMPILE_CHECK(ARRAYSZ(ag_ability_cap_data)==NUM_AGAC);
 COMPILE_CHECK(ARRAYSZ(ag_mut_data)==NUM_AGM);
+COMPILE_CHECK(ARRAYSZ(ag_name_data)==NUM_AG_NAMES);
+COMPILE_CHECK(ARRAYSZ(ag_title_data)==NUM_AG_TITLES);

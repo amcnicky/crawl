@@ -2373,7 +2373,7 @@ string god_name(god_type which_god, bool long_name)
     if (which_god == GOD_ANCIENT)
     {
         return ancient_god_name() +
-                (long_name? ancient_god_name_extra() : "");
+                (long_name? ancient_god_title() : "");
     }
 
     if (long_name)
