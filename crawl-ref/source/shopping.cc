@@ -20,6 +20,7 @@
 #include "english.h"
 #include "env.h"
 #include "files.h"
+#include "god-passive.h"
 #include "invent.h"
 #include "item-name.h"
 #include "item-prop.h"
@@ -33,6 +34,7 @@
 #include "output.h"
 #include "player.h"
 #include "prompt.h"
+#include "religion.h"
 #include "spl-book.h"
 #include "stash.h"
 #include "state.h"
@@ -47,6 +49,7 @@
 #include "unwind.h"
 
 ShoppingList shopping_list;
+static int consistent_shopping_price = 150; //ancient god passive
 
 static int _shop_get_item_value(const item_def& item, int greed, bool id)
 {
@@ -57,6 +60,10 @@ static int _shop_get_item_value(const item_def& item, int greed, bool id)
 
 int item_price(const item_def& item, const shop_struct& shop)
 {
+    if(have_passive(passive_t::consistent_shopping) && you_worship(GOD_ANCIENT))
+    {
+        return consistent_shopping_price;
+    } 
     return _shop_get_item_value(item, shop.greed, shoptype_identifies_stock(shop.type));
 }
 

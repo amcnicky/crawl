@@ -5,6 +5,7 @@
 enum ag_passive_type
 {
     AG_P_RESCUE_MAMMAL,
+    AG_P_CONSISTENT_SHOPPING,
     NUM_AGP,
     MAX_AGP = 255,
 };

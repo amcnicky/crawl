@@ -268,6 +268,9 @@ enum class passive_t
 
     // At high tension, your god may send mammals to rescue you
     rescue_mammal,
+
+    // Shopkeepers will always charge the same amount, no matter the item
+    consistent_shopping,
 };
 
 enum ru_interference

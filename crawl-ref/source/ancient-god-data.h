@@ -37,6 +37,11 @@ agod_passive ag_passive_data[] =
         "GOD NOW sends mammals to aid you in dangerous situations.\n",
         "In dangerous situations, mammals may be sent to your aid.\n"
     },
+    {   //AG_P_CONSISTENT_SHOPPING
+        passive_t::consistent_shopping,
+        "GOD NOW bends the minds of shopkeepers to offer a single price.\n",
+        "You passively bend the mind of shopkeepers to offer a single price.\n"
+    }
 };
 
 agod_ability_small ag_ability_small_data[] =

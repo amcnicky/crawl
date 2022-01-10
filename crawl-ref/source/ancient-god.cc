@@ -23,6 +23,7 @@
 // what translates those keys into useable strings/abilities etc
 
 // Generation functions are called once at ng-init
+// TODO: make this deterministic on seed value
 uint8_t generate_ancient_god_name_key()
 {
     return random_range(0,NUM_AG_NAMES-1);
