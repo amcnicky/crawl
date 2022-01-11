@@ -269,8 +269,11 @@ enum class passive_t
     // At high tension, your god may send mammals to rescue you
     rescue_mammal,
 
-    // Shopkeepers will always charge the same amount, no matter the item
+    // Shopkeepers will charge a fraction of the normal price
     discount_shopping,
+
+    // Occasionally potions will not lose a charge when used
+    potion_refills,
 };
 
 enum ru_interference

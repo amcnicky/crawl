@@ -35,14 +35,19 @@ agod_passive ag_passive_data[] =
     {   //AG_P_RESCUE_MAMMAL
         passive_t::rescue_mammal,
         "GOD NOW sends mammals to aid you in dangerous situations.\n",
-        "In dangerous situations, mammals may be sent to your aid.\n"
+        " sends mammals to your aid in dangeroud situations.\n"
     },
     {   //AG_P_CONSISTENT_SHOPPING
         passive_t::discount_shopping,
         "GOD NOW bends the minds of shopkeepers to offer \
         a highly favourable price.\n",
-        "You passively bend the mind of shopkeepers to offer a \
+        " passively bends the minds of shopkeepers to offer a \
         highly favourable price.\n"
+    },
+    {   //AG_P_POTION_REFILLS
+        passive_t::potion_refills,
+        "GOD NOW occasionally refills potions as you drink them.\n",
+        " magically refills your consumed potions.\n"
     }
 };
 

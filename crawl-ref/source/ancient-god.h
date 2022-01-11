@@ -30,6 +30,7 @@ const char* ancient_god_title();
 passive_t ancient_god_passive();
 const char* ancient_god_passive_description_short();
 string ancient_god_passive_description_long();
+string desc_freq_of_ancient_god_passive();
 ability_type ancient_god_small_ability();
 const char* ancient_god_small_ability_description_short();
 const char* ancient_god_small_ability_description_long();

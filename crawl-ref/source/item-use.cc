@@ -2405,7 +2405,15 @@ void drink(item_def* potion)
     const bool was_exp = potion->sub_type == POT_EXPERIENCE;
     if (in_inventory(*potion))
     {
-        dec_inv_item_quantity(potion->link, 1);
+        // min 9% chance, max 70%, scales with piety
+        if(you_worship(GOD_ANCIENT) && have_passive(passive_t::potion_refills)
+            && x_chance_in_y(you.piety+30,330))
+        {
+            simple_god_message(" refills your potion!");
+        } else 
+        {
+            dec_inv_item_quantity(potion->link, 1);
+        }
         auto_assign_item_slot(*potion);
     }
     else

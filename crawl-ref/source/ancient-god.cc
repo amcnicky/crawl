@@ -32,7 +32,7 @@ uint8_t generate_ancient_god_name_key()
 
 uint8_t generate_ancient_god_passive_key()
 {
-    return 1; // testing
+    return 2; // testing
     return you.game_seed%NUM_AGP;
 }
 
@@ -115,6 +115,38 @@ string ancient_god_passive_description_long()
         return "Gain more piety to discover this passive ability.\n";
     }
     return ag_passive_data[you.ancient_god_passive_key].long_description;
+}
+
+string desc_freq_of_ancient_god_passive()
+{
+    string returnString = "";
+    passive_t current_passive = ancient_god_passive();
+    switch (current_passive)
+        {
+            case passive_t::potion_refills:
+            {
+                if (you.piety < piety_breakpoint(1))
+                {
+                    returnString += " very rarely";
+                } else if (you.piety < piety_breakpoint(2))
+                {
+                    returnString += " rarely";
+                } else if (you.piety < piety_breakpoint(3))
+                {
+                    returnString += " occasionally";
+                } else if (you.piety < piety_breakpoint(4))
+                {
+                    returnString += " frequently";
+                } else if (you.piety >= piety_breakpoint(4))
+                {
+                    returnString += " often";
+                }
+                break;
+            }
+            default:
+                break;
+        }
+    return returnString;
 }
 
 

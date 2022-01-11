@@ -6,6 +6,7 @@ enum ag_passive_type
 {
     AG_P_RESCUE_MAMMAL,
     AG_P_DISCOUNT_SHOPPING,
+    AG_P_POTION_REFILLS,
     NUM_AGP,
     MAX_AGP = 255,
 };
