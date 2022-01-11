@@ -38,9 +38,11 @@ agod_passive ag_passive_data[] =
         "In dangerous situations, mammals may be sent to your aid.\n"
     },
     {   //AG_P_CONSISTENT_SHOPPING
-        passive_t::consistent_shopping,
-        "GOD NOW bends the minds of shopkeepers to offer a single price.\n",
-        "You passively bend the mind of shopkeepers to offer a single price.\n"
+        passive_t::discount_shopping,
+        "GOD NOW bends the minds of shopkeepers to offer \
+        a highly favourable price.\n",
+        "You passively bend the mind of shopkeepers to offer a \
+        highly favourable price.\n"
     }
 };
 
@@ -70,7 +72,6 @@ agod_mut ag_mut_data[] =
 };
 
 // Adding names is easy - just increment NUM_AG_NAMES and add to the data array
-const int NUM_AG_NAMES = 81;
 const char* ag_name_data[] =
 {
     "Yib",
@@ -170,7 +171,6 @@ const char* ag_name_data[] =
 // felt better. Generally keeping away from elemental/ability based
 // titles since they may not match themeatically what ends up being
 // generated. A loose theme of crumbling/ancient/forgotten.
-const int NUM_AG_TITLES = 30;
 const char* ag_title_data[] =
 {
     " the Forgotten",

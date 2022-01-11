@@ -270,7 +270,7 @@ enum class passive_t
     rescue_mammal,
 
     // Shopkeepers will always charge the same amount, no matter the item
-    consistent_shopping,
+    discount_shopping,
 };
 
 enum ru_interference

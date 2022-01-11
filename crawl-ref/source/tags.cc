@@ -2354,6 +2354,14 @@ void tag_read_char(reader &th, uint8_t /*format*/, uint8_t major, uint8_t minor)
 
     if (major > 34 || major == 34 && minor >= 130)
         you.explore = unmarshallBoolean(th);
+    
+    you.ancient_god_name_key = unmarshallByte(th);
+    you.ancient_god_passive_key = unmarshallByte(th);
+    you.ancient_god_small_key = unmarshallByte(th);
+    you.ancient_god_cap_key = unmarshallByte(th);
+    you.ancient_god_mut_key = unmarshallByte(th);
+    you.ancient_god_like_key = unmarshallByte(th);
+    you.ancient_god_dislike_key = unmarshallByte(th);
 }
 
 #if TAG_MAJOR_VERSION == 34

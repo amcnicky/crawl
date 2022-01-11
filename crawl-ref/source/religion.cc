@@ -401,11 +401,13 @@ const vector<vector<god_power>> & get_all_god_powers()
         },
 
         // Ancient God
-        {
-            { 3, ancient_god_small_ability(), 
+        {   
+            { ancient_god_small_breakpoint, ancient_god_small_ability(), 
                 ancient_god_small_ability_description_short() },
-            { 6, ancient_god_cap_ability(),
+            { ancient_god_cap_breakpoint, ancient_god_cap_ability(),
                 ancient_god_cap_ability_description_short() },
+            { 7, ABIL_PLACEHOLDER_DESCRIPTION_SMALL, "Gain more piety to discover this ability."},
+            { 7, ABIL_PLACEHOLDER_DESCRIPTION_CAP, "Gain more piety to discover this significant ability."},
         },
     };
     static bool god_powers_init = false;
@@ -429,6 +431,34 @@ vector<god_power> get_god_powers(god_type god)
         // hack :( don't show fake hp restore
         if (god == GOD_VEHUMET && power.rank == 1
             && you.has_mutation(MUT_HP_CASTING))
+        {
+            continue;
+        }
+        // more hacks - don't show "gain more piety to..." dummy abilities
+        // above the relevant piety threshold
+        if (god == GOD_ANCIENT 
+                && you.piety>=piety_breakpoint(ancient_god_small_breakpoint)
+                && power.abil == ABIL_PLACEHOLDER_DESCRIPTION_SMALL)
+        {
+            continue;
+        }
+        if (god == GOD_ANCIENT
+                && you.piety>=piety_breakpoint(ancient_god_cap_breakpoint)
+                && power.abil == ABIL_PLACEHOLDER_DESCRIPTION_CAP)
+        {
+            continue;
+        }
+        // and then do show the actual abilities once above the relevant
+        // piety threshold
+        if (god == GOD_ANCIENT
+                && you.piety < piety_breakpoint(ancient_god_small_breakpoint)
+                && power.abil == ancient_god_small_ability())
+        {
+            continue;
+        }
+        if (god == GOD_ANCIENT
+                && you.piety < piety_breakpoint(ancient_god_cap_breakpoint)
+                && power.abil == ancient_god_cap_ability())
         {
             continue;
         }

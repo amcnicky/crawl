@@ -428,7 +428,8 @@ static const vector<god_passive> god_passives[] =
 
     // AncientGod
     {
-        { 1, ancient_god_passive(), ancient_god_passive_description_short() },
+        { ancient_god_passive_breakpoint, ancient_god_passive()
+            , ancient_god_passive_description_short() },
     }
 };
 COMPILE_CHECK(ARRAYSZ(god_passives) == NUM_GODS);
@@ -450,6 +451,15 @@ bool god_gives_passive(god_type god, passive_t passive)
 
 bool have_passive(passive_t passive)
 {
+    if (you_worship(GOD_ANCIENT)
+        && ancient_god_passive()==passive
+        && you.piety>=piety_breakpoint(ancient_god_passive_breakpoint))
+    {
+        return true;
+    } else if (you_worship(GOD_ANCIENT))
+    {
+        return false;
+    }
     return _god_gives_passive_if(you.religion, passive,
                                  [] (god_passive p)
                                  {

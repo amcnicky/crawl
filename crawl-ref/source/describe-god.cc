@@ -986,7 +986,7 @@ static formatted_string _describe_god_powers(god_type which_god)
 
     case GOD_ANCIENT:
         have_any = true;
-        if (piety < piety_breakpoint(1))
+        if (piety < piety_breakpoint(ancient_god_passive_breakpoint))
             desc.textcolour(DARKGREY);
         desc.cprintf(ancient_god_passive_description_long());
         break;

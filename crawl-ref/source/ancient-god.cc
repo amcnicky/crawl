@@ -9,6 +9,7 @@
 #include <cstdint>
 #include <cstring>
 #include "random.h"
+#include "message.h"
 #include "player.h"
 #include "ability-type.h"
 #include "god-passive.h"
@@ -26,27 +27,29 @@
 // TODO: make this deterministic on seed value
 uint8_t generate_ancient_god_name_key()
 {
-    return random_range(0,NUM_AG_NAMES-1);
+    return you.game_seed%NUM_AG_NAMES;
 }
 
 uint8_t generate_ancient_god_passive_key()
 {
-    return random_range(0,NUM_AGP-1);
+    return 1; // testing
+    return you.game_seed%NUM_AGP;
 }
 
 uint8_t generate_ancient_god_small_key()
 {
-    return random_range(0,NUM_AGAS-1);
+    return you.game_seed%NUM_AGAS;
 }
 
 uint8_t generate_ancient_god_cap_key()
+
 {
-    return random_range(0,NUM_AGAC-1);
+    return you.game_seed%NUM_AGAC;
 }
 
 uint8_t generate_ancient_god_mut_key()
 {
-    return random_range(0,NUM_AGM-1);
+    return you.game_seed%NUM_AGM;
 }
 
 uint8_t generate_ancient_god_like_key()
@@ -61,7 +64,7 @@ uint8_t generate_ancient_god_dislike_key()
 
 // Lookup function - all take generated ints and translate those into
 // which god you've randomised for your run!
-const char* ancient_god_name()
+string ancient_god_name()
 {
     // TODO a lot more in here - hash the key and then do some generation
     // and some hardcoding
@@ -92,12 +95,14 @@ const char* ancient_god_title()
 // use passive generation key to return the passive for this ancient god
 passive_t ancient_god_passive()
 {
+//    mprf("Looking up passive abil with key: %d",you.ancient_god_passive_key);
     return ag_passive_data[you.ancient_god_passive_key].passive;
 }
 
 // i.e. "ancient god now allows you to <return val>"
 const char* ancient_god_passive_description_short()
 {
+//    mprf("Looking up passive desc with key: %d",you.ancient_god_passive_key);
     return ag_passive_data[you.ancient_god_passive_key].short_description;
 }
 
@@ -105,7 +110,7 @@ const char* ancient_god_passive_description_short()
 // e.g. "You are resistant to fire"
 string ancient_god_passive_description_long()
 {
-    if (you.piety<piety_breakpoint(1))
+    if (you.piety<piety_breakpoint(ancient_god_passive_breakpoint))
     {
         return "Gain more piety to discover this passive ability.\n";
     }
@@ -124,10 +129,6 @@ ability_type ancient_god_small_ability()
 
 const char* ancient_god_small_ability_description_short()
 {
-    if (you.piety<piety_breakpoint(3))
-    {
-        return "Gain more piety to discover this ability.";
-    }
     return ag_ability_small_data[you.ancient_god_small_key].short_description;
 }
 
@@ -148,10 +149,6 @@ ability_type ancient_god_cap_ability()
 
 const char* ancient_god_cap_ability_description_short()
 {
-    if (you.piety<piety_breakpoint(6))
-    {
-        return "Gain more piety to discover this significant ability.";
-    }
     return ag_ability_cap_data[you.ancient_god_cap_key].short_description;
 }
 
