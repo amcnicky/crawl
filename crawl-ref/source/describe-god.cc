@@ -989,15 +989,17 @@ static formatted_string _describe_god_powers(god_type which_god)
         if (piety < piety_breakpoint(ancient_god_passive_breakpoint))
             desc.textcolour(DARKGREY);
 
-        // i.e. [godname][description] -- Yib does the thing
+        // i.e. [godname][frequency][description] -- Yib does the thing
         // but if the power is not yet discovered, we don't want
-        // "[Yib] [you need to gain more piety to unlock this ability]"
+        // "[Yib][rarely][you need to gain more piety to unlock this ability]"
         // so don't print the godname if below threshold
         desc.cprintf("%s%s%s",
             you.piety >= piety_breakpoint(ancient_god_passive_breakpoint) ?
                 ancient_god_name().c_str() 
                 : ""
-            , desc_freq_of_ancient_god_passive().c_str()
+            ,   you.piety >= piety_breakpoint(ancient_god_passive_breakpoint) ?
+                desc_freq_of_ancient_god_passive().c_str() 
+                : ""
             , ancient_god_passive_description_long().c_str());
         break;
     default:
