@@ -15,6 +15,8 @@
 #include "god-passive.h"
 #include "ancient-god-config-types.h"
 #include "religion.h"
+#include "god-companions.h"
+#include "mon-util.h"
 
 #include "ancient-god-data.h"
 
@@ -32,7 +34,7 @@ uint8_t generate_ancient_god_name_key()
 
 uint8_t generate_ancient_god_passive_key()
 {
-    return 2; // testing
+    return 3; // testing
     return you.game_seed%NUM_AGP;
 }
 
@@ -69,6 +71,35 @@ string ancient_god_name()
     // TODO a lot more in here - hash the key and then do some generation
     // and some hardcoding
     return ag_name_data[you.ancient_god_name_key];
+}
+
+string sidekick_name()
+{
+    ASSERT(you.props.exists(AG_SIDEKICK_NAME_KEY));
+    return you.props[AG_SIDEKICK_NAME_KEY].get_string();
+}
+
+static string _make_sidekick_name()
+{
+    return ag_spriggan_names[you.game_seed%NUM_AG_SPRIGGAN_NAMES];
+}
+
+/// Setup when gaining a spriggan sidekick.
+void setup_ag_spriggan_sidekick()
+{
+    // initial setup.
+    if (!you.props.exists(AG_SIDEKICK_NAME_KEY))
+    {
+        you.props[AG_SIDEKICK_NAME_KEY] = _make_sidekick_name();
+    }
+}
+
+mid_t ag_sidekick()
+{
+    for (auto &entry : companion_list)
+        if (mons_is_ag_sidekick(entry.second.mons.mons.type))
+            return entry.first;
+    return MID_NOBODY;
 }
 
 // don't store a key for this, just generate deterministically from the
@@ -110,7 +141,8 @@ const char* ancient_god_passive_description_short()
 // e.g. "You are resistant to fire"
 string ancient_god_passive_description_long()
 {
-    if (you.piety<piety_breakpoint(ancient_god_passive_breakpoint))
+    if (you.piety<piety_breakpoint(ancient_god_passive_breakpoint)
+        || !(you_worship(GOD_ANCIENT)))
     {
         return "Gain more piety to discover this passive ability.\n";
     }
@@ -198,3 +230,4 @@ COMPILE_CHECK(ARRAYSZ(ag_ability_cap_data)==NUM_AGAC);
 COMPILE_CHECK(ARRAYSZ(ag_mut_data)==NUM_AGM);
 COMPILE_CHECK(ARRAYSZ(ag_name_data)==NUM_AG_NAMES);
 COMPILE_CHECK(ARRAYSZ(ag_title_data)==NUM_AG_TITLES);
+COMPILE_CHECK(ARRAYSZ(ag_spriggan_names)==NUM_AG_SPRIGGAN_NAMES);

@@ -437,6 +437,14 @@ COMPILE_CHECK(ARRAYSZ(god_passives) == NUM_GODS);
 static bool _god_gives_passive_if(god_type god, passive_t passive,
                                   function<bool(const god_passive&)> condition)
 {
+    if ((god == GOD_ANCIENT)
+    && ancient_god_passive()==passive)
+    {
+        return true;
+    } else if (you_worship(GOD_ANCIENT))
+    {
+        return false;
+    }
     const auto &pasvec = god_passives[god];
     return any_of(begin(pasvec), end(pasvec),
                   [&] (const god_passive &p) -> bool
@@ -445,7 +453,8 @@ static bool _god_gives_passive_if(god_type god, passive_t passive,
 
 bool god_gives_passive(god_type god, passive_t passive)
 {
-  return _god_gives_passive_if(god, passive,
+
+    return _god_gives_passive_if(god, passive,
                                [] (god_passive /*p*/) { return true; });
 }
 
@@ -471,13 +480,29 @@ bool have_passive(passive_t passive)
 
 bool will_have_passive(passive_t passive)
 {
-  return _god_gives_passive_if(you.religion, passive,
+    if (you_worship(GOD_ANCIENT)
+        && ancient_god_passive()==passive)
+    {
+        return true;
+    } else if (you_worship(GOD_ANCIENT))
+    {
+        return false;
+    }
+    return _god_gives_passive_if(you.religion, passive,
                                [] (god_passive/*p*/) { return true; });
 }
 
 // Returns a large number (10) if we will never get this passive.
 int rank_for_passive(passive_t passive)
 {
+    if (you_worship(GOD_ANCIENT)
+        && ancient_god_passive() == passive)
+    {
+        return ancient_god_passive_breakpoint+1;
+    } else if (you_worship(GOD_ANCIENT))
+    {
+        return 10;
+    }
     const auto &pasvec = god_passives[you.religion];
     const auto found = find_if(begin(pasvec), end(pasvec),
                               [passive] (const god_passive &p) -> bool

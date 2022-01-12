@@ -97,6 +97,8 @@ bool mons_matches_daction(const monster* mon, daction_type act)
     case DACT_ALLY_HEPLIAKLQANA:
     case DACT_UPGRADE_ANCESTOR:
         return mon->wont_attack() && mons_is_god_gift(*mon, GOD_HEPLIAKLQANA);
+    case DACT_ALLY_AG:
+        return mon->wont_attack() && mons_is_god_gift(*mon, GOD_ANCIENT);
 
     // Not a stored counter:
     case DACT_PIKEL_MINIONS:
@@ -199,6 +201,11 @@ void apply_daction_to_mons(monster* mon, daction_type act, bool local,
             monster_die(*mon, KILL_DISMISSED, NON_MONSTER);
             break;
 
+        case DACT_ALLY_AG:
+            simple_monster_message(*mon, " evaporates into to the ether.");
+            monster_die(*mon, KILL_DISMISSED, NON_MONSTER);
+            break;
+
         case DACT_UPGRADE_ANCESTOR:
             if (!in_transit)
                 upgrade_hepliaklqana_ancestor(true);
@@ -275,6 +282,7 @@ static void _apply_daction(daction_type act)
     // intentional fallthrough to handle Dissolution
     case DACT_ALLY_BEOGH:
     case DACT_ALLY_HEPLIAKLQANA:
+    case DACT_ALLY_AG:
     case DACT_ALLY_SLIME:
     case DACT_ALLY_PLANT:
     case DACT_OLD_CHARMD_SOULS_POOF:

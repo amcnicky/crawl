@@ -3797,6 +3797,9 @@ tileidx_t tileidx_ability(const ability_type ability)
         return TILEG_ABILITY_IGNIS_FOXFIRE;
     case ABIL_IGNIS_RISING_FLAME:
         return TILEG_ABILITY_IGNIS_RISING_FLAME;
+    // Ancient God
+    case ABIL_AG_RECALL_SIDEKICK:
+        return TILEG_ABILITY_HEP_RECALL;
 
     // General divine (pseudo) abilities.
     case ABIL_RENOUNCE_RELIGION:

@@ -48,7 +48,12 @@ agod_passive ag_passive_data[] =
         passive_t::potion_refills,
         "GOD NOW occasionally refills potions as you drink them.\n",
         " magically refills your consumed potions.\n"
-    }
+    },
+    {   //AG_P_SPRIGGAN_SIDEKICK
+        passive_t::spriggan_sidekick,
+        "GOD NOW grants a reviving spriggan sidekick.\n",
+        " grants a reviving spriggan sidekick.\n"
+    },
 };
 
 agod_ability_small ag_ability_small_data[] =
@@ -208,4 +213,46 @@ const char* ag_title_data[] =
     " the Horror in the Night",
     " the Sunshine Terror",
     " the Primordial Emptiness"
+};
+
+const char* ag_spriggan_names[] =
+{
+    "Jared",
+    "Audie",
+    "Cesar",
+    "Martin",
+    "Paul",
+    "Benjamin",
+    "Neil",
+    "Frederick",
+    "Thomas",
+    "Babe",
+    "Ainsley",
+    "Alden",
+    "Alfred",
+    "Alvin",
+    "Ashley",
+    "Audrey",
+    "Bailee",
+    "Beckett",
+    "Beowulf",
+    "Brinley",
+    "Charlton",
+    "Chester",
+    "Cliff",
+    "Dana",
+    "Darwin",
+    "Daxter",
+    "Edgar",
+    "Edmond",
+    "Edvard",
+    "Elfie",
+    "Emma",
+    "Francesca",
+    "Kathryn",
+    "Lane",
+    "Lawley",
+    "Lillian",
+    "Paxton",
+    "Rowena"
 };

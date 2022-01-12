@@ -1480,6 +1480,17 @@ bool mons_is_hepliaklqana_ancestor(monster_type mc)
 }
 
 /**
+ * Is the given type yout spriggan sidekick?
+ *
+ * @param mc    The type of monster in question.
+ * @return      Whether that monster is a spriggan sidekick.
+ */
+bool mons_is_ag_sidekick(monster_type mc)
+{
+    return mons_class_flag(mc, M_SIDEKICK);
+}
+
+/**
  * Can this type of monster be blinded?
  *
  * Certain monsters, e.g. those with a powerful sense of smell, echolocation,

@@ -29,6 +29,7 @@
 
 #include "abyss.h" // abyss_maybe_spawn_xp_exit
 #include "act-iter.h"
+#include "ancient-god.h"
 #include "areas.h"
 #include "artefact.h"
 #include "beam.h"
@@ -533,6 +534,22 @@ static void _try_to_respawn_ancestor()
                       ancestor); // ;)
 }
 
+/**
+ * Try to respawn the player's sidekick, if possible.
+ */
+static void _try_to_respawn_sidekick()
+{
+     monster *sidekick = create_monster(spriggan_sidekick_gen_data());
+     if (!sidekick)
+         return;
+
+    mprf("%s emerges from the ether!",
+         sidekick->name(DESC_YOUR).c_str());
+    add_companion(sidekick);
+    check_place_cloud(CLOUD_MIST, sidekick->pos(), random_range(1,2),
+                      sidekick); // ;)
+}
+
 
 /**
  * Take a 'simple' duration, decrement it, and print messages as appropriate
@@ -798,6 +815,13 @@ static void _decrement_durations()
         && hepliaklqana_ancestor() == MID_NOBODY)
     {
         _try_to_respawn_ancestor();
+    }
+
+    if (!you.duration[DUR_SIDEKICK_DELAY]
+        && have_passive(passive_t::spriggan_sidekick)
+        && ag_sidekick() == MID_NOBODY)
+    {
+        _try_to_respawn_sidekick();
     }
 
     okawaru_handle_duel();

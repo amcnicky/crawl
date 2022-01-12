@@ -140,6 +140,7 @@ string hepliaklqana_ally_name();
 int hepliaklqana_ally_hp();
 
 void _ancient_god_debug_to_remove(); //to remove
+mgen_data spriggan_sidekick_gen_data();
 
 void upgrade_hepliaklqana_ancestor(bool quiet_force = false);
 void upgrade_hepliaklqana_weapon(monster_type mtyp, item_def &item);

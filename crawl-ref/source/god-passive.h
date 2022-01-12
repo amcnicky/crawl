@@ -274,6 +274,9 @@ enum class passive_t
 
     // Occasionally potions will not lose a charge when used
     potion_refills,
+
+    // You have a spriggan sidekick
+    spriggan_sidekick
 };
 
 enum ru_interference

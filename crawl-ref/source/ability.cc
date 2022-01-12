@@ -16,6 +16,7 @@
 
 #include "abyss.h"
 #include "act-iter.h"
+#include "ancient-god.h"
 #include "areas.h"
 #include "artefact.h"
 #include "art-enum.h"
@@ -650,6 +651,10 @@ static vector<ability_def> &_get_ability_list()
             0, 0, 12, -1, {fail_basis::invo}, abflag::quiet_fail },
         { ABIL_IGNIS_RISING_FLAME, "Rising Flame",
             0, 0, 0, -1, {fail_basis::invo}, abflag::none },
+
+        // Ancient God
+        { ABIL_AG_RECALL_SIDEKICK, "Recall Sidekick",
+            2, 0, 0, -1, {fail_basis::invo}, abflag::none },
 
         { ABIL_STOP_RECALL, "Stop Recall",
             0, 0, 0, -1, {fail_basis::invo}, abflag::none },
@@ -2020,6 +2025,18 @@ static bool _check_ability_possible(const ability_def& abil, bool quiet = false)
 
     default:
         return true;
+
+    case ABIL_AG_RECALL_SIDEKICK:
+        if (ag_sidekick() == MID_NOBODY)
+        {
+            if (!quiet)
+            {
+                mprf("%s will automatically revive shortly.",
+                     sidekick_name().c_str());
+            }
+            return false;
+        }
+        return true;
     }
 }
 
@@ -2154,6 +2171,7 @@ unique_ptr<targeter> find_ability_targeter(ability_type ability)
     case ABIL_WU_JIAN_SERPENTS_LASH:
     case ABIL_IGNIS_FIERY_ARMOUR:
     case ABIL_IGNIS_RISING_FLAME:
+    case ABIL_AG_RECALL_SIDEKICK:
     case ABIL_STOP_RECALL:
         return make_unique<targeter_radius>(&you, LOS_SOLID_SEE, 0);
 
@@ -3370,6 +3388,11 @@ static spret _do_ability(const ability_def& abil, bool fail, dist *target,
         you.set_duration(DUR_RISING_FLAME, 2 + random2(3));
         you.one_time_ability_used.set(GOD_IGNIS);
         return spret::success;
+
+    case ABIL_AG_RECALL_SIDEKICK:
+        if (try_recall(ag_sidekick()))
+            return spret::success;
+        break;
 
     case ABIL_RENOUNCE_RELIGION:
         if (yesno("Really renounce your faith, foregoing its fabulous benefits?",

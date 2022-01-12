@@ -37,5 +37,8 @@ enum nemelex_gift_types
 /// chosen ancestor class (monster_type)
 #define HEPLIAKLQANA_ALLY_TYPE_KEY "hepliaklqana_ally_type"
 
+// the name of the ancient god sidekick granted by passive_t::spriggan_sidekick
+#define AG_SIDEKICK_NAME_KEY "ag_sidekick_name_key"
+
 /// custom monster gender
 #define MON_GENDER_KEY "mon_gender"

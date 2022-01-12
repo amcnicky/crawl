@@ -13,6 +13,7 @@
 #include <queue>
 
 #include "act-iter.h"
+#include "ancient-god.h"
 #include "areas.h"
 #include "bloodspatter.h"
 #include "branch.h"
@@ -523,6 +524,13 @@ static void _abyss_lose_monster(monster& mons)
                 MSGCH_BANISHMENT);
         remove_companion(&mons);
         you.duration[DUR_ANCESTOR_DELAY] = random_range(50, 150); //~5-15 turns
+    }
+    else if (ag_sidekick() == mons.mid)
+    {
+        simple_monster_message(mons, " is pulled into the Abyss.",
+                MSGCH_BANISHMENT);
+        remove_companion(&mons);
+        you.duration[DUR_SIDEKICK_DELAY] = random_range(100, 300); //~10-30 turns
     }
 
     mons.destroy_inventory();

@@ -316,6 +316,7 @@ enum ability_type
     // Ancient God
     ABIL_PLACEHOLDER_DESCRIPTION_SMALL,
     ABIL_PLACEHOLDER_DESCRIPTION_CAP,
+    ABIL_AG_RECALL_SIDEKICK,
 
     // General divine (pseudo) abilities.
     ABIL_RENOUNCE_RELIGION,

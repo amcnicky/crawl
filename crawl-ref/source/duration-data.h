@@ -682,5 +682,6 @@ static const duration_def duration_data[] =
     { DUR_LIFESAVING, 0, "", "", "old lifesaving", "", D_NO_FLAGS},
     { DUR_MIRROR_DAMAGE, 0, "", "", "old injury mirror", "", D_NO_FLAGS},
     { DUR_SHAFT_IMMUNITY, 0, "", "", "old shaft immunity", "", D_NO_FLAGS, {{""}}},
+    { DUR_SIDEKICK_DELAY, 0, "", "", "sidekick delay", "", D_NO_FLAGS, {{""}}},
 #endif
 };

@@ -8,6 +8,7 @@
 #include "mon-death.h"
 
 #include "act-iter.h"
+#include "ancient-god.h"
 #include "areas.h"
 #include "arena.h"
 #include "artefact.h"
@@ -2490,6 +2491,18 @@ item_def* monster_die(monster& mons, killer_type killer,
             // some strange circumstance (wizmode? bug?)
             if (hepliaklqana_ancestor() == MID_NOBODY)
                 you.duration[DUR_ANCESTOR_DELAY] = random_range(300, 600);
+        } else if (mons_is_ag_sidekick(mons.type))
+        {
+            if (!you.can_see(mons))
+            {
+                mprf("%s has departed this plane of existence.",
+                     sidekick_name().c_str());
+            }
+
+            // respawn in ~60-90 turns, if there wasn't another sidekick through
+            // some strange circumstance (wizmode? bug?)
+            if (ag_sidekick() == MID_NOBODY)
+                you.duration[DUR_SIDEKICK_DELAY] = random_range(600, 900);            
         }
     }
 

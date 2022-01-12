@@ -401,7 +401,9 @@ const vector<vector<god_power>> & get_all_god_powers()
         },
 
         // Ancient God
-        {   { ancient_god_small_breakpoint, ancient_god_small_ability(), 
+        {   
+            { 0, ABIL_AG_RECALL_SIDEKICK, "recall your sidekick" },
+            { ancient_god_small_breakpoint, ancient_god_small_ability(), 
                 ancient_god_small_ability_description_short() },
             { ancient_god_cap_breakpoint, ancient_god_cap_ability(),
                 ancient_god_cap_ability_description_short() },
@@ -459,6 +461,20 @@ vector<god_power> get_god_powers(god_type god)
                 && you.piety < piety_breakpoint(ancient_god_cap_breakpoint)
                 && power.abil == ancient_god_cap_ability())
         {
+            continue;
+        }
+        if (
+            god == GOD_ANCIENT
+            && power.abil == ABIL_AG_RECALL_SIDEKICK
+            && (
+                    you.piety < piety_breakpoint(ancient_god_passive_breakpoint)
+                ||  ancient_god_passive() != passive_t::spriggan_sidekick
+                ||  !(you_worship(GOD_ANCIENT))
+                )
+            )
+        {   // i.e. do not show this ability if we're below the breakpoint,
+            // or if spriggan sidekick isn't actually our generated passive,
+            // or if we're not currently worshipping the ancient god.
             continue;
         }
         if (!(power.abil != ABIL_NON_ABILITY
@@ -2313,7 +2329,6 @@ void upgrade_hepliaklqana_shield(const monster &ancestor, item_def &item)
     item.quantity = 1;
 }
 
-///////////////////////////////
 bool do_god_gift(bool forced)
 {
     ASSERT(!you_worship(GOD_NO_GOD));
@@ -2716,6 +2731,15 @@ static void _gain_piety_point()
                                             " into the memory of your ancestor, %s!",
                                             mg.mname.c_str()).c_str());
         }
+        if (you_worship(GOD_ANCIENT) 
+            && ancient_god_passive() == passive_t::spriggan_sidekick
+            && rank == rank_for_passive(passive_t::spriggan_sidekick))
+        {
+            const mgen_data mg = spriggan_sidekick_gen_data();
+            delayed_monster(mg);
+            simple_god_message(make_stringf(" conjures forth your sidekick, %s!",
+                                            mg.mname.c_str()).c_str());
+        }
 
         for (const auto& power : get_god_powers(you.religion))
         {
@@ -2924,6 +2948,14 @@ void lose_piety(int pgn)
             add_daction(DACT_ALLY_HEPLIAKLQANA);
             remove_all_companions(GOD_HEPLIAKLQANA);
             calc_hp(); // adjust for frailty
+        }
+        if (will_have_passive(passive_t::spriggan_sidekick) 
+            && !have_passive(passive_t::spriggan_sidekick))
+        {
+            // ancient god: just lost 1*
+            // remove companion (gained at same tier as frail)
+            add_daction(DACT_ALLY_AG);
+            remove_all_companions(GOD_ANCIENT);
         }
     }
 
@@ -3443,6 +3475,8 @@ void excommunication(bool voluntary, god_type new_god)
     case GOD_ANCIENT:
         // TODO: think about which gifts need to be removed
         simple_god_message(" thinks about TODO: undoing any gifts", old_god);
+        add_daction(DACT_ALLY_AG);
+        remove_all_companions(GOD_ANCIENT);
         break;
 
     default:
@@ -3846,6 +3880,30 @@ void _ancient_god_debug_to_remove()
     mprf("likes index: %d\n",you.ancient_god_like_key);
     mprf("hates index: %d\n",you.ancient_god_dislike_key);
 }
+
+///////////////////////////////
+// Functions relating to ancient god passive spriggan_sidekick
+
+/**
+ * Creates a mgen_data with the information needed to create the sidekick
+ * granted by AncientGod.
+ *
+ * Taken from Hep code but streamlined for simpler design.
+ *
+ * @return    The mgen_data that creates a sidekick.
+ */
+mgen_data spriggan_sidekick_gen_data()
+{
+    setup_ag_spriggan_sidekick();
+    const monster_type type = MONS_SPRIGGAN_SIDEKICK;
+    mgen_data mg(type, BEH_FRIENDLY, you.pos(), MHITYOU, MG_AUTOFOE);
+    mg.set_summoned(&you, 0, 0, GOD_ANCIENT);
+    mg.extra_flags |= MF_NO_REWARD;
+    mg.mname = sidekick_name();
+    return mg;
+}
+
+///////////////////////////////
 
 /// Handle basic god piety & related setup for a new-joined god.
 static void _set_initial_god_piety()
@@ -4958,7 +5016,8 @@ static void _place_delayed_monsters()
         {
             if (you_worship(GOD_YREDELEMNUL)
                 || you_worship(GOD_HEPLIAKLQANA)
-                || have_passive(passive_t::convert_orcs))
+                || have_passive(passive_t::convert_orcs)
+                || have_passive(passive_t::spriggan_sidekick))
             {
                 add_companion(mon);
             }
