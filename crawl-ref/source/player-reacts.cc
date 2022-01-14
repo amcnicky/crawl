@@ -422,6 +422,59 @@ static void _handle_uskayaw_time(int time_taken)
         you.props[USKAYAW_BOND_TIMER] =  max(0, bond_timer - time_taken);
 }
 
+static void _handle_ag_threatening_boosts()
+{
+
+    // 3 is extreme, 5 is overwhelming per horror code above  
+    int threat = _current_horror_level();
+
+    switch(ag_passive_threatening_boost_subtype())
+    {
+        case (ST_EV):
+        {
+            mprf("setting key to %d\n",threat*2);
+            you.props[AG_THREATENING_BOOST_KEY] = threat*2;
+            you.redraw_evasion = true;
+            break;
+        }
+        case (ST_AC):
+        {
+            break;
+        }
+        case (ST_Slaying):
+        {
+            break;
+        }
+        case (ST_Regen_HP):
+        {
+            break;
+        }
+        case (ST_Regen_MP):
+        {
+            break;
+        }
+        case (ST_INT):
+        {
+            break;
+        }
+    }
+}
+
+// various effects related to ancient god passives and abilities
+static void _handle_ag_effects()
+{
+    // first handle all passive abils
+    if(ancient_god_passive_active(passive_t::rescue_mammal))
+    {
+        ag_check_and_summon_mammal();
+    }
+    if(ancient_god_passive_active(passive_t::threatening_boost))
+    {
+        mprf("detected boost\n");
+        _handle_ag_threatening_boosts();
+    }
+}
+
 /**
  * Player reactions after monster and cloud activities in the turn are finished.
  */
@@ -458,10 +511,12 @@ void player_reacts_to_monsters()
     _update_cowardice();
     if (you_worship(GOD_USKAYAW))
         _handle_uskayaw_time(you.time_taken);
-    if (you_worship(GOD_ANCIENT) && have_passive(passive_t::rescue_mammal))
-    { 
-        ag_check_and_summon_mammal();
+    if (you_worship(GOD_ANCIENT))
+    {
+        _handle_ag_effects();
     }
+    mprf("EV is now %d\n",you.evasion());
+    update_screen();
 }
 
 static bool _check_recite()

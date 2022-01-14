@@ -1969,6 +1969,7 @@ static int _player_adjusted_evasion_penalty(const int scale)
 // does not include tengu/merfolk EV bonuses for flight/swimming.
 static int _player_evasion_bonuses()
 {
+    mprf("running bonuses in player.cc\n");
     int evbonus = 0;
 
     if (you.duration[DUR_AGILITY])
@@ -1998,6 +1999,16 @@ static int _player_evasion_bonuses()
     // get a massive EV bonus.
     if (acrobat_boost_active())
         evbonus += 15;
+
+    mprf("evbonus before addition: %d\n",evbonus);
+    if (you.props.exists(AG_THREATENING_BOOST_KEY))
+    {
+        evbonus += you.props[AG_THREATENING_BOOST_KEY].get_int();
+    } else {
+        mprf("prop doesn't exist!!!\n");
+    }
+
+    mprf("evbonus after addition: %d\n",evbonus);
 
     return evbonus;
 }
@@ -2091,7 +2102,7 @@ static int _player_evasion(bool ignore_helpless)
         - vertigo_penalty;
 
     const int evasion_bonuses = _player_evasion_bonuses() * scale;
-
+    mprf("scaled evasion bonuses: %d",evasion_bonuses);
     const int final_evasion =
         _player_scale_evasion(natural_evasion, scale) + evasion_bonuses;
 

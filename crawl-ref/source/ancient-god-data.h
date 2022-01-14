@@ -54,6 +54,17 @@ agod_passive ag_passive_data[] =
         "GOD NOW grants a reviving spriggan sidekick.\n",
         " grants a reviving spriggan sidekick.\n"
     },
+    {
+        passive_t::threatening_boost,
+        make_stringf(
+            "GOD NOW grants a boost of %s in threatening situations\n",
+            desc_subtype_of_ancient_god_passive().c_str()
+        ).c_str(),
+        make_stringf(
+            " grants a boost of %s in threatening situations\n",
+            desc_subtype_of_ancient_god_passive().c_str()
+        ).c_str()
+    },
 };
 
 agod_ability_small ag_ability_small_data[] =

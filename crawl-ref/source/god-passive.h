@@ -276,7 +276,10 @@ enum class passive_t
     potion_refills,
 
     // You have a spriggan sidekick
-    spriggan_sidekick
+    spriggan_sidekick,
+
+    // You are boosted with various heavenly powers when threatened
+    threatening_boost
 };
 
 enum ru_interference

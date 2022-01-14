@@ -18,6 +18,53 @@ const int NUM_AG_NAMES = 81;
 const int NUM_AG_TITLES = 30;
 const int NUM_AG_SPRIGGAN_NAMES = 38;
 
+enum ag_passive_threatening_boost_subtype
+{
+    ST_EV,
+    ST_AC,
+    ST_Slaying,
+    ST_Regen_HP,
+    ST_Regen_MP,
+    ST_INT,
+    // STR and DEX are close to Slaying/EV, but could consider them as well.
+    // ST_DEX,
+    // ST_STR,
+    NUM_ST,
+    MAX_ST = 255,
+};
+
+enum ag_passive_type
+{
+    AG_P_RESCUE_MAMMAL,
+    AG_P_DISCOUNT_SHOPPING,
+    AG_P_POTION_REFILLS,
+    AG_P_SPRIGGAN_SIDEKICK,
+    AG_P_THREATENING_BOOST,
+    NUM_AGP,
+    MAX_AGP = 255,
+};
+
+enum ag_abil_small_type
+{
+    AG_S_HEROISM,
+    NUM_AGAS,
+    MAX_AGAS = 255,
+};
+
+enum ag_abil_cap_type
+{
+    AG_C_DISASTER_AREA,
+    NUM_AGAC,
+    MAX_AGAC = 255,
+};
+
+enum ag_mut_type
+{
+    AG_M_HP_CASTING,
+    NUM_AGM,
+    MAX_AGM = 255,
+};
+
 uint8_t generate_ancient_god_name_key();
 uint8_t generate_ancient_god_passive_key();
 uint8_t generate_ancient_god_small_key();
@@ -33,12 +80,16 @@ mid_t ag_sidekick();
 const char* ancient_god_name_extra();
 const char* ancient_god_title();
 passive_t ancient_god_passive();
+bool ancient_god_passive_active(passive_t passive);
 const char* ancient_god_passive_description_short();
 string ancient_god_passive_description_long();
 string desc_freq_of_ancient_god_passive();
+string desc_subtype_of_ancient_god_passive();
+ag_passive_threatening_boost_subtype threatening_boost_subtype();
 ability_type ancient_god_small_ability();
 const char* ancient_god_small_ability_description_short();
 const char* ancient_god_small_ability_description_long();
 ability_type ancient_god_cap_ability();
 const char* ancient_god_cap_ability_description_short();
 const char* ancient_god_cap_ability_description_long();
+

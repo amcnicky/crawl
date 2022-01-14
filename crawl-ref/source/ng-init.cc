@@ -12,7 +12,6 @@
 #include "ng-init.h"
 
 #include "ancient-god.h"
-#include "ancient-god-config-types.h"
 #include "branch.h"
 #include "describe.h"
 #include "dungeon.h"

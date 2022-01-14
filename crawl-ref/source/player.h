@@ -53,6 +53,7 @@
 #define PETRIFIED_BY_KEY "petrified_by"
 #define FROZEN_RAMPARTS_KEY "frozen_ramparts_position"
 #define PALENTONGA_CURL_KEY "palentonga_curl"
+#define AG_THREATENING_BOOST_KEY "ag_threatening_boost"
 
 // display/messaging breakpoints for penalties from Ru's MUT_HORROR
 #define HORROR_LVL_EXTREME  3

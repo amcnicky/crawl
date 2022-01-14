@@ -13,7 +13,6 @@
 #include "player.h"
 #include "ability-type.h"
 #include "god-passive.h"
-#include "ancient-god-config-types.h"
 #include "religion.h"
 #include "god-companions.h"
 #include "mon-util.h"
@@ -29,12 +28,13 @@
 // TODO: make this deterministic on seed value
 uint8_t generate_ancient_god_name_key()
 {
+    return 0; // testing
     return you.game_seed%NUM_AG_NAMES;
 }
 
 uint8_t generate_ancient_god_passive_key()
 {
-    return 3; // testing
+    return 4; // testing
     return you.game_seed%NUM_AGP;
 }
 
@@ -130,6 +130,20 @@ passive_t ancient_god_passive()
     return ag_passive_data[you.ancient_god_passive_key].passive;
 }
 
+bool ancient_god_passive_active(passive_t passive)
+{
+    return you_worship(GOD_ANCIENT)
+        && passive == ancient_god_passive()
+        && piety_breakpoint(you.piety) >= ancient_god_passive_breakpoint;
+}
+
+// an example of how certain passives may have more than one potential subtype
+// TODO: there's likely a more extensible way of doing this.
+ag_passive_threatening_boost_subtype threatening_boost_subtype()
+{
+    return ag_passive_threatening_boost_subtype(you.game_seed%NUM_ST);
+}
+
 // i.e. "ancient god now allows you to <return val>"
 const char* ancient_god_passive_description_short()
 {
@@ -181,6 +195,35 @@ string desc_freq_of_ancient_god_passive()
     return returnString;
 }
 
+string desc_subtype_of_ancient_god_passive()
+{
+    string returnString = "";
+    ag_passive_threatening_boost_subtype type = threatening_boost_subtype();
+    switch(type)
+    {
+        case ST_EV:
+            returnString += "evasion";
+            break;
+        case ST_AC:
+            returnString += "armour";
+            break;
+        case ST_Slaying:
+            returnString += "slaying";
+            break;
+        case ST_Regen_HP:
+            returnString += "HP regen";
+            break;
+        case ST_Regen_MP:
+            returnString += "MP regen";
+            break;
+        case ST_INT:
+            returnString += "Intelligence";
+            break;
+        default:
+            returnString += "buggy code";
+    }
+    return returnString;
+}
 
 /********************************************************
 *   Functions relating to ancient god smaller abilities
@@ -231,3 +274,9 @@ COMPILE_CHECK(ARRAYSZ(ag_mut_data)==NUM_AGM);
 COMPILE_CHECK(ARRAYSZ(ag_name_data)==NUM_AG_NAMES);
 COMPILE_CHECK(ARRAYSZ(ag_title_data)==NUM_AG_TITLES);
 COMPILE_CHECK(ARRAYSZ(ag_spriggan_names)==NUM_AG_SPRIGGAN_NAMES);
+
+COMPILE_CHECK(NUM_AGP<MAX_AGP); //uint8
+COMPILE_CHECK(NUM_AGAS<MAX_AGAS); //uint8
+COMPILE_CHECK(NUM_AGAC<MAX_AGAC); //uint8
+COMPILE_CHECK(NUM_AGM<MAX_AGM); //uint8
+COMPILE_CHECK(NUM_ST<MAX_ST);
