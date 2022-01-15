@@ -510,3 +510,10 @@ void generate_ancient_god_attributes()
     you.ancient_god_like_key = generate_ancient_god_like_key();
     you.ancient_god_dislike_key = generate_ancient_god_dislike_key();
 }
+
+void init_ancient_god_props()
+{
+    // not all of these may be strictly required, but init all for safety
+    you.props[AG_THREATENING_BOOST_KEY] = 0;
+    you.props[AG_PREV_THREAT_BOOST_KEY] = 0;
+}

@@ -68,6 +68,7 @@
 #include "mutation.h"
 #include "nearby-danger.h"
 #include "ouch.h"
+#include "output.h"
 #include "player.h"
 #include "player-stats.h"
 #include "random.h"
@@ -424,38 +425,58 @@ static void _handle_uskayaw_time(int time_taken)
 
 static void _handle_ag_threatening_boosts()
 {
-
-    // 3 is extreme, 5 is overwhelming per horror code above  
-    int threat = _current_horror_level();
-
-    switch(ag_passive_threatening_boost_subtype())
+    // Note that we use the same prop for all flavours
+    // since it is not possible to have more than one flavour occur per game
+    int threat = current_threat_level();
+    switch(get_threatening_boost_subtype())
     {
         case (ST_EV):
         {
-            mprf("setting key to %d\n",threat*2);
-            you.props[AG_THREATENING_BOOST_KEY] = threat*2;
+            you.props[AG_THREATENING_BOOST_KEY] = 
+                min(threat/10,12);
             you.redraw_evasion = true;
+            print_stats();
+            you.props[AG_PREV_THREAT_BOOST_KEY] = 
+                you.props[AG_THREATENING_BOOST_KEY].get_int();
             break;
         }
         case (ST_AC):
         {
+            you.props[AG_THREATENING_BOOST_KEY] =
+                min(threat/10,8);
+            you.redraw_armour_class = true;
+            you.props[AG_PREV_THREAT_BOOST_KEY] =
+                you.props[AG_THREATENING_BOOST_KEY].get_int();
             break;
         }
         case (ST_Slaying):
         {
+            you.props[AG_THREATENING_BOOST_KEY] =
+                min(threat/20,8);
+            you.props[AG_PREV_THREAT_BOOST_KEY] =
+                you.props[AG_THREATENING_BOOST_KEY].get_int();           
             break;
         }
         case (ST_Regen_HP):
         {
-            break;
-        }
-        case (ST_Regen_MP):
-        {
+            you.props[AG_THREATENING_BOOST_KEY] = 
+                min(threat/40,3);
+            you.props[AG_PREV_THREAT_BOOST_KEY] = 
+                you.props[AG_THREATENING_BOOST_KEY].get_int();
             break;
         }
         case (ST_INT):
         {
+            you.props[AG_THREATENING_BOOST_KEY] = 
+                min(threat/35,12);
+            you.redraw_stats = true;
+            you.props[AG_PREV_THREAT_BOOST_KEY] = 
+                you.props[AG_THREATENING_BOOST_KEY].get_int();
             break;
+        }
+        default:
+        {
+            mprf("bug report: handling undefined ag subtype");
         }
     }
 }
@@ -470,7 +491,6 @@ static void _handle_ag_effects()
     }
     if(ancient_god_passive_active(passive_t::threatening_boost))
     {
-        mprf("detected boost\n");
         _handle_ag_threatening_boosts();
     }
 }
@@ -511,12 +531,6 @@ void player_reacts_to_monsters()
     _update_cowardice();
     if (you_worship(GOD_USKAYAW))
         _handle_uskayaw_time(you.time_taken);
-    if (you_worship(GOD_ANCIENT))
-    {
-        _handle_ag_effects();
-    }
-    mprf("EV is now %d\n",you.evasion());
-    update_screen();
 }
 
 static bool _check_recite()
@@ -1121,6 +1135,11 @@ void player_reacts()
         xom_tick();
     else if (you_worship(GOD_QAZLAL))
         qazlal_storm_clouds();
+
+    if (you_worship(GOD_ANCIENT))
+    {
+        _handle_ag_effects();
+    }
 
     if (you.props[EMERGENCY_FLIGHT_KEY].get_bool())
         _handle_emergency_flight();

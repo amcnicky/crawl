@@ -6,10 +6,12 @@
 
 #include "ancient-god.h"
 
+#include "act-iter.h"
 #include <cstdint>
 #include <cstring>
 #include "random.h"
 #include "message.h"
+#include "mon-tentacle.h"
 #include "player.h"
 #include "ability-type.h"
 #include "god-passive.h"
@@ -28,7 +30,6 @@
 // TODO: make this deterministic on seed value
 uint8_t generate_ancient_god_name_key()
 {
-    return 0; // testing
     return you.game_seed%NUM_AG_NAMES;
 }
 
@@ -134,13 +135,15 @@ bool ancient_god_passive_active(passive_t passive)
 {
     return you_worship(GOD_ANCIENT)
         && passive == ancient_god_passive()
-        && piety_breakpoint(you.piety) >= ancient_god_passive_breakpoint;
+        && you.piety >= piety_breakpoint(ancient_god_passive_breakpoint);
 }
 
 // an example of how certain passives may have more than one potential subtype
 // TODO: there's likely a more extensible way of doing this.
-ag_passive_threatening_boost_subtype threatening_boost_subtype()
+ag_passive_threatening_boost_subtype get_threatening_boost_subtype()
 {
+    return ag_passive_threatening_boost_subtype::ST_INT; //testing
+    // this is a type cast, not a function
     return ag_passive_threatening_boost_subtype(you.game_seed%NUM_ST);
 }
 
@@ -159,7 +162,14 @@ string ancient_god_passive_description_long()
         || !(you_worship(GOD_ANCIENT)))
     {
         return "Gain more piety to discover this passive ability.\n";
+    } else if (ancient_god_passive()==passive_t::threatening_boost)
+    {
+        // dynamic treatment of passives with subtypes
+        return make_stringf(
+            " grants a boost of %s in threatening situations\n",
+            desc_subtype_of_ancient_god_passive().c_str());
     }
+    // if no subtype just return the static desc per ag_passive_data
     return ag_passive_data[you.ancient_god_passive_key].long_description;
 }
 
@@ -198,7 +208,7 @@ string desc_freq_of_ancient_god_passive()
 string desc_subtype_of_ancient_god_passive()
 {
     string returnString = "";
-    ag_passive_threatening_boost_subtype type = threatening_boost_subtype();
+    ag_passive_threatening_boost_subtype type = get_threatening_boost_subtype();
     switch(type)
     {
         case ST_EV:
@@ -213,16 +223,54 @@ string desc_subtype_of_ancient_god_passive()
         case ST_Regen_HP:
             returnString += "HP regen";
             break;
-        case ST_Regen_MP:
-            returnString += "MP regen";
-            break;
         case ST_INT:
-            returnString += "Intelligence";
+            returnString += "intelligence";
             break;
         default:
             returnString += "buggy code";
     }
     return returnString;
+}
+
+// A slightly smoother generalisation of the current_horror_level function
+// used for Ru's cowardly mutation. Used in places where ancient god abilities
+// need an opinion on local threat level.
+// Threat score: 25/red 10/yellow 1/white 0/grey mons
+int current_threat_level()
+{
+    int return_threat_level = 0;
+
+    for (monster_near_iterator mi(&you, LOS_NO_TRANS); mi; ++mi)
+    {
+
+        if (mons_aligned(*mi, &you)
+            || !mons_is_threatening(**mi)
+            || mons_is_tentacle_or_tentacle_segment(mi->type))
+        {
+            continue;
+        }
+
+        const mon_threat_level_type threat_type = mons_threat_level(**mi);
+        switch(threat_type)
+        {
+            case MTHRT_TRIVIAL:
+                break;
+            case MTHRT_EASY:
+                return_threat_level += 1;
+                break;
+            case MTHRT_TOUGH:
+                return_threat_level += 10;
+                break;
+            case MTHRT_NASTY:
+                return_threat_level += 25;
+                break;
+            default:
+                break;
+        }
+    }
+    
+    return_threat_level = max(0, return_threat_level);
+    return return_threat_level;
 }
 
 /********************************************************

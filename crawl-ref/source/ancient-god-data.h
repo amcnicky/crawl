@@ -56,14 +56,8 @@ agod_passive ag_passive_data[] =
     },
     {
         passive_t::threatening_boost,
-        make_stringf(
-            "GOD NOW grants a boost of %s in threatening situations\n",
-            desc_subtype_of_ancient_god_passive().c_str()
-        ).c_str(),
-        make_stringf(
-            " grants a boost of %s in threatening situations\n",
-            desc_subtype_of_ancient_god_passive().c_str()
-        ).c_str()
+        "buggy when read from here - dynamic treatment in ancient-god.cc",
+        "buggy when read from here - dynamic treatment in ancient-god.cc"
     },
 };
 

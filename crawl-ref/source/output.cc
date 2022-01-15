@@ -919,7 +919,6 @@ static void _print_stats_ev(int x, int y)
                                    : _boosted_ev() ? LIGHTBLUE
                                                     : HUD_VALUE_COLOUR);
     CPRINTF("%2d ", you.evasion());
-
     you.redraw_evasion = false;
 }
 
@@ -1365,8 +1364,9 @@ void print_stats()
     if (you.redraw_armour_class)
         _print_stats_ac(1, ac_pos - rows_hidden);
     if (you.redraw_evasion)
+    {
         _print_stats_ev(1, ev_pos - rows_hidden);
-
+    }
     for (int i = 0; i < NUM_STATS; ++i)
         if (you.redraw_stats[i])
             _print_stat(static_cast<stat_type>(i), 19, 5 + i - rows_hidden);

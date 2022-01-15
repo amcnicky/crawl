@@ -2,6 +2,7 @@
 
 #include "player-stats.h"
 
+#include "ancient-god.h"
 #include "artefact.h"
 #include "clua.h"
 #include "delay.h"
@@ -352,6 +353,12 @@ static int _int_modifier(bool innate_only)
 
         // randarts of intelligence
         result += you.scan_artefacts(ARTP_INTELLIGENCE);
+
+        if (ancient_god_passive_active(passive_t::threatening_boost)
+            && get_threatening_boost_subtype() == ST_INT)
+        {
+            result += you.props[AG_THREATENING_BOOST_KEY].get_int();
+        }
     }
 
     // mutations

@@ -652,6 +652,9 @@ static void _setup_generic(const newgame_def& ng,
     // Generate ancient god keys
     generate_ancient_god_attributes();
 
+    // Init ancient god props for safety
+    init_ancient_god_props();
+
     // Get rid of god companions left from previous games
     init_companions();
 

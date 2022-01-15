@@ -989,7 +989,7 @@ static formatted_string _describe_god_powers(god_type which_god)
         if (piety < piety_breakpoint(ancient_god_passive_breakpoint))
             desc.textcolour(DARKGREY);
 
-        // i.e. [godname][frequency][description] -- Yib does the thing
+        // i.e. [godname][frequency][description]
         // but if the power is not yet discovered, we don't want
         // "[Yib][rarely][you need to gain more piety to unlock this ability]"
         // so don't print the godname if below threshold

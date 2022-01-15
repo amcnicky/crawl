@@ -18,6 +18,7 @@
 #include "ability.h"
 #include "abyss.h"
 #include "act-iter.h"
+#include "ancient-god.h"
 #include "areas.h"
 #include "art-enum.h"
 #include "attack.h"
@@ -1115,6 +1116,12 @@ static int _player_bonus_regen()
 
     // Fast heal mutation.
     rr += you.get_mutation_level(MUT_REGENERATION) * REGEN_PIP;
+    // Ancient god threatening boost passive (HP regen subtype)
+    if(ancient_god_passive_active(passive_t::threatening_boost)
+        && get_threatening_boost_subtype() == ST_Regen_HP)
+    {
+        rr += you.props[AG_THREATENING_BOOST_KEY].get_int() * REGEN_PIP;
+    }
 
     // Powered By Death mutation, boosts regen by variable strength
     // if the duration of the effect is still active.
@@ -1969,7 +1976,6 @@ static int _player_adjusted_evasion_penalty(const int scale)
 // does not include tengu/merfolk EV bonuses for flight/swimming.
 static int _player_evasion_bonuses()
 {
-    mprf("running bonuses in player.cc\n");
     int evbonus = 0;
 
     if (you.duration[DUR_AGILITY])
@@ -2000,15 +2006,18 @@ static int _player_evasion_bonuses()
     if (acrobat_boost_active())
         evbonus += 15;
 
-    mprf("evbonus before addition: %d\n",evbonus);
-    if (you.props.exists(AG_THREATENING_BOOST_KEY))
+    if (ancient_god_passive_active(passive_t::threatening_boost)
+        && get_threatening_boost_subtype()==ST_EV)
     {
-        evbonus += you.props[AG_THREATENING_BOOST_KEY].get_int();
-    } else {
-        mprf("prop doesn't exist!!!\n");
+        if (you.props.exists(AG_THREATENING_BOOST_KEY))
+        {
+            evbonus += you.props[AG_THREATENING_BOOST_KEY].get_int();
+        } else {
+            // initialise
+            you.props[AG_THREATENING_BOOST_KEY] = 0;
+            you.props[AG_PREV_THREAT_BOOST_KEY] = 0;
+        }
     }
-
-    mprf("evbonus after addition: %d\n",evbonus);
 
     return evbonus;
 }
@@ -2102,7 +2111,6 @@ static int _player_evasion(bool ignore_helpless)
         - vertigo_penalty;
 
     const int evasion_bonuses = _player_evasion_bonuses() * scale;
-    mprf("scaled evasion bonuses: %d",evasion_bonuses);
     const int final_evasion =
         _player_scale_evasion(natural_evasion, scale) + evasion_bonuses;
 
@@ -3457,6 +3465,12 @@ int slaying_bonus(bool throwing)
 
     if (you.props.exists(WU_JIAN_HEAVENLY_STORM_KEY))
         ret += you.props[WU_JIAN_HEAVENLY_STORM_KEY].get_int();
+
+    if (ancient_god_passive_active(passive_t::threatening_boost)
+        && get_threatening_boost_subtype() == ST_Slaying)
+    {
+        ret += you.props[AG_THREATENING_BOOST_KEY].get_int();
+    }
 
     return ret;
 }
@@ -6034,6 +6048,12 @@ int player::armour_class_with_specific_items(vector<const item_def *> items) con
         AC += 700;
         if (player_equip_unrand(UNRAND_MEEK))
             AC += _meek_bonus() * scale;
+    }
+
+    if(ancient_god_passive_active(passive_t::threatening_boost)
+        && get_threatening_boost_subtype()==ST_AC)
+    {
+        AC += you.props[AG_THREATENING_BOOST_KEY].get_int()*100;
     }
 
     AC -= 400 * corrosion_amount();
