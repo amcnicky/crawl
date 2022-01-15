@@ -261,3 +261,99 @@ const char* ag_spriggan_names[] =
     "Paxton",
     "Rowena"
 };
+
+const char* ag_desc_aspect_data[] =
+{
+    "life",
+    "laughter",
+    "love",
+    "death",
+    "famine",
+    "decay",
+    "memory",
+    "dreams",
+    "pain",
+    "suffering",
+    "light",
+    "darkness",
+    "the beyond",
+    "strange happenings",
+    "otherworldly experiences",
+    "eperience",
+    "youth",
+    "beginnings",
+    "fatigue",
+    "energy",
+    "the abyss",
+    "the void",
+};
+
+const char* ag_desc_faction_data[] =
+{
+    "assassins",
+    "necromancers",
+    "theives",
+    "merchants",
+    "sailors",
+    "navigators",
+    "pyromancers",
+    "geomancers",
+    "vampires",
+    "were-yaks",
+    "the forgotten people of Shyixth",
+    "trolls",
+    "centaurs",
+    "humans",
+    "hobgoblins",
+    "denizens of Zot",
+    "denizens of the dungeon",
+};
+
+const char* ag_desc_introduction_data[] =
+{
+    "A long time ago, in a realm somewhat distant to this one, ",
+    "A long-forgotten deity of ASPECT, ",
+    "A long-forgotten idol of ASPECT, ",
+    "A patron deity of FACTION, ",
+    "Remembered now only by the ASPECT FACTION, ",
+    "Now only seen in the dark temples of the FACTION of ASPECT, ",
+    "Now only referenced in exceedingly rare tomes, ",
+    "Now only whispered about in the high towers of Valen, ",
+    "Now barely a rumour, ",
+    "Now only whispered about in dark rooms as the candles burn low, ",
+};
+
+const char* ag_desc_how_god_was_data[] =
+{
+    "GODNAME was once the foundation of society. ",
+    "GODNAME was once the centre of culture. ",
+    "GODNAME's power once burned brightly. ",
+    "GODNAME's influence once stretched throughout the land. ",
+    "GODNAME's was once even worshipped by the Great Pharaoh. ",
+    "GODNAME's power was once known to drive worshippers to insanity. ",
+    "GODNAME once ruled from within the Holy Volcano of Yen. ",
+    "GODNAME's power once lead its people to great feats. ",
+    "there was once no greater honour that to be a high cultist of GODNAME. ",
+};
+
+const char* ag_desc_god_fall_data[] =
+{
+    "However, followers of Ignis all but destroyed the memory of GODNAME. ",
+    "However, followers of Cheibriados thought it was all a bit too fast-paced"
+        " and almost destroyed GODNAME's existence. ",
+    "However, GODNAME's power dwindled as the planets changed their alignment"
+        " and almost all worshippers moved on. ",
+    "However, since the slaughter at Saar'ylen, GODNAME's following has"
+        " dwindled. ",
+    "However, as thousands of years passed, GODNAME drifted into obscurity. ",
+};
+
+const char* ag_desc_god_now_data[] =
+{
+    "Now, GODNAME seeks revenge.",
+    "Now, GODNAME seeks the Orb of Zot to reclaim its power.",
+    "Now, GODNAME lies in wait, gathering power once again.",
+    "Now, GODNAME draws power from the dreams of FACTION, dreaming itself "
+        "of one day being powerful again.",
+    "Now, GODNAME seeks followers to build its power.",
+};

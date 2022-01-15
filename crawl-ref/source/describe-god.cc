@@ -693,7 +693,13 @@ static string _get_god_misc_info(god_type which_god)
 static formatted_string _detailed_god_description(god_type which_god)
 {
     formatted_string desc;
-    _add_par(desc, getLongDescription(god_name(which_god) + " powers"));
+    if(which_god == GOD_ANCIENT)
+    {
+        _add_par(desc,ag_desc_powers());
+    } else
+    {
+        _add_par(desc, getLongDescription(god_name(which_god) + " powers"));
+    }
     _add_par(desc, get_god_likes(which_god));
     _add_par(desc, _get_god_misc_info(which_god));
     return desc;
@@ -1050,13 +1056,29 @@ static formatted_string _describe_god_powers(god_type which_god)
     return desc;
 }
 
+static string _ag_long_description()
+{
+    string desc = "";
+    desc += ag_desc_introduction();
+    desc += ag_desc_how_god_was();
+    desc += ag_desc_god_fall();
+    desc += ag_desc_god_now();
+    desc += "\n\n";
+    return desc;
+}
+
 static formatted_string _god_overview_description(god_type which_god)
 {
     formatted_string desc;
 
     // Print god's description.
-    const string god_desc = getLongDescription(god_name(which_god));
-    desc += trimmed_string(god_desc) + "\n";
+    if(which_god == GOD_ANCIENT){
+        desc += trimmed_string(_ag_long_description());
+    } else
+    {
+        const string god_desc = getLongDescription(god_name(which_god));
+        desc += trimmed_string(god_desc) + "\n";
+    }
 
     // Title only shown for our own god.
     if (you_worship(which_god))

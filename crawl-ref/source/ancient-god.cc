@@ -35,7 +35,6 @@ uint8_t generate_ancient_god_name_key()
 
 uint8_t generate_ancient_god_passive_key()
 {
-    return 4; // testing
     return you.game_seed%NUM_AGP;
 }
 
@@ -117,6 +116,78 @@ const char* ancient_god_title()
     // 0 to NUM_AG_TITLES-1 i.e. an index into the data array we can use.
 
     return ag_title_data[ancient_god_title_key];
+}
+
+static string _ancient_god_aspect()
+{
+    // will change mid-game if array is modified by an update
+    // not ideal, but its also just a description
+    return ag_desc_aspect_data[you.game_seed%ARRAYSZ(ag_desc_aspect_data)];
+}
+
+static string _ancient_god_faction()
+{
+    // will change mid-game if array is modified by an update
+    // not ideal, but its also just a description
+    return ag_desc_faction_data[you.game_seed%ARRAYSZ(ag_desc_faction_data)];
+}
+
+static string _apply_dynamic_godname(string desc)
+{
+    return replace_all(desc,"GODNAME",ancient_god_name());
+}
+
+static string _apply_dynamic_aspect(string desc)
+{
+    return replace_all(desc,"ASPECT",_ancient_god_aspect());
+}
+
+static string _apply_dynamic_faction(string desc)
+{
+    return replace_all(desc,"FACTION",_ancient_god_faction());
+}
+
+static string _apply_dynamics(string desc)
+{
+    return _apply_dynamic_godname(
+        _apply_dynamic_aspect(
+            _apply_dynamic_faction(desc)
+        )
+    );
+}
+
+string ag_desc_introduction()
+{
+    return _apply_dynamics(
+        ag_desc_introduction_data[you.game_seed%ARRAYSZ(ag_desc_introduction_data)]);
+}
+
+string ag_desc_how_god_was()
+{
+    return _apply_dynamics(
+    ag_desc_how_god_was_data[you.game_seed%ARRAYSZ(ag_desc_how_god_was_data)]);
+}
+
+string ag_desc_god_fall()
+{
+    return _apply_dynamics(
+        ag_desc_god_fall_data[you.game_seed%ARRAYSZ(ag_desc_god_fall_data)]);
+}
+
+string ag_desc_god_now()
+{
+    return _apply_dynamics(
+        ag_desc_god_now_data[you.game_seed%ARRAYSZ(ag_desc_god_now_data)]);
+}
+
+string ag_desc_powers()
+{
+    return _apply_dynamic_godname(
+        "As an ancient god, knowledge of GODNAME's powers has been lost in"
+        " all but the most devout corners of the world. Gaining piety with"
+        " GODNAME will allow you to rediscover and earn the benefits of"
+        " worship."
+    );
 }
 
 
