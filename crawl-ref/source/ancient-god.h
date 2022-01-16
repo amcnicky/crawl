@@ -46,14 +46,14 @@ enum ag_passive_type
 
 enum ag_abil_small_type
 {
-    AG_S_HEROISM,
+    AG_S_REALITY_DILATION,
     NUM_AGAS,
     MAX_AGAS = 255,
 };
 
 enum ag_abil_cap_type
 {
-    AG_C_DISASTER_AREA,
+    AG_C_REALITY_DILATION,
     NUM_AGAC,
     MAX_AGAC = 255,
 };
@@ -79,6 +79,7 @@ void setup_ag_spriggan_sidekick();
 mid_t ag_sidekick();
 const char* ancient_god_name_extra();
 const char* ancient_god_title();
+string apply_ag_dynamics(string desc);
 string ag_desc_introduction();
 string ag_desc_how_god_was();
 string ag_desc_god_fall();

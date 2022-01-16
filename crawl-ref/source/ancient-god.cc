@@ -147,7 +147,7 @@ static string _apply_dynamic_faction(string desc)
     return replace_all(desc,"FACTION",_ancient_god_faction());
 }
 
-static string _apply_dynamics(string desc)
+string apply_ag_dynamics(string desc)
 {
     return _apply_dynamic_godname(
         _apply_dynamic_aspect(
@@ -158,25 +158,25 @@ static string _apply_dynamics(string desc)
 
 string ag_desc_introduction()
 {
-    return _apply_dynamics(
+    return apply_ag_dynamics(
         ag_desc_introduction_data[you.game_seed%ARRAYSZ(ag_desc_introduction_data)]);
 }
 
 string ag_desc_how_god_was()
 {
-    return _apply_dynamics(
+    return apply_ag_dynamics(
     ag_desc_how_god_was_data[you.game_seed%ARRAYSZ(ag_desc_how_god_was_data)]);
 }
 
 string ag_desc_god_fall()
 {
-    return _apply_dynamics(
+    return apply_ag_dynamics(
         ag_desc_god_fall_data[you.game_seed%ARRAYSZ(ag_desc_god_fall_data)]);
 }
 
 string ag_desc_god_now()
 {
-    return _apply_dynamics(
+    return apply_ag_dynamics(
         ag_desc_god_now_data[you.game_seed%ARRAYSZ(ag_desc_god_now_data)]);
 }
 

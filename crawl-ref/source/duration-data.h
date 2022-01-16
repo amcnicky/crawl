@@ -578,6 +578,13 @@ static const duration_def duration_data[] =
       "on blink cooldown", "blink cooldown",
       "You are unable to blink.", D_NO_FLAGS,
       {{ "You feel stable enough to blink again."}}},
+    { DUR_R_DILATION, 
+      LIGHTBLUE, "R. Dilation",
+      "within a bubble of dilated reality", "",
+      "You are dilating the fabric of reality around "
+      "you, causing you to travel at ferrocious speed.", D_NO_FLAGS,
+      {{ "You cease travelling through dilated reality, returning to your "
+        "normal speed." }}},
 
     // The following are visible in wizmode only, or are handled
     // specially in the status lights and/or the % or @ screens.

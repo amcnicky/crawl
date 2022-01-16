@@ -808,6 +808,13 @@ Sends you floating upward and, after a short delay for Ignis to gather enough
 power, blasts you through the ceiling and into the level above. This ability
 may only be used once.
 %%%%
+Reality Dilation ability
+
+Envelopes you within a spacetime bubble, outside which reality is dilated. 
+This causes an incredible increase in movement speed, but does not affect 
+other actions, such as attacking, which cross the boundary of the bubble 
+back into the normal flow of time.
+%%%%
 Hop ability
 
 Hops toward a chosen destination, landing somewhere nearby. After using this

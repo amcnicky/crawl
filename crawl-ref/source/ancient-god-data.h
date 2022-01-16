@@ -64,18 +64,18 @@ agod_passive ag_passive_data[] =
 agod_ability_small ag_ability_small_data[] =
 {
     {   //AG_S_HEROISM
-        ABIL_OKAWARU_HEROISM,
-        "testdesc1 heroism",
-        "testdesc2 heroism"
+        ABIL_AG_REALITY_DILATION,
+        "You can warp reality to temporarily move incredibly quickly.",
+        "GODNAME long description for reality dilation."
     },
 };
 
 agod_ability_cap ag_ability_cap_data[] =
 {
-    {   //AG_C_DISASTER_AREA
-        ABIL_QAZLAL_DISASTER_AREA,
-        "testdesc1 DA",
-        "testdesc2 DA"
+    {   //AG_C_REALITY_DILATION
+        ABIL_AG_REALITY_DILATION,
+        "GODNAME short description for reality dilation.",
+        "GODNAME long description for reality dilation."
     },
 };
 

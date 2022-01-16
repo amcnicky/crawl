@@ -231,5 +231,6 @@ enum duration_type
     DUR_OOZEMANCY,
     DUR_FIERY_ARMOUR,
     DUR_SIDEKICK_DELAY,
+    DUR_R_DILATION,
     NUM_DURATIONS
 };

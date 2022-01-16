@@ -655,6 +655,8 @@ static vector<ability_def> &_get_ability_list()
         // Ancient God
         { ABIL_AG_RECALL_SIDEKICK, "Recall Sidekick",
             2, 0, 0, -1, {fail_basis::invo}, abflag::none },
+        { ABIL_AG_REALITY_DILATION, "Reality Dilation",
+            8, 0, 12, -1, {fail_basis::invo}, abflag::none },
 
         { ABIL_STOP_RECALL, "Stop Recall",
             0, 0, 0, -1, {fail_basis::invo}, abflag::none },
@@ -3387,6 +3389,13 @@ static spret _do_ability(const ability_def& abil, bool fail, dist *target,
         // slightly faster than teleport
         you.set_duration(DUR_RISING_FLAME, 2 + random2(3));
         you.one_time_ability_used.set(GOD_IGNIS);
+        return spret::success;
+    
+    case ABIL_AG_REALITY_DILATION:
+        mpr("You feel time extend as you dilate reality!");
+        you.set_duration(DUR_R_DILATION,
+            random_range(3,5+you.skill_rdiv(SK_INVOCATIONS)/9));
+        you.redraw_status_lights = true;
         return spret::success;
 
     case ABIL_AG_RECALL_SIDEKICK:

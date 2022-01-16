@@ -3800,6 +3800,8 @@ tileidx_t tileidx_ability(const ability_type ability)
     // Ancient God
     case ABIL_AG_RECALL_SIDEKICK:
         return TILEG_ABILITY_HEP_RECALL;
+    case ABIL_AG_REALITY_DILATION:
+        return TILEG_ABILITY_WU_JIAN_SERPENTS_LASH;
 
     // General divine (pseudo) abilities.
     case ABIL_RENOUNCE_RELIGION:
