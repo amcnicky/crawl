@@ -39,10 +39,10 @@ agod_passive ag_passive_data[] =
     },
     {   //AG_P_CONSISTENT_SHOPPING
         passive_t::discount_shopping,
-        "GOD NOW bends the minds of shopkeepers to offer \
-        a highly favourable price.\n",
-        " passively bends the minds of shopkeepers to offer a \
-        highly favourable price.\n"
+        "GOD NOW bends the minds of shopkeepers to offer "
+        "a highly favourable price.\n",
+        " passively bends the minds of shopkeepers to offer a "
+        "highly favourable price.\n"
     },
     {   //AG_P_POTION_REFILLS
         passive_t::potion_refills,
@@ -67,6 +67,11 @@ agod_ability_small ag_ability_small_data[] =
         ABIL_AG_REALITY_DILATION,
         "You can warp reality to temporarily move incredibly quickly.",
         "GODNAME long description for reality dilation."
+    },
+    {   //AG_S_SPATIAL_SINGULARITY
+        ABIL_AG_SPATIAL_SINGULARITY,
+        "You can return to a previous location through a spatial singularity.",
+        "GODNAME long description for spatial singularity."
     },
 };
 

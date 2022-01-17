@@ -424,6 +424,30 @@ const vector<vector<god_power>> & get_all_god_powers()
     return god_powers;
 }
 
+/*
+*    if we're trying to look up the very first ability,
+*    check if this is because we've genuinely rolled the first ability
+*    or if it's because we're reading from the god_powers vector which
+*    has been instantiated too early with 0s as all lookup indexes
+*    Note: not performing this fixup causes all ag abilities 
+*    
+*    XXX: must be a better way of doing this
+*/
+static ability_type _fixup_ag_abilities(ability_type a_type)
+{
+    if(a_type == ag_ability_small_data[0][0])
+    {
+        return ancient_god_small_ability();
+    }
+
+    if(a_type == ag_ability_cap_data[0][0])
+    {
+        return ancient_god_cap_ability();
+    }
+
+    return a_type;
+}
+
 vector<god_power> get_god_powers(god_type god)
 {
     vector<god_power> ret;
@@ -480,6 +504,7 @@ vector<god_power> get_god_powers(god_type god)
         if (!(power.abil != ABIL_NON_ABILITY
               && fixup_ability(power.abil) == ABIL_NON_ABILITY))
         {
+            power.abil = _fixup_ag_abilities(power.abil);
             ret.push_back(power);
         }
     }

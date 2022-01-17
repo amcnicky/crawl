@@ -318,6 +318,7 @@ enum ability_type
     ABIL_PLACEHOLDER_DESCRIPTION_CAP,
     ABIL_AG_RECALL_SIDEKICK,
     ABIL_AG_REALITY_DILATION,
+    ABIL_AG_SPATIAL_SINGULARITY,
 
     // General divine (pseudo) abilities.
     ABIL_RENOUNCE_RELIGION,

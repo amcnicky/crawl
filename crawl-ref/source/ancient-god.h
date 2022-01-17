@@ -47,6 +47,7 @@ enum ag_passive_type
 enum ag_abil_small_type
 {
     AG_S_REALITY_DILATION,
+    AG_S_SPATIAL_SINGULARITY,
     NUM_AGAS,
     MAX_AGAS = 255,
 };

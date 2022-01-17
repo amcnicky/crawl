@@ -40,6 +40,7 @@ uint8_t generate_ancient_god_passive_key()
 
 uint8_t generate_ancient_god_small_key()
 {
+    return 1; //testing
     return you.game_seed%NUM_AGAS;
 }
 

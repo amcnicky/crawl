@@ -585,6 +585,13 @@ static const duration_def duration_data[] =
       "you, causing you to travel at ferrocious speed.", D_NO_FLAGS,
       {{ "You cease travelling through dilated reality, returning to your "
         "normal speed." }}},
+    { DUR_SINGULARITY,
+      MAGENTA, "Singularity",
+      "about to return to a spatial singularity", "",
+      "You are linked to a spatial singularity and will return to that "
+        "location in a short while.", D_NO_FLAGS,
+      {{ "You feel pulled through a different dimension towards your spatial "
+          "singularity." }}},
 
     // The following are visible in wizmode only, or are handled
     // specially in the status lights and/or the % or @ screens.

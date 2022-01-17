@@ -815,6 +815,14 @@ This causes an incredible increase in movement speed, but does not affect
 other actions, such as attacking, which cross the boundary of the bubble 
 back into the normal flow of time.
 %%%%
+Spatial Singularity ability
+
+Creates a spatial singularity at your location, which, after a delay, will 
+cause you to return to that location regardless of the distances involved.
+
+Traversing a staircase in either direction will break the link to your 
+spatial singularity, preventing you from returning.
+%%%%
 Hop ability
 
 Hops toward a chosen destination, landing somewhere nearby. After using this

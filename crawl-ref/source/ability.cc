@@ -657,6 +657,8 @@ static vector<ability_def> &_get_ability_list()
             2, 0, 0, -1, {fail_basis::invo}, abflag::none },
         { ABIL_AG_REALITY_DILATION, "Reality Dilation",
             8, 0, 12, -1, {fail_basis::invo}, abflag::none },
+        { ABIL_AG_SPATIAL_SINGULARITY, "Spatial Singularity",
+            5, 0, 12, -1, {fail_basis::invo}, abflag::none },
 
         { ABIL_STOP_RECALL, "Stop Recall",
             0, 0, 0, -1, {fail_basis::invo}, abflag::none },
@@ -3396,6 +3398,14 @@ static spret _do_ability(const ability_def& abil, bool fail, dist *target,
         you.set_duration(DUR_R_DILATION,
             random_range(3,5+you.skill_rdiv(SK_INVOCATIONS)/9));
         you.redraw_status_lights = true;
+        return spret::success;
+
+    case ABIL_AG_SPATIAL_SINGULARITY:
+        mpr("You create a spatial singularity at your current location!");
+        you.set_duration(DUR_SINGULARITY,
+            random_range(4,6+you.skill_rdiv(SK_INVOCATIONS)/7));
+        // try to place singularity
+        // check success
         return spret::success;
 
     case ABIL_AG_RECALL_SIDEKICK:
