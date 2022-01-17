@@ -349,6 +349,11 @@ int current_threat_level()
 *   Functions relating to ancient god smaller abilities
 ********************************************************/
 
+ability_type ancient_god_default_small_ability()
+{
+    return ag_ability_small_data[0].ability;
+}
+
 ability_type ancient_god_small_ability()
 {
     return ag_ability_small_data[you.ancient_god_small_key].ability;
@@ -365,6 +370,7 @@ const char* ancient_god_small_ability_description_long()
 }
 
 
+
 /********************************************************
 *   Functions relating to ancient god capstone abilities
 ********************************************************/
@@ -372,6 +378,11 @@ const char* ancient_god_small_ability_description_long()
 ability_type ancient_god_cap_ability()
 {
     return ag_ability_cap_data[you.ancient_god_cap_key].ability;
+}
+
+ability_type ancient_god_default_cap_ability()
+{
+    return ag_ability_cap_data[0].ability;
 }
 
 const char* ancient_god_cap_ability_description_short()

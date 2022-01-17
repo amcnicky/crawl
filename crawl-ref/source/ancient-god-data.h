@@ -78,9 +78,9 @@ agod_ability_small ag_ability_small_data[] =
 agod_ability_cap ag_ability_cap_data[] =
 {
     {   //AG_C_REALITY_DILATION
-        ABIL_AG_REALITY_DILATION,
-        "GODNAME short description for reality dilation.",
-        "GODNAME long description for reality dilation."
+        ABIL_BEOGH_GIFT_ITEM,
+        "GODNAME short description for capstone.",
+        "GODNAME long description for capstone."
     },
 };
 

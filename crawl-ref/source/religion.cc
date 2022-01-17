@@ -433,19 +433,23 @@ const vector<vector<god_power>> & get_all_god_powers()
 *    
 *    XXX: must be a better way of doing this
 */
-static ability_type _fixup_ag_abilities(ability_type a_type)
+static god_power _fixup_ag_abilities(god_power power)
 {
-    if(a_type == ag_ability_small_data[0][0])
+    if(power.abil == ancient_god_default_small_ability())
     {
-        return ancient_god_small_ability();
+        return god_power(ancient_god_small_breakpoint, 
+            ancient_god_small_ability(), 
+            ancient_god_small_ability_description_short());
     }
 
-    if(a_type == ag_ability_cap_data[0][0])
+    if(power.abil == ancient_god_default_cap_ability())
     {
-        return ancient_god_cap_ability();
+        return god_power(ancient_god_cap_breakpoint, 
+            ancient_god_cap_ability(), 
+            ancient_god_cap_ability_description_short());
     }
 
-    return a_type;
+    return power;
 }
 
 vector<god_power> get_god_powers(god_type god)
@@ -459,6 +463,7 @@ vector<god_power> get_god_powers(god_type god)
         {
             continue;
         }
+        // TODO: consolidate this logic into fixup_ability
         // more hacks - don't show "gain more piety to..." dummy abilities
         // above the relevant piety threshold
         if (god == GOD_ANCIENT 
@@ -504,8 +509,7 @@ vector<god_power> get_god_powers(god_type god)
         if (!(power.abil != ABIL_NON_ABILITY
               && fixup_ability(power.abil) == ABIL_NON_ABILITY))
         {
-            power.abil = _fixup_ag_abilities(power.abil);
-            ret.push_back(power);
+            ret.push_back(_fixup_ag_abilities(power));
         }
     }
     return ret;
