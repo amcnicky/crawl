@@ -747,6 +747,12 @@ bool fill_status_info(int status, status_info& inf)
             _fill_inf_from_ddef(DUR_LOWERED_WL, inf);
         break;
 
+    case DUR_SINGULARITY:
+        inf.light_text
+            = make_stringf("Singularity (%u)",
+                           you.duration[DUR_SINGULARITY]/10);
+        break;      
+
     default:
         if (!found)
         {

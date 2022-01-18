@@ -716,6 +716,8 @@ void floor_transition(dungeon_feature_type how,
         jiyva_end_oozemancy();
     if (you.duration[DUR_NOXIOUS_BOG])
         you.duration[DUR_NOXIOUS_BOG] = 0;
+    if (you.duration[DUR_SINGULARITY])
+        ag_end_spatial_singularity();
 
     // Fire level-leaving trigger.
     leaving_level_now(how);

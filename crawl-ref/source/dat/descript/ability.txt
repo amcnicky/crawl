@@ -818,10 +818,13 @@ back into the normal flow of time.
 Spatial Singularity ability
 
 Creates a spatial singularity at your location, which, after a delay, will 
-cause you to return to that location regardless of the distances involved.
+pull you back to that location regardless of the distances involved.
 
-Traversing a staircase in either direction will break the link to your 
-spatial singularity, preventing you from returning.
+Leaving the current level through any means will break the link to your 
+spatial singularity, preventing you from returning, and whilst normal enemies
+will be forced out of the way, constricted, stationary, or enemies that
+are otherwise impossible to move may block your return should they occupy
+the space.
 %%%%
 Hop ability
 

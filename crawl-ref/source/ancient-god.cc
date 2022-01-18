@@ -365,7 +365,6 @@ const char* ancient_god_small_ability_description_long()
 }
 
 
-
 /********************************************************
 *   Functions relating to ancient god capstone abilities
 ********************************************************/

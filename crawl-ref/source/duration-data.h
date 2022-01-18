@@ -6,6 +6,9 @@
 
 #include "act-iter.h"
 #include "god-passive.h"
+#include "mon-tentacle.h"
+#include "teleport.h"
+#include "terrain.h"
 #include "tag-version.h"
 
 static void _end_weapon_brand()
@@ -53,6 +56,64 @@ static void _end_sticky_flame()
 static void _redraw_armour()
 {
     you.redraw_armour_class = true;
+}
+
+
+static bool _activate_singularity(coord_def location)
+{
+    // are we ok to actually return to this space?
+    // note: we already know it has solid floor as a pre-requisite of the abil
+
+    // 1: still check for solid floor (terrain change safety)
+    if(!feat_has_solid_floor(env.grid(location)))
+    {
+      mpr("It is not safe to return to the terrain at your singularity!");
+      return false;
+    }
+
+    // 2: check if there's a monster at the location and move it if so
+    monster* mons = monster_at(location);
+    if(mons)
+    {
+      // monsters that are problematic to move
+      if (mons->is_stationary() || mons->is_constricted())
+      {
+          mpr("An unmovable entity blocks your singularity!");
+          return false;
+      }
+      if (mons_is_tentacle_or_tentacle_segment(mons->type)
+          || mons_is_tentacle_head(mons_base_type(*mons)))
+      {
+          mpr("A mass of tentacles blocks your singularity!");
+          return false;
+      }
+
+      // at this point, try to move the monster since should be able to
+      bool success = blink_away(mons,mons,false,true);
+      if(success)
+      {
+        mprf("You displace %s as you return through the singularity.", 
+          mons->name(DESC_THE).c_str());
+      } else {
+        mpr("Something prevents you returning through your singularity!");
+      }
+      return success;
+    }
+    return true;
+}
+
+static void _handle_spatial_singularity()
+{
+    ASSERT(you.props.exists(ANCIENT_GOD_SINGULARITY_RETURN_COORD));
+    ASSERT(you.props[ANCIENT_GOD_SINGULARITY_RETURN_COORD].get_coord()
+        != coord_def(-1, -1));
+    // then move the player to the space
+    const coord_def sing_location = 
+      you.props[ANCIENT_GOD_SINGULARITY_RETURN_COORD].get_coord();
+    if(_activate_singularity(sing_location))
+    {
+      move_player_to_grid(sing_location,0);
+    }
 }
 
 // properties of the duration.
@@ -591,7 +652,7 @@ static const duration_def duration_data[] =
       "You are linked to a spatial singularity and will return to that "
         "location in a short while.", D_NO_FLAGS,
       {{ "You feel pulled through a different dimension towards your spatial "
-          "singularity." }}},
+          "singularity.", _handle_spatial_singularity }}},
 
     // The following are visible in wizmode only, or are handled
     // specially in the status lights and/or the % or @ screens.

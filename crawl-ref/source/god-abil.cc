@@ -6110,3 +6110,9 @@ void jiyva_end_oozemancy()
         if (env.grid(*ri) == DNGN_SLIMY_WALL && is_temp_terrain(*ri))
             revert_terrain_change(*ri, TERRAIN_CHANGE_SLIME);
 }
+
+void ag_end_spatial_singularity()
+{
+    mpr("You lose your connection to the spatial singularity.");
+    you.duration[DUR_SINGULARITY] = 0;   
+}

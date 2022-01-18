@@ -879,9 +879,6 @@ static void _decrement_durations()
                 you.berserk() ? "rip and tear" : "carefully extract").c_str());
     }
 
-    if(you.duration[DUR_SINGULARITY])
-        handle_spatial_singularity();
-
     if (!you.duration[DUR_ANCESTOR_DELAY]
         && have_passive(passive_t::frail)
         && hepliaklqana_ancestor() == MID_NOBODY)
@@ -1164,21 +1161,3 @@ void extract_manticore_spikes(const char* endmsg)
     }
 }
 
-static void _activate_singularity()
-{
-    mpr("activating singularity");
-}
-
-void handle_spatial_singularity()
-{
-    if(_decrement_a_duration(DUR_SINGULARITY,you.time_taken, "??"))
-    {
-        _activate_singularity(); // clear the space
-        ASSERT(you.props.exists(ANCIENT_GOD_SINGULARITY_RETURN_COORD));
-        ASSERT(you.props[ANCIENT_GOD_SINGULARITY_RETURN_COORD].get_coord()
-            != coord_def(-1, -1));
-        // then move the player to the space
-        move_player_to_grid(you.props[ANCIENT_GOD_SINGULARITY_RETURN_COORD]
-            .get_coord(),0);
-    }
-}

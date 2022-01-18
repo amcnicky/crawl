@@ -3408,19 +3408,20 @@ static spret _do_ability(const ability_def& abil, bool fail, dist *target,
             return spret::abort;
         }
 
-        // coord_def to be recorded, and passed to move_player_to_grid(const coord_def& p, bool stepped)
         if(feat_has_solid_floor(env.grid(you.pos())))
         {
-            you.props[ANCIENT_GOD_SINGULARITY_RETURN_COORD] = coord_def(-1, -1);
+            you.props[ANCIENT_GOD_SINGULARITY_RETURN_COORD] 
+                = coord_def(-1, -1);
             you.set_duration(DUR_SINGULARITY,
-            random_range(4,6+you.skill_rdiv(SK_INVOCATIONS)/7));
+            random_range(8,12+you.skill_rdiv(SK_INVOCATIONS)/7));
             // try to place singularity
             you.props[ANCIENT_GOD_SINGULARITY_RETURN_COORD] = you.pos();
             mpr("You create a spatial singularity at your current location!");
             // check success
             return spret::success;
         } else {
-            mpr("The lack of solid ground here prevents you from creating a singularity.");
+            mpr("The lack of solid ground here prevents you"
+                " from creating a singularity.");
             return spret::abort;
         }
 

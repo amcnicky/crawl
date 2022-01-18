@@ -439,28 +439,27 @@ vector<god_power> get_god_powers(god_type god)
         // TODO: consolidate this logic into fixup_ability
         // more hacks - don't show "gain more piety to..." dummy abilities
         // above the relevant piety threshold
-        if (
-            god == GOD_ANCIENT
-            && power.abil == ABIL_PLACEHOLDER_GAINMORE_SMALL
-            && (
-                    you.piety >= piety_breakpoint(ancient_god_passive_breakpoint)
-                ||  !(you_worship(GOD_ANCIENT))
-                )
-            )
+
+        if (god == GOD_ANCIENT
+            && power.abil == ABIL_PLACEHOLDER_GAINMORE_SMALL )
         {
-            continue;
+            if(you_worship(GOD_ANCIENT)
+                && you.piety >= piety_breakpoint(ancient_god_small_breakpoint))
+            {
+                continue;
+            }
         }
 
-        if (
-            god == GOD_ANCIENT
-            && power.abil == ABIL_PLACEHOLDER_GAINMORE_CAP
-            && (
-                    you.piety >= piety_breakpoint(ancient_god_cap_breakpoint)
-                ||  !(you_worship(GOD_ANCIENT))
-                )
-            )
+        // if we worship ag, continue if we're above the breakpoint
+        // if we don't worship ag, never continue (always display)
+        if (god == GOD_ANCIENT
+            && power.abil == ABIL_PLACEHOLDER_GAINMORE_CAP )
         {
-            continue;
+            if(you_worship(GOD_ANCIENT)
+                && you.piety >= piety_breakpoint(ancient_god_cap_breakpoint))
+            {
+                continue;
+            }
         }
 
         if (
