@@ -76,6 +76,7 @@ static const char *daction_names[] =
     "ancestor vanishes",
     "upgrade ancestor",
     "remove Ignis altars",
+    "spriggan sidekick vanishes",
 };
 #endif
 

@@ -403,12 +403,12 @@ const vector<vector<god_power>> & get_all_god_powers()
         // Ancient God
         {   
             { 0, ABIL_AG_RECALL_SIDEKICK, "recall your sidekick" },
-            { ancient_god_small_breakpoint, ancient_god_small_ability(), 
-                ancient_god_small_ability_description_short() },
-            { ancient_god_cap_breakpoint, ancient_god_cap_ability(),
-                ancient_god_cap_ability_description_short() },
-            { 7, ABIL_PLACEHOLDER_DESCRIPTION_SMALL, "Gain more piety to discover this ability."},
-            { 7, ABIL_PLACEHOLDER_DESCRIPTION_CAP, "Gain more piety to discover this significant ability."},
+            { ancient_god_small_breakpoint, ABIL_AG_REALITY_DILATION, 
+                "You can warp reality to temporarily move incredibly quickly." },
+            { ancient_god_small_breakpoint, ABIL_AG_SPATIAL_SINGULARITY, 
+                "You can return to a previous location through a spatial singularity." },
+            { 7, ABIL_PLACEHOLDER_GAINMORE_SMALL, "Gain more piety to discover this ability."},
+            { 7, ABIL_PLACEHOLDER_GAINMORE_CAP, "Gain more piety to discover this significant ability."},
         },
     };
     static bool god_powers_init = false;
@@ -424,34 +424,6 @@ const vector<vector<god_power>> & get_all_god_powers()
     return god_powers;
 }
 
-/*
-*    if we're trying to look up the very first ability,
-*    check if this is because we've genuinely rolled the first ability
-*    or if it's because we're reading from the god_powers vector which
-*    has been instantiated too early with 0s as all lookup indexes
-*    Note: not performing this fixup causes all ag abilities 
-*    
-*    XXX: must be a better way of doing this
-*/
-static god_power _fixup_ag_abilities(god_power power)
-{
-    if(power.abil == ancient_god_default_small_ability())
-    {
-        return god_power(ancient_god_small_breakpoint, 
-            ancient_god_small_ability(), 
-            ancient_god_small_ability_description_short());
-    }
-
-    if(power.abil == ancient_god_default_cap_ability())
-    {
-        return god_power(ancient_god_cap_breakpoint, 
-            ancient_god_cap_ability(), 
-            ancient_god_cap_ability_description_short());
-    }
-
-    return power;
-}
-
 vector<god_power> get_god_powers(god_type god)
 {
     vector<god_power> ret;
@@ -463,35 +435,34 @@ vector<god_power> get_god_powers(god_type god)
         {
             continue;
         }
+        
         // TODO: consolidate this logic into fixup_ability
         // more hacks - don't show "gain more piety to..." dummy abilities
         // above the relevant piety threshold
-        if (god == GOD_ANCIENT 
-                && you.piety>=piety_breakpoint(ancient_god_small_breakpoint)
-                && power.abil == ABIL_PLACEHOLDER_DESCRIPTION_SMALL)
+        if (
+            god == GOD_ANCIENT
+            && power.abil == ABIL_PLACEHOLDER_GAINMORE_SMALL
+            && (
+                    you.piety >= piety_breakpoint(ancient_god_passive_breakpoint)
+                ||  !(you_worship(GOD_ANCIENT))
+                )
+            )
         {
             continue;
         }
-        if (god == GOD_ANCIENT
-                && you.piety>=piety_breakpoint(ancient_god_cap_breakpoint)
-                && power.abil == ABIL_PLACEHOLDER_DESCRIPTION_CAP)
+
+        if (
+            god == GOD_ANCIENT
+            && power.abil == ABIL_PLACEHOLDER_GAINMORE_CAP
+            && (
+                    you.piety >= piety_breakpoint(ancient_god_cap_breakpoint)
+                ||  !(you_worship(GOD_ANCIENT))
+                )
+            )
         {
             continue;
         }
-        // and then do show the actual abilities once above the relevant
-        // piety threshold
-        if (god == GOD_ANCIENT
-                && you.piety < piety_breakpoint(ancient_god_small_breakpoint)
-                && power.abil == ancient_god_small_ability())
-        {
-            continue;
-        }
-        if (god == GOD_ANCIENT
-                && you.piety < piety_breakpoint(ancient_god_cap_breakpoint)
-                && power.abil == ancient_god_cap_ability())
-        {
-            continue;
-        }
+
         if (
             god == GOD_ANCIENT
             && power.abil == ABIL_AG_RECALL_SIDEKICK
@@ -506,10 +477,36 @@ vector<god_power> get_god_powers(god_type god)
             // or if we're not currently worshipping the ancient god.
             continue;
         }
+        if (
+            god == GOD_ANCIENT
+            && power.abil == ABIL_AG_SPATIAL_SINGULARITY
+            && (
+                    you.piety < piety_breakpoint(ancient_god_small_breakpoint)
+                ||  !(you_worship(GOD_ANCIENT))
+                ||  ancient_god_small_ability()!= power.abil
+                )
+            )
+        {   // i.e. do not show this ability if we're below the breakpoint,
+            // or if we're not currently worshipping the ancient god.
+            continue;
+        }
+        if (
+            god == GOD_ANCIENT
+            && power.abil == ABIL_AG_REALITY_DILATION
+            && (
+                    you.piety < piety_breakpoint(ancient_god_small_breakpoint)
+                ||  !(you_worship(GOD_ANCIENT))
+                ||  ancient_god_small_ability()!= power.abil
+                )
+            )
+        {   // i.e. do not show this ability if we're below the breakpoint,
+            // or if we're not currently worshipping the ancient god.
+            continue;
+        }
         if (!(power.abil != ABIL_NON_ABILITY
               && fixup_ability(power.abil) == ABIL_NON_ABILITY))
         {
-            ret.push_back(_fixup_ag_abilities(power));
+            ret.push_back(power);
         }
     }
     return ret;
@@ -5165,7 +5162,9 @@ bool god_power_usable(const god_power& power, bool ignore_piety, bool ignore_pen
 {
     // not an activated power
     if (power.abil == ABIL_NON_ABILITY)
+    {
         return false;
+    }
     const ability_type abil = fixup_ability(power.abil);
     ASSERT(abil != ABIL_NON_ABILITY);
     return power.god == you.religion

@@ -3401,12 +3401,28 @@ static spret _do_ability(const ability_def& abil, bool fail, dist *target,
         return spret::success;
 
     case ABIL_AG_SPATIAL_SINGULARITY:
-        mpr("You create a spatial singularity at your current location!");
-        you.set_duration(DUR_SINGULARITY,
+        if(you.duration[DUR_SINGULARITY])
+        {
+            mpr("You must wait for your existing singularity to collapse" 
+                "before creating a second.");
+            return spret::abort;
+        }
+
+        // coord_def to be recorded, and passed to move_player_to_grid(const coord_def& p, bool stepped)
+        if(feat_has_solid_floor(env.grid(you.pos())))
+        {
+            you.props[ANCIENT_GOD_SINGULARITY_RETURN_COORD] = coord_def(-1, -1);
+            you.set_duration(DUR_SINGULARITY,
             random_range(4,6+you.skill_rdiv(SK_INVOCATIONS)/7));
-        // try to place singularity
-        // check success
-        return spret::success;
+            // try to place singularity
+            you.props[ANCIENT_GOD_SINGULARITY_RETURN_COORD] = you.pos();
+            mpr("You create a spatial singularity at your current location!");
+            // check success
+            return spret::success;
+        } else {
+            mpr("The lack of solid ground here prevents you from creating a singularity.");
+            return spret::abort;
+        }
 
     case ABIL_AG_RECALL_SIDEKICK:
         if (try_recall(ag_sidekick()))

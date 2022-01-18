@@ -95,11 +95,9 @@ string desc_subtype_of_ancient_god_passive();
 int current_threat_level();
 ag_passive_threatening_boost_subtype get_threatening_boost_subtype();
 ability_type ancient_god_small_ability();
-ability_type ancient_god_default_small_ability();
 const char* ancient_god_small_ability_description_short();
 const char* ancient_god_small_ability_description_long();
 ability_type ancient_god_cap_ability();
-ability_type ancient_god_default_cap_ability();
 const char* ancient_god_cap_ability_description_short();
 const char* ancient_god_cap_ability_description_long();
 
