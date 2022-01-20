@@ -169,7 +169,7 @@ void apply_barbs_damage(bool rampaging)
     }
 }
 
-static bool _cancel_ice_move()
+static bool _cancel_channeling_move()
 {
     vector<string> effects;
     if (i_feel_safe(false, true, true))
@@ -180,6 +180,9 @@ static bool _cancel_ice_move()
 
     if (you.duration[DUR_FROZEN_RAMPARTS])
         effects.push_back("frozen ramparts");
+
+    if (you.duration[DUR_CONDUIT])
+        effects.push_back("divine energy connection");
 
     if (!effects.empty())
     {
@@ -199,11 +202,12 @@ static bool _cancel_ice_move()
 
 bool cancel_harmful_move(bool physically, bool rampaging)
 {
-    return physically ? (_cancel_barbed_move(rampaging) || _cancel_ice_move())
-        : _cancel_ice_move();
+    return physically ? (_cancel_barbed_move(rampaging) 
+            || _cancel_channeling_move())
+        : _cancel_channeling_move();
 }
 
-void remove_ice_movement()
+void remove_channeling_movement()
 {
     if (you.duration[DUR_ICY_ARMOUR])
     {
@@ -218,6 +222,13 @@ void remove_ice_movement()
         you.duration[DUR_FROZEN_RAMPARTS] = 0;
         end_frozen_ramparts();
         mprf(MSGCH_DURATION, "The frozen ramparts melt away as you move.");
+    }
+
+    if (you.duration[DUR_CONDUIT])
+    {
+        you.duration[DUR_CONDUIT] = 0;
+        mprf(MSGCH_DURATION, "Your movement severs the link to divine"
+            " energy for your wands");
     }
 }
 
@@ -738,7 +749,7 @@ static spret _rampage_forward(coord_def move)
 
     // Lastly, apply post-move effects unhandled by move_player_to_grid().
     apply_barbs_damage(true);
-    remove_ice_movement();
+    remove_channeling_movement();
     apply_cloud_trail(old_pos);
 
     // If there is somehow an active run delay here, update the travel trail.
@@ -1098,7 +1109,7 @@ void move_player_action(coord_def move)
             _clear_constriction_data();
             move_player_to_grid(targ, true);
             apply_barbs_damage();
-            remove_ice_movement();
+            remove_channeling_movement();
             apply_cloud_trail(old_pos);
         }
 

@@ -233,5 +233,6 @@ enum duration_type
     DUR_SIDEKICK_DELAY,
     DUR_R_DILATION,
     DUR_SINGULARITY,
+    DUR_CONDUIT,
     NUM_DURATIONS
 };

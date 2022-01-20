@@ -659,6 +659,8 @@ static vector<ability_def> &_get_ability_list()
             8, 0, 12, -1, {fail_basis::invo}, abflag::none },
         { ABIL_AG_SPATIAL_SINGULARITY, "Spatial Singularity",
             5, 0, 12, -1, {fail_basis::invo}, abflag::none },
+        { ABIL_AG_DIVINE_CONDUIT, "Divine Conduit",
+            10, 0, 8, -1, {fail_basis::invo}, abflag::none },
 
         { ABIL_STOP_RECALL, "Stop Recall",
             0, 0, 0, -1, {fail_basis::invo}, abflag::none },
@@ -3423,6 +3425,19 @@ static spret _do_ability(const ability_def& abil, bool fail, dist *target,
             mpr("The lack of solid ground here prevents you"
                 " from creating a singularity.");
             return spret::abort;
+        }
+    
+    case ABIL_AG_DIVINE_CONDUIT:
+        if(you.duration[DUR_CONDUIT])
+        {
+            mpr("You are already a divine conduit!");
+            return spret::abort;
+        } else {
+            you.set_duration(DUR_CONDUIT,
+                random_range(8+you.skill_rdiv(SK_INVOCATIONS)/9,
+                    14+you.skill_rdiv(SK_INVOCATIONS)/6));
+            mpr("You channel a ferocious divine power, granting unlimited,"
+                " but temporary, wand useage.");
         }
 
     case ABIL_AG_RECALL_SIDEKICK:

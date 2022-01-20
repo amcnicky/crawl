@@ -3804,6 +3804,8 @@ tileidx_t tileidx_ability(const ability_type ability)
         return TILEG_ABILITY_WU_JIAN_SERPENTS_LASH;
     case ABIL_AG_SPATIAL_SINGULARITY:
         return TILEG_ABILITY_HEP_TRANSFERENCE;
+    case ABIL_AG_DIVINE_CONDUIT:
+        return TILEG_ABILITY_ZIN_SANCTUARY;
 
     // General divine (pseudo) abilities.
     case ABIL_RENOUNCE_RELIGION:

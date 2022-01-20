@@ -407,6 +407,8 @@ const vector<vector<god_power>> & get_all_god_powers()
                 "You can warp reality to temporarily move incredibly quickly." },
             { ancient_god_small_breakpoint, ABIL_AG_SPATIAL_SINGULARITY, 
                 "You can return to a previous location through a spatial singularity." },
+            { ancient_god_small_breakpoint, ABIL_AG_DIVINE_CONDUIT,
+                "You can channel divinity to power your wands."},
             { 7, ABIL_PLACEHOLDER_GAINMORE_SMALL, "Gain more piety to discover this ability."},
             { 7, ABIL_PLACEHOLDER_GAINMORE_CAP, "Gain more piety to discover this significant ability."},
         },
@@ -487,6 +489,18 @@ vector<god_power> get_god_powers(god_type god)
             )
         {   // i.e. do not show this ability if we're below the breakpoint,
             // or if we're not currently worshipping the ancient god.
+            continue;
+        }
+        if (
+            god == GOD_ANCIENT
+            && power.abil == ABIL_AG_DIVINE_CONDUIT
+            && (
+                    you.piety < piety_breakpoint(ancient_god_small_breakpoint)
+                ||  !(you_worship(GOD_ANCIENT))
+                ||  ancient_god_small_ability()!= power.abil
+                )
+            )
+        {   // TODO: tidy this mess
             continue;
         }
         if (

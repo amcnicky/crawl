@@ -6,7 +6,7 @@
 #pragma once
 
 void apply_barbs_damage(bool rampaging = false);
-void remove_ice_movement();
+void remove_channeling_movement();
 bool cancel_harmful_move(bool physically = true, bool rampaging = false);
 void remove_water_hold();
 string water_hold_substance();

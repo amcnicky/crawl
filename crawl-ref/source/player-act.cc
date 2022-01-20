@@ -78,7 +78,7 @@ void player::moveto(const coord_def &c, bool clear_net)
             clear_trapping_net();
         end_wait_spells();
         // Remove spells that break upon movement
-        remove_ice_movement();
+        remove_channeling_movement();
     }
 
     crawl_view.set_player_at(c);

@@ -228,7 +228,10 @@ void zap_wand(int slot, dist *_target)
 
     const int mp_cost = wand_mp_cost();
     const int power = wand_power();
-    pay_mp(mp_cost);
+    if(!you.duration[DUR_CONDUIT])
+    {
+        pay_mp(mp_cost);
+    }
 
     const spell_type spell =
         spell_in_wand(static_cast<wand_type>(wand.sub_type));
@@ -237,23 +240,32 @@ void zap_wand(int slot, dist *_target)
 
     if (ret == spret::abort)
     {
-        refund_mp(mp_cost);
+        if(!you.duration[DUR_CONDUIT])
+        {
+            refund_mp(mp_cost);
+        }
         return;
     }
     else if (ret == spret::fail)
     {
-        refund_mp(mp_cost);
+        if(!you.duration[DUR_CONDUIT])
+        {
+            refund_mp(mp_cost);
+        }
         canned_msg(MSG_NOTHING_HAPPENS);
         you.turn_is_over = true;
         return;
     }
 
-    // Spend MP.
-    if (mp_cost)
-        finalize_mp_cost();
+    if(!you.duration[DUR_CONDUIT])
+    {
+        // Spend MP.
+        if (mp_cost)
+            finalize_mp_cost();
 
-    // Take off a charge.
-    wand.charges--;
+        // Take off a charge.
+        wand.charges--;
+    }
 
     if (wand.charges == 0)
     {

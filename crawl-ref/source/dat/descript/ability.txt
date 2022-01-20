@@ -826,6 +826,15 @@ will be forced out of the way, constricted, stationary, or enemies that
 are otherwise impossible to move may block your return should they occupy
 the space.
 %%%%
+Divine Conduit ability
+
+Channels a torrent of divine energy through your body, allowing you to 
+utilise the magic of wands without depleting their innate number of charges.
+
+The effect lasts for a somewhat short amount of time, however moving from 
+your current location will sever the divine connection, causing the effect 
+to end immediately.
+%%%%
 Hop ability
 
 Hops toward a chosen destination, landing somewhere nearby. After using this

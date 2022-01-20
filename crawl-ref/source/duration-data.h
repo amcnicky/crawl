@@ -653,6 +653,12 @@ static const duration_def duration_data[] =
         "location in a short while.", D_NO_FLAGS,
       {{ "You feel pulled through a different dimension towards your spatial "
           "singularity.", _handle_spatial_singularity }}},
+    { DUR_CONDUIT,
+      MAGENTA, "Conduit",
+      "a divine conduit", "",
+      "Your wands are receiving divine empowerment, and will not use any "
+        "charges whilst you stay at this location", D_NO_FLAGS,
+      {{ "You feel the divine energy stop flowing through you."}}},
 
     // The following are visible in wizmode only, or are handled
     // specially in the status lights and/or the % or @ screens.

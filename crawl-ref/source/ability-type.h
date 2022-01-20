@@ -319,6 +319,7 @@ enum ability_type
     ABIL_AG_RECALL_SIDEKICK,
     ABIL_AG_REALITY_DILATION,
     ABIL_AG_SPATIAL_SINGULARITY,
+    ABIL_AG_DIVINE_CONDUIT,
 
     // General divine (pseudo) abilities.
     ABIL_RENOUNCE_RELIGION,

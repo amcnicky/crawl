@@ -73,6 +73,11 @@ agod_ability_small ag_ability_small_data[] =
         "You can return to a previous location through a spatial singularity.",
         "GODNAME long description for spatial singularity."
     },
+    {   //AG_S_DIVINE_CONDUIT
+        ABIL_AG_DIVINE_CONDUIT,
+        "outdated useage, to tidy up this section and delete.",
+        "outdated useage, to tidy up this section and delete."
+    },
 };
 
 agod_ability_cap ag_ability_cap_data[] =
