@@ -378,7 +378,7 @@ const char* ag_desc_how_god_was_data[] =
     "GODNAME was once the centre of culture. ",
     "GODNAME's power once burned brightly. ",
     "GODNAME's influence once stretched throughout the land. ",
-    "GODNAME's was once even worshipped by the Great Pharaoh. ",
+    "GODNAME was once even worshipped by the Great Pharaoh. ",
     "GODNAME's power was once known to drive worshippers to insanity. ",
     "GODNAME once ruled from within the Holy Volcano of Yen. ",
     "GODNAME's power once lead its people to great feats. ",

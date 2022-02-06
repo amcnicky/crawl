@@ -6118,100 +6118,121 @@ void ag_end_spatial_singularity()
     you.duration[DUR_SINGULARITY] = 0;   
 }
 
-spret ag_radiation_storm(coord_def target, bool quiet, bool fail, dist *player_target)
+
+static void _irradiate_square(const actor */*agent*/, bolt beam, coord_def square, bool center)
 {
-    /*
-    int pow = you.skill(SK_INVOCATIONS, 6);
+    // HACK: bypass visual effect
+    beam.target = square;
+    beam.in_explosion_phase = true;
+    beam.explosion_affect_cell(square);
+    if (center)
+        noisy(spell_effect_noise(SPELL_IGNITION),square);
+}
 
-    dist target_local;
-    if (!player_target)
-        player_target = &target_local;
+static vector<coord_def> _get_radiation_blast_sources(const actor *agent)
+{
 
-    // stealing qaz's radius code (and general abil structure)
-    const int max_radius = _upheaval_radius(pow);
+    vector<coord_def> radiation_sources;
+    if (!agent)
+        return radiation_sources;
 
-    bolt beam;
-    beam.name        = "****";
-    beam.source_id   = MID_PLAYER;
-    beam.source_name = "you";
-    beam.thrower     = KILL_YOU;
-    beam.range       = LOS_RADIUS;
-    beam.damage      = calc_dice(3, 27 + div_rand_round(2 * pow, 5));
-    beam.hit         = AUTOMATIC_HIT;
-    beam.glyph       = dchar_glyph(DCHAR_EXPLOSION);
-    beam.loudness    = 10;
-#ifdef USE_TILE
-    beam.tile_beam = -1;
-#endif
+    for (actor_near_iterator ai(agent->pos(), LOS_NO_TRANS);
+         ai; ++ai)
+    {
+        if (ai->is_monster()
+            && !ai->as_monster()->wont_attack()
+            && !mons_is_firewood(*ai->as_monster())
+            && !mons_is_tentacle_segment(ai->as_monster()->type))
+        {
+            radiation_sources.push_back(ai->position);
+        }
+    }
+    return radiation_sources;
+}
 
-
-    beam.target = target;
+// Code inspiration from ignition, with irradiate flavour
+spret ag_radiation_storm(const actor *agent, int pow, bool fail)
+{
+    ASSERT(agent->is_player());
 
     fail_check();
 
-    string message = "";
-    beam.name     = "surge of radiation";
-    beam.flavour  = BEAM_VISUAL;
-    beam.colour   = ETC_MUTAGENIC;
-    beam.hit_verb = "irradiates";
-    message       = "Focused radiation bursts from the air";
 
-    vector<coord_def> affected;
-    affected.push_back(beam.target);
-    for (radius_iterator ri(beam.target, max_radius, C_SQUARE, LOS_SOLID, true);
-         ri; ++ri)
+    // store target squares in case things die mid-function
+    vector<coord_def> blast_sources = _get_radiation_blast_sources(agent);
+
+    if (blast_sources.empty())
     {
-        if (!in_bounds(*ri) || cell_is_solid(*ri))
-            continue;
-
-        int chance = pow;
-
-        bool adj = adjacent(beam.target, *ri);
-        if (!adj && max_radius > 1)
-            chance -= 100;
-        if (adj && max_radius > 1 || x_chance_in_y(chance, 100))
-           affected.push_back(*ri);
+        canned_msg(MSG_NOTHING_HAPPENS);
+        return spret::success;
     }
-    if (!quiet)
-        shuffle_array(affected);
 
-    // for `quiet` calls (i.e. disaster area), don't delay for individual tiles
-    // at all -- do the delay per upheaval draw. This will also fully suppress
-    // the redraw per tile.
-    beam.draw_delay = quiet ? 0 : 25;
-    for (coord_def pos : affected)
+    mpr("The air is filled with unnatural radiation");
+
+    vector<coord_def> blast_adjacents;
+
+    // Used to draw explosion cells
+    bolt beam_visual;
+    beam_visual.set_agent(agent);
+    beam_visual.flavour       = BEAM_VISUAL;
+    beam_visual.glyph         = dchar_glyph(DCHAR_EXPLOSION);
+    beam_visual.colour        = YELLOW;
+    beam_visual.ex_size       = 1;
+    beam_visual.is_explosion  = true;
+
+    // Used to deal damage; invisible
+    bolt beam_actual;
+    zappy(ZAP_RADIATION, pow, false, beam_actual);
+    beam_actual.set_agent(agent);
+    beam_actual.ex_size       = 0;
+    beam_actual.apply_beam_conducts();
+
+#ifdef DEBUG_DIAGNOSTICS
+    dprf(DIAG_BEAM, "radiation storm dam=%dd%d",
+         beam_actual.damage.num, beam_actual.damage.size);
+#endif
+
+    // Fake "shaped" radius 1 explosions (skipping squares with friends).
+    for (coord_def pos : blast_sources)
     {
-        beam.draw(pos, false);
-        if(monster_at(pos))
+        for (adjacent_iterator ai(pos); ai; ++ai)
         {
-            _radiation_storm_effect(pos);
+            if (cell_is_solid(*ai)
+                && (!beam_actual.can_affect_wall(*ai)
+                    || you_worship(GOD_FEDHAS)))
+            {
+                continue;
+            }
+
+            actor *act = actor_at(*ai);
+
+            // Friendly creature, don't blast this square.
+            if (act && (act == agent
+                        || (act->is_monster()
+                            && act->as_monster()->wont_attack())))
+            {
+                continue;
+            }
+
+            blast_adjacents.push_back(*ai);
+            if (Options.use_animations & UA_BEAM)
+                beam_visual.explosion_draw_cell(*ai);
         }
+        if (Options.use_animations & UA_BEAM)
+            beam_visual.explosion_draw_cell(pos);
     }
-    if (quiet)
+    if (Options.use_animations & UA_BEAM)
     {
-        // When `quiet`, refresh the view after each complete draw pass.
-        // why this call dance to refresh? I just copied it from bolt::draw
         viewwindow(false);
         update_screen();
-        scaled_delay(50); // add some delay per upheaval draw, otherwise it all
-                          // goes by too fast.
-    }
-    else
-    {
-        scaled_delay(200); // This is here to make it easy for the player to
-                           // see the overall impact of the upheaval
-        mprf(MSGCH_GOD, "%s", message.c_str());
+        scaled_delay(50);
     }
 
-    beam.animate = false; // already drawn
-
-    for (coord_def pos : affected)
-    {
-        beam.source = pos;
-        beam.target = pos;
-        beam.fire();
-    }
-    */
+    // Real explosions on each individual square.
+    for (coord_def pos : blast_sources)
+        _irradiate_square(agent, beam_actual, pos, true);
+    for (coord_def pos : blast_adjacents)
+        _irradiate_square(agent, beam_actual, pos, false);
 
     return spret::success;
 }

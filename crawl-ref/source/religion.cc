@@ -507,6 +507,18 @@ vector<god_power> get_god_powers(god_type god)
         }
         if (
             god == GOD_ANCIENT
+            && power.abil == ABIL_AG_RADIATION_STORM
+            && (
+                    you.piety < piety_breakpoint(ancient_god_small_breakpoint)
+                ||  !(you_worship(GOD_ANCIENT))
+                ||  ancient_god_small_ability()!= power.abil
+                )
+            )
+        {   // TODO: tidy this mess
+            continue;
+        }
+        if (
+            god == GOD_ANCIENT
             && power.abil == ABIL_AG_REALITY_DILATION
             && (
                     you.piety < piety_breakpoint(ancient_god_small_breakpoint)

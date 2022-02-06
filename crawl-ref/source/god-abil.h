@@ -207,5 +207,4 @@ vector<coord_def> find_slimeable_walls();
 spret jiyva_oozemancy(bool fail);
 void jiyva_end_oozemancy();
 void ag_end_spatial_singularity();
-spret ag_radiation_storm(coord_def target, bool quiet = false,
-                           bool fail = false, dist *player_target=nullptr);
+spret ag_radiation_storm(const actor *agent, int pow, bool fail);

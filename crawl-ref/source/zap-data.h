@@ -1798,4 +1798,21 @@ _mon_hex_zap(ZAP_DRAIN_MAGIC, BEAM_DRAIN_MAGIC),
     0
 },
 
+{
+    ZAP_RADIATION,
+    "radiation storm",
+    200,
+    new calcdice_calculator<3, 10, 1, 3>, // TODO:balance
+    new tohit_calculator<AUTOMATIC_HIT>,
+    nullptr,
+    nullptr,
+    ETC_MUTAGENIC,
+    false,
+    BEAM_MMISSILE,
+    NUM_DCHAR_TYPES,
+    false,
+    true,
+    0
+},
+
 };

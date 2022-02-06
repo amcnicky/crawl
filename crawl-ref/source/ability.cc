@@ -3448,7 +3448,7 @@ static spret _do_ability(const ability_def& abil, bool fail, dist *target,
         break;
 
     case ABIL_AG_RADIATION_STORM:
-        return ag_radiation_storm(coord_def(), false, fail, target);
+        return ag_radiation_storm(&you, you.skill_rdiv(SK_INVOCATIONS)*10, fail);
 
     case ABIL_RENOUNCE_RELIGION:
         if (yesno("Really renounce your faith, foregoing its fabulous benefits?",
