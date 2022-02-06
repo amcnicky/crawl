@@ -49,6 +49,7 @@ enum ag_abil_small_type
     AG_S_REALITY_DILATION,
     AG_S_SPATIAL_SINGULARITY,
     AG_S_DIVINE_CONDUIT,
+    AG_S_RADIATION_STORM,
     NUM_AGAS,
     MAX_AGAS = 255,
 };

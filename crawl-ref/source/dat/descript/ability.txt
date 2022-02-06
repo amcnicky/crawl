@@ -835,6 +835,13 @@ The effect lasts for a somewhat short amount of time, however moving from
 your current location will sever the divine connection, causing the effect 
 to end immediately.
 %%%%
+Radiation Storm ability
+
+Catalyses a focus-point of severe radiation on a specific area, causing 
+irradiated explosions and other related effects. Has a chance to corrode 
+any creatures caught in the blast, and a small chance to polymorph any 
+left alive afterwards.
+%%%%
 Hop ability
 
 Hops toward a chosen destination, landing somewhere nearby. After using this

@@ -15,6 +15,7 @@
 #include "areas.h"
 #include "artefact.h"
 #include "art-enum.h"
+#include "attack.h"
 #include "attitude-change.h"
 #include "bloodspatter.h"
 #include "branch.h"
@@ -6115,4 +6116,102 @@ void ag_end_spatial_singularity()
 {
     mpr("You lose your connection to the spatial singularity.");
     you.duration[DUR_SINGULARITY] = 0;   
+}
+
+spret ag_radiation_storm(coord_def target, bool quiet, bool fail, dist *player_target)
+{
+    /*
+    int pow = you.skill(SK_INVOCATIONS, 6);
+
+    dist target_local;
+    if (!player_target)
+        player_target = &target_local;
+
+    // stealing qaz's radius code (and general abil structure)
+    const int max_radius = _upheaval_radius(pow);
+
+    bolt beam;
+    beam.name        = "****";
+    beam.source_id   = MID_PLAYER;
+    beam.source_name = "you";
+    beam.thrower     = KILL_YOU;
+    beam.range       = LOS_RADIUS;
+    beam.damage      = calc_dice(3, 27 + div_rand_round(2 * pow, 5));
+    beam.hit         = AUTOMATIC_HIT;
+    beam.glyph       = dchar_glyph(DCHAR_EXPLOSION);
+    beam.loudness    = 10;
+#ifdef USE_TILE
+    beam.tile_beam = -1;
+#endif
+
+
+    beam.target = target;
+
+    fail_check();
+
+    string message = "";
+    beam.name     = "surge of radiation";
+    beam.flavour  = BEAM_VISUAL;
+    beam.colour   = ETC_MUTAGENIC;
+    beam.hit_verb = "irradiates";
+    message       = "Focused radiation bursts from the air";
+
+    vector<coord_def> affected;
+    affected.push_back(beam.target);
+    for (radius_iterator ri(beam.target, max_radius, C_SQUARE, LOS_SOLID, true);
+         ri; ++ri)
+    {
+        if (!in_bounds(*ri) || cell_is_solid(*ri))
+            continue;
+
+        int chance = pow;
+
+        bool adj = adjacent(beam.target, *ri);
+        if (!adj && max_radius > 1)
+            chance -= 100;
+        if (adj && max_radius > 1 || x_chance_in_y(chance, 100))
+           affected.push_back(*ri);
+    }
+    if (!quiet)
+        shuffle_array(affected);
+
+    // for `quiet` calls (i.e. disaster area), don't delay for individual tiles
+    // at all -- do the delay per upheaval draw. This will also fully suppress
+    // the redraw per tile.
+    beam.draw_delay = quiet ? 0 : 25;
+    for (coord_def pos : affected)
+    {
+        beam.draw(pos, false);
+        if(monster_at(pos))
+        {
+            _radiation_storm_effect(pos);
+        }
+    }
+    if (quiet)
+    {
+        // When `quiet`, refresh the view after each complete draw pass.
+        // why this call dance to refresh? I just copied it from bolt::draw
+        viewwindow(false);
+        update_screen();
+        scaled_delay(50); // add some delay per upheaval draw, otherwise it all
+                          // goes by too fast.
+    }
+    else
+    {
+        scaled_delay(200); // This is here to make it easy for the player to
+                           // see the overall impact of the upheaval
+        mprf(MSGCH_GOD, "%s", message.c_str());
+    }
+
+    beam.animate = false; // already drawn
+
+    for (coord_def pos : affected)
+    {
+        beam.source = pos;
+        beam.target = pos;
+        beam.fire();
+    }
+    */
+
+    return spret::success;
 }

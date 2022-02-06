@@ -3806,6 +3806,8 @@ tileidx_t tileidx_ability(const ability_type ability)
         return TILEG_ABILITY_HEP_TRANSFERENCE;
     case ABIL_AG_DIVINE_CONDUIT:
         return TILEG_ABILITY_ZIN_SANCTUARY;
+    case ABIL_AG_RADIATION_STORM:
+        return TILEG_ABILITY_QAZLAL_UPHEAVAL;
 
     // General divine (pseudo) abilities.
     case ABIL_RENOUNCE_RELIGION:

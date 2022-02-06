@@ -661,6 +661,8 @@ static vector<ability_def> &_get_ability_list()
             5, 0, 12, -1, {fail_basis::invo}, abflag::none },
         { ABIL_AG_DIVINE_CONDUIT, "Divine Conduit",
             10, 0, 8, -1, {fail_basis::invo}, abflag::none },
+        { ABIL_AG_RADIATION_STORM, "Radiation Storm",
+            4, 0, 8, -1, {fail_basis::invo}, abflag::none },        
 
         { ABIL_STOP_RECALL, "Stop Recall",
             0, 0, 0, -1, {fail_basis::invo}, abflag::none },
@@ -3444,6 +3446,9 @@ static spret _do_ability(const ability_def& abil, bool fail, dist *target,
         if (try_recall(ag_sidekick()))
             return spret::success;
         break;
+
+    case ABIL_AG_RADIATION_STORM:
+        return ag_radiation_storm(coord_def(), false, fail, target);
 
     case ABIL_RENOUNCE_RELIGION:
         if (yesno("Really renounce your faith, foregoing its fabulous benefits?",

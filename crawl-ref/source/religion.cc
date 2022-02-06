@@ -409,6 +409,8 @@ const vector<vector<god_power>> & get_all_god_powers()
                 "You can return to a previous location through a spatial singularity." },
             { ancient_god_small_breakpoint, ABIL_AG_DIVINE_CONDUIT,
                 "You can channel divinity to power your wands."},
+            { ancient_god_small_breakpoint, ABIL_AG_RADIATION_STORM,
+                "call forth a ferrocious radiation storm" },
             { 7, ABIL_PLACEHOLDER_GAINMORE_SMALL, "Gain more piety to discover this ability."},
             { 7, ABIL_PLACEHOLDER_GAINMORE_CAP, "Gain more piety to discover this significant ability."},
         },

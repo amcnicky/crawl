@@ -1401,6 +1401,7 @@ namespace quiver
         case ABIL_QAZLAL_UPHEAVAL:
         case ABIL_EVOKE_DISPATER:
         case ABIL_EVOKE_OLGREB:
+        // TODO: consider ancient god additions here
             return true;
         default:
             return false;
@@ -1471,6 +1472,7 @@ namespace quiver
             case ABIL_USKAYAW_LINE_PASS:
             case ABIL_USKAYAW_GRAND_FINALE:
             case ABIL_WU_JIAN_WALLJUMP:
+            case ABIL_AG_RADIATION_STORM:
             case ABIL_EVOKE_DISPATER:
             case ABIL_EVOKE_OLGREB:
 #ifdef WIZARD

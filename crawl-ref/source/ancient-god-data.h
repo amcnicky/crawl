@@ -78,6 +78,11 @@ agod_ability_small ag_ability_small_data[] =
         "outdated useage, to tidy up this section and delete.",
         "outdated useage, to tidy up this section and delete."
     },
+    {   //AG_S_RADIATION_STORM
+        ABIL_AG_RADIATION_STORM,
+        "outdated useage, to tidy up this section and delete.",
+        "outdated useage, to tidy up this section and delete."
+    },
 };
 
 agod_ability_cap ag_ability_cap_data[] =
