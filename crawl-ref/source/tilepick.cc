@@ -2095,7 +2095,7 @@ tileidx_t tileidx_monster(const monster_info& mons)
     if (mons.is(MB_FIRE_CHAMPION))
         ch |= TILE_FLAG_FIRE_CHAMP;
     if (mons.is(MB_IRRADIATED))
-        ch |= TILE_FLAG_VILE_CLUTCH; // TODO: own tile
+        ch |= TILE_FLAG_INNER_FLAME; // TODO: own tile
 
     if (mons.attitude == ATT_FRIENDLY)
         ch |= TILE_FLAG_PET;
