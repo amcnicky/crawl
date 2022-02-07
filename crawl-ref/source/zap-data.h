@@ -1802,17 +1802,17 @@ _mon_hex_zap(ZAP_DRAIN_MAGIC, BEAM_DRAIN_MAGIC),
     ZAP_RADIATION,
     "radiation storm",
     200,
-    new calcdice_calculator<3, 10, 1, 3>, // TODO:balance
-    new tohit_calculator<AUTOMATIC_HIT>,
+    new calcdice_calculator<3, 10, 1, 2>,
+    new tohit_calculator<40>,
     nullptr,
     nullptr,
-    ETC_MUTAGENIC,
+    YELLOW,
     false,
-    BEAM_MMISSILE,
-    NUM_DCHAR_TYPES,
+    BEAM_RADIATION,
+    DCHAR_EXPLOSION,
     false,
     true,
-    0
+    0 // Noise comes from explosion
 },
 
 };

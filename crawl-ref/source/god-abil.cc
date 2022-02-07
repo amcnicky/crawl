@@ -6119,120 +6119,118 @@ void ag_end_spatial_singularity()
 }
 
 
-static void _irradiate_square(const actor */*agent*/, bolt beam, coord_def square, bool center)
-{
-    // HACK: bypass visual effect
-    beam.target = square;
-    beam.in_explosion_phase = true;
-    beam.explosion_affect_cell(square);
-    if (center)
-        noisy(spell_effect_noise(SPELL_IGNITION),square);
-}
-
-static vector<coord_def> _get_radiation_blast_sources(const actor *agent)
-{
-
-    vector<coord_def> radiation_sources;
-    if (!agent)
-        return radiation_sources;
-
-    for (actor_near_iterator ai(agent->pos(), LOS_NO_TRANS);
-         ai; ++ai)
-    {
-        if (ai->is_monster()
-            && !ai->as_monster()->wont_attack()
-            && !mons_is_firewood(*ai->as_monster())
-            && !mons_is_tentacle_segment(ai->as_monster()->type))
-        {
-            radiation_sources.push_back(ai->position);
-        }
-    }
-    return radiation_sources;
-}
-
 // Code inspiration from ignition, with irradiate flavour
-spret ag_radiation_storm(const actor *agent, int pow, bool fail)
-{
-    ASSERT(agent->is_player());
+spret ag_radiation_storm(coord_def target, bool quiet, bool fail, dist *player_target)
+{    
+    int pow = you.skill(SK_INVOCATIONS, 6);
+    const int max_radius = _upheaval_radius(pow);
+
+    bolt beam;
+    beam.name        = "****";
+    beam.source_id   = MID_PLAYER;
+    beam.source_name = "you";
+    beam.thrower     = KILL_YOU;
+    beam.range       = LOS_RADIUS;
+    // relatively low damage - mostly doing this for the radiation effects
+    beam.damage      = calc_dice(2, 4 + div_rand_round(pow, 8));
+    beam.hit         = AUTOMATIC_HIT;
+    beam.glyph       = dchar_glyph(DCHAR_EXPLOSION);
+    beam.loudness    = 8;
+#ifdef USE_TILE
+    beam.tile_beam = -1;
+#endif
+
+    if (target.origin())
+    {
+        dist target_local;
+        if (!player_target)
+            player_target = &target_local;
+
+        targeter_smite tgt(&you, LOS_RADIUS, 0, max_radius);
+        direction_chooser_args args;
+        args.restricts = DIR_TARGET;
+        args.mode = TARG_HOSTILE;
+        args.needs_path = false;
+        args.top_prompt = "Aiming: <white>Radiation Storm</white>";
+        args.self = confirm_prompt_type::cancel;
+        args.hitfunc = &tgt;
+        if (!spell_direction(*player_target, beam, &args))
+            return spret::abort;
+
+        if (cell_is_solid(beam.target))
+        {
+            mprf("There is %s there.",
+                 article_a(feat_type_name(env.grid(beam.target))).c_str());
+            return spret::abort;
+        }
+
+        bolt tempbeam;
+        tempbeam.source    = beam.target;
+        tempbeam.target    = beam.target;
+        tempbeam.flavour   = BEAM_MISSILE;
+        tempbeam.ex_size   = max_radius;
+        tempbeam.hit       = AUTOMATIC_HIT;
+        tempbeam.damage    = dice_def(AUTOMATIC_HIT, 1);
+        tempbeam.thrower   = KILL_YOU;
+        tempbeam.is_tracer = true;
+        tempbeam.explode(false);
+        if (tempbeam.beam_cancelled)
+            return spret::abort;
+    }
+    else
+        beam.target = target;
 
     fail_check();
 
+    beam.name      = "blast of radiation";
+    beam.flavour   = BEAM_MISSILE;
+    beam.colour    = YELLOW;
+    beam.hit_verb  = "engulfs";
+    string message = "Intense radiation errupts from the air!";
 
-    // store target squares in case things die mid-function
-    vector<coord_def> blast_sources = _get_radiation_blast_sources(agent);
-
-    if (blast_sources.empty())
+    vector<coord_def> affected;
+    affected.push_back(beam.target);
+    for (radius_iterator ri(beam.target, max_radius, C_SQUARE, LOS_SOLID, true);
+         ri; ++ri)
     {
-        canned_msg(MSG_NOTHING_HAPPENS);
-        return spret::success;
+        if (!in_bounds(*ri) || cell_is_solid(*ri))
+            continue;
+
+        int chance = pow;
+
+        bool adj = adjacent(beam.target, *ri);
+        if (!adj && max_radius > 1)
+            chance -= 100;
+        if (adj && max_radius > 1 || x_chance_in_y(chance, 100))
+           affected.push_back(*ri);
     }
+    if (!quiet)
+        shuffle_array(affected);
 
-    mpr("The air is filled with unnatural radiation");
+    beam.draw_delay = 25;
+    for (coord_def pos : affected)
+        beam.draw(pos, false);
 
-    vector<coord_def> blast_adjacents;
+    scaled_delay(200);
+    mprf(MSGCH_GOD, "%s", message.c_str());
 
-    // Used to draw explosion cells
-    bolt beam_visual;
-    beam_visual.set_agent(agent);
-    beam_visual.flavour       = BEAM_VISUAL;
-    beam_visual.glyph         = dchar_glyph(DCHAR_EXPLOSION);
-    beam_visual.colour        = YELLOW;
-    beam_visual.ex_size       = 1;
-    beam_visual.is_explosion  = true;
+    beam.animate = false; // already drawn
 
-    // Used to deal damage; invisible
-    bolt beam_actual;
-    zappy(ZAP_RADIATION, pow, false, beam_actual);
-    beam_actual.set_agent(agent);
-    beam_actual.ex_size       = 0;
-    beam_actual.apply_beam_conducts();
-
-#ifdef DEBUG_DIAGNOSTICS
-    dprf(DIAG_BEAM, "radiation storm dam=%dd%d",
-         beam_actual.damage.num, beam_actual.damage.size);
-#endif
-
-    // Fake "shaped" radius 1 explosions (skipping squares with friends).
-    for (coord_def pos : blast_sources)
+    for (coord_def pos : affected)
     {
-        for (adjacent_iterator ai(pos); ai; ++ai)
+        beam.source = pos;
+        beam.target = pos;
+        beam.fire();
+
+        monster *mon = monster_at(pos);
+        if (!mon)
+            continue;
+        else 
         {
-            if (cell_is_solid(*ai)
-                && (!beam_actual.can_affect_wall(*ai)
-                    || you_worship(GOD_FEDHAS)))
-            {
-                continue;
-            }
-
-            actor *act = actor_at(*ai);
-
-            // Friendly creature, don't blast this square.
-            if (act && (act == agent
-                        || (act->is_monster()
-                            && act->as_monster()->wont_attack())))
-            {
-                continue;
-            }
-
-            blast_adjacents.push_back(*ai);
-            if (Options.use_animations & UA_BEAM)
-                beam_visual.explosion_draw_cell(*ai);
+            mon->add_ench(mon_enchant(ENCH_IRRADIATED, 0, &you,
+                        10 * BASELINE_DELAY));
         }
-        if (Options.use_animations & UA_BEAM)
-            beam_visual.explosion_draw_cell(pos);
     }
-    if (Options.use_animations & UA_BEAM)
-    {
-        viewwindow(false);
-        update_screen();
-        scaled_delay(50);
-    }
-
-    // Real explosions on each individual square.
-    for (coord_def pos : blast_sources)
-        _irradiate_square(agent, beam_actual, pos, true);
-    for (coord_def pos : blast_adjacents)
-        _irradiate_square(agent, beam_actual, pos, false);
 
     return spret::success;
 }

@@ -122,7 +122,8 @@ bool bolt::is_blockable() const
     // a true beam (stops at the first target it gets to and redirects
     // from there)... but we don't want it shield blockable.
     return !pierce && !is_explosion && flavour != BEAM_ELECTRICITY
-           && hit != AUTOMATIC_HIT && flavour != BEAM_VISUAL;
+           && hit != AUTOMATIC_HIT && flavour != BEAM_VISUAL
+           && flavour != BEAM_RADIATION;
 }
 
 /// Can 'omnireflection' (from the Warlock's Mirror) potentially reflect this?
@@ -5009,10 +5010,20 @@ void bolt::affect_monster(monster* mon)
     }
 
     if (mon->alive())
+    {
         monster_post_hit(mon, final);
     // The monster (e.g. a spectral weapon) might have self-destructed in its
     // behaviour_event called from mon->hurt() above. If that happened, it
     // will have been cleaned up already (and is therefore invalid now).
+
+    // if hit by radiation, gain the radiation enchantment for a short time
+        if(flavour == BEAM_RADIATION)
+        {
+            mon->add_ench(mon_enchant(ENCH_IRRADIATED, 0, &you,
+                            6 * BASELINE_DELAY));
+        }
+
+    }
     else if (!invalid_monster(mon))
     {
         // Preserve name of the source monster if it winds up killing
@@ -5930,6 +5941,10 @@ const map<spell_type, explosion_sfx> spell_explosions = {
         "A wave of flame ripples out!",
         "the roar of flame",
     } },
+    { SPELL_RADIATION_STORM, {
+        "The radiation goes critical and explodes!",
+        "a sharp crackling", // radiation = geiger counter
+    } },
 };
 
 // Takes a bolt and refines it for use in the explosion function.
@@ -6632,6 +6647,7 @@ static string _beam_type_name(beam_type type)
     case BEAM_VAMPIRIC_DRAINING:     return "vampiric draining";
     case BEAM_CONCENTRATE_VENOM:     return "concentrate venom";
     case BEAM_ENFEEBLE:              return "enfeeble";
+    case BEAM_RADIATION:             return "radiation";
 
     case NUM_BEAMS:                  die("invalid beam type");
     }

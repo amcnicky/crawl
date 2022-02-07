@@ -50,6 +50,7 @@
 #include "traps.h"
 #include "unwind.h"
 #include "view.h"
+#include "viewchar.h"
 
 static const unordered_map<enchant_type, cloud_type, std::hash<int>> _cloud_ring_ench_to_cloud = {
     { ENCH_RING_OF_THUNDER,     CLOUD_STORM },
@@ -1847,6 +1848,25 @@ void monster::apply_enchantment(const mon_enchant &me)
         }
         break;
 
+    case ENCH_IRRADIATED:
+        if(one_chance_in(5))
+        {
+            bolt beam;
+            beam.flavour       = BEAM_RADIATION;
+            beam.glyph         = dchar_glyph(DCHAR_EXPLOSION);
+            beam.colour        = YELLOW;
+            beam.ex_size       = 1;
+            beam.is_explosion  = true;
+            beam.set_agent(&you);
+            beam.apply_beam_conducts();
+            beam.source = this->pos();
+            beam.target = this->pos();
+            beam.in_explosion_phase = true;
+            zapping(ZAP_RADIATION, you.skill(SK_INVOCATIONS, 6), beam);
+        }
+        decay_enchantment(en);
+        break;
+
     default:
         break;
     }
@@ -2079,6 +2099,7 @@ static const char *enchant_names[] =
     "vile_clutch", "waterlogged", "ring_of_flames",
     "ring_chaos", "ring_mutation", "ring_fog", "ring_ice", "ring_neg",
     "ring_acid", "ring_miasma", "concentrate_venom", "fire_champion",
+    "irradiated",
     "buggy", // NUM_ENCHANTMENTS
 };
 

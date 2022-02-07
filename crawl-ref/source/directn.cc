@@ -3690,6 +3690,12 @@ static string _get_monster_desc(const monster_info& mi)
                 + " filled with an inner flame.\n";
     }
 
+    if (mi.is(MB_IRRADIATED))
+    {
+        text += pronoun + " " + conjugate_verb("are", mi.pronoun_plurality())
+                + " contaminated with radiation and liable to explode.\n";
+    }
+
     if (mi.fire_blocker)
     {
         text += string("Your line of fire to ") + mi.pronoun(PRONOUN_OBJECTIVE)

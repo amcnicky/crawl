@@ -82,6 +82,7 @@ enum beam_type                  // bolt::flavour
     BEAM_ENFEEBLE,
     BEAM_LAST_ENCHANTMENT = BEAM_ENFEEBLE,
 
+    BEAM_RADIATION,
     BEAM_MEPHITIC,
     BEAM_AIR,
     BEAM_PETRIFYING_CLOUD,

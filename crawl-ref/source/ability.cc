@@ -662,7 +662,10 @@ static vector<ability_def> &_get_ability_list()
         { ABIL_AG_DIVINE_CONDUIT, "Divine Conduit",
             10, 0, 8, -1, {fail_basis::invo}, abflag::none },
         { ABIL_AG_RADIATION_STORM, "Radiation Storm",
-            4, 0, 8, -1, {fail_basis::invo}, abflag::none },        
+            3, 0, generic_cost::range(3, 4), LOS_MAX_RANGE,
+            {fail_basis::invo, 40, 5, 20},
+            abflag::none },
+
 
         { ABIL_STOP_RECALL, "Stop Recall",
             0, 0, 0, -1, {fail_basis::invo}, abflag::none },
@@ -3400,7 +3403,8 @@ static spret _do_ability(const ability_def& abil, bool fail, dist *target,
     case ABIL_AG_REALITY_DILATION:
         mpr("You feel time extend as you dilate reality!");
         you.set_duration(DUR_R_DILATION,
-            random_range(3,5+you.skill_rdiv(SK_INVOCATIONS)/9));
+            random_range((3+you.skill_rdiv(SK_INVOCATIONS)/18)
+                ,(5+you.skill_rdiv(SK_INVOCATIONS)/9)));
         you.redraw_status_lights = true;
         return spret::success;
 
@@ -3448,7 +3452,11 @@ static spret _do_ability(const ability_def& abil, bool fail, dist *target,
         break;
 
     case ABIL_AG_RADIATION_STORM:
-        return ag_radiation_storm(&you, you.skill_rdiv(SK_INVOCATIONS)*10, fail);
+        {
+            return ag_radiation_storm(coord_def(), false, fail, target);
+            //return ag_radiation_storm(&you, you.skill_rdiv(SK_INVOCATIONS)*10, fail/*, vector of squares?*/);
+            break;
+        }
 
     case ABIL_RENOUNCE_RELIGION:
         if (yesno("Really renounce your faith, foregoing its fabulous benefits?",
