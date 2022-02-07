@@ -21,6 +21,7 @@
 #include "mon-place.h"
 #include "mon-util.h"
 #include "mpr.h"
+#include "religion.h"
 #include "spl-damage.h"
 #include "spl-goditem.h"
 #include "state.h"
@@ -156,6 +157,17 @@ static void _setup_bloated_husk_explosion(bolt & beam, const monster& origin)
 
 }
 
+static void _setup_plague_worm_explosion(bolt& beam, const monster& origin)
+{
+    _setup_base_explosion(beam, origin);
+    beam.flavour = BEAM_MIASMA;
+    beam.damage  = dice_def(4, 4 + piety_rank(you.piety));
+    beam.name    = "loud spray of plague-filled liquid";
+    beam.explode_noise_msg = "You hear a slimy splat!";
+    beam.colour  = LIGHTGREY;
+    beam.ex_size = 1;
+}
+
 struct monster_explosion {
     function<void(bolt&, const monster&)> prep_explode;
     string sanct_effect;
@@ -169,6 +181,7 @@ static const map<monster_type, monster_explosion> explosions {
     { MONS_BENNU, { _setup_bennu_explosion, "fires are quelled" } },
     { MONS_BLOATED_HUSK, { _setup_bloated_husk_explosion } },
     { MONS_CREEPING_INFERNO, { _setup_inferno_explosion } },
+    { MONS_PLAGUE_WORM, { _setup_plague_worm_explosion } },
 };
 
 // When this monster dies, does it explode?

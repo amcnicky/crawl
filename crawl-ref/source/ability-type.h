@@ -321,6 +321,7 @@ enum ability_type
     ABIL_AG_SPATIAL_SINGULARITY,
     ABIL_AG_DIVINE_CONDUIT,
     ABIL_AG_RADIATION_STORM,
+    ABIL_AG_RELEASE_PLAGUE_WORMS,
 
     // General divine (pseudo) abilities.
     ABIL_RENOUNCE_RELIGION,

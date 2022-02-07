@@ -40,7 +40,7 @@ uint8_t generate_ancient_god_passive_key()
 
 uint8_t generate_ancient_god_small_key()
 {
-    return 2; //testing
+    return 4; //testing
     return you.game_seed%NUM_AGAS;
 }
 
@@ -351,7 +351,6 @@ int current_threat_level()
 
 ability_type ancient_god_small_ability()
 {
-    return ag_ability_small_data[AG_S_RADIATION_STORM].ability; // testing
     return ag_ability_small_data[you.ancient_god_small_key].ability;
 }
 

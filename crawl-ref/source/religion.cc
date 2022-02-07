@@ -411,6 +411,8 @@ const vector<vector<god_power>> & get_all_god_powers()
                 "You can channel divinity to power your wands."},
             { ancient_god_small_breakpoint, ABIL_AG_RADIATION_STORM,
                 "call forth a ferrocious radiation storm" },
+            { ancient_god_small_breakpoint, ABIL_AG_RELEASE_PLAGUE_WORMS,
+                "rend disgusting plague worms from your body" },
             { 7, ABIL_PLACEHOLDER_GAINMORE_SMALL, "Gain more piety to discover this ability."},
             { 7, ABIL_PLACEHOLDER_GAINMORE_CAP, "Gain more piety to discover this significant ability."},
         },
@@ -508,6 +510,18 @@ vector<god_power> get_god_powers(god_type god)
         if (
             god == GOD_ANCIENT
             && power.abil == ABIL_AG_RADIATION_STORM
+            && (
+                    you.piety < piety_breakpoint(ancient_god_small_breakpoint)
+                ||  !(you_worship(GOD_ANCIENT))
+                ||  ancient_god_small_ability()!= power.abil
+                )
+            )
+        {   // TODO: tidy this mess
+            continue;
+        }
+        if (
+            god == GOD_ANCIENT
+            && power.abil == ABIL_AG_RELEASE_PLAGUE_WORMS
             && (
                     you.piety < piety_breakpoint(ancient_god_small_breakpoint)
                 ||  !(you_worship(GOD_ANCIENT))

@@ -63,7 +63,7 @@ agod_passive ag_passive_data[] =
 
 agod_ability_small ag_ability_small_data[] =
 {
-    {   //AG_S_HEROISM
+    {   //AG_S_REALITY_DILATION
         ABIL_AG_REALITY_DILATION,
         "You can warp reality to temporarily move incredibly quickly.",
         "GODNAME long description for reality dilation."
@@ -80,6 +80,11 @@ agod_ability_small ag_ability_small_data[] =
     },
     {   //AG_S_RADIATION_STORM
         ABIL_AG_RADIATION_STORM,
+        "outdated useage, to tidy up this section and delete.",
+        "outdated useage, to tidy up this section and delete."
+    },
+    {   //AG_S_PLAGUE_WORMS
+        ABIL_AG_RELEASE_PLAGUE_WORMS,
         "outdated useage, to tidy up this section and delete.",
         "outdated useage, to tidy up this section and delete."
     },

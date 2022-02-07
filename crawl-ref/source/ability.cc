@@ -665,7 +665,8 @@ static vector<ability_def> &_get_ability_list()
             3, 0, generic_cost::range(3, 4), LOS_MAX_RANGE,
             {fail_basis::invo, 40, 5, 20},
             abflag::none },
-
+        { ABIL_AG_RELEASE_PLAGUE_WORMS, "Release Plague Worms",
+            1, 50, 8, -1, {fail_basis::invo}, abflag::none },
 
         { ABIL_STOP_RECALL, "Stop Recall",
             0, 0, 0, -1, {fail_basis::invo}, abflag::none },
@@ -3408,6 +3409,59 @@ static spret _do_ability(const ability_def& abil, bool fail, dist *target,
         you.redraw_status_lights = true;
         return spret::success;
 
+    case ABIL_AG_RELEASE_PLAGUE_WORMS:
+    {
+        vector<coord_def> candidate_spaces;
+        for (adjacent_iterator ai(you.pos(), true); ai; ++ai)
+        {
+            if (!cell_is_solid(*ai) && !monster_at(*ai))
+                {
+                    candidate_spaces.push_back(*ai);
+                }
+        }
+        if(candidate_spaces.size()==0)
+        {
+            mpr("Plague worms try to wriggle from your wounds but there's no room!");    
+        } else
+        {
+            int spawned = 0;
+            for (auto pos : candidate_spaces)
+            {
+                if(coinflip())
+                {
+                    mpr("Vicious plague worms struggle free from your wounds!"); 
+                    shuffle_array(candidate_spaces); //even chance for each space to be considered 1st 
+                    monster* worm = create_monster(
+                        mgen_data(MONS_PLAGUE_WORM, BEH_FRIENDLY,pos,
+                        MHITNOT, MG_NONE, GOD_ANCIENT));
+                    worm->add_ench(ENCH_SHORT_LIVED);
+                    spawned++;
+                }
+            }
+            if(spawned<=2)
+            {
+                int second_spawn_attempts = 0;
+                spawned = 0;
+                while(spawned<1 && second_spawn_attempts <8)
+                {
+                    if(coinflip())
+                        {
+                            mpr("Vicious plague worms struggle free from your wounds!"); 
+                            shuffle_array(candidate_spaces); //even chance for each space to be considered 1st 
+                            monster* worm = create_monster(
+                                mgen_data(MONS_PLAGUE_WORM, BEH_FRIENDLY
+                                    ,candidate_spaces[second_spawn_attempts],
+                                MHITNOT, MG_AUTOFOE, GOD_ANCIENT));
+                            worm->add_ench(ENCH_SHORT_LIVED);
+                            spawned++;
+                        }
+                    second_spawn_attempts++;
+                }
+            }            
+        }
+        break; 
+    }
+
     case ABIL_AG_SPATIAL_SINGULARITY:
         if(you.duration[DUR_SINGULARITY])
         {
@@ -3432,6 +3486,7 @@ static spret _do_ability(const ability_def& abil, bool fail, dist *target,
                 " from creating a singularity.");
             return spret::abort;
         }
+        break;
     
     case ABIL_AG_DIVINE_CONDUIT:
         if(you.duration[DUR_CONDUIT])
@@ -3445,6 +3500,7 @@ static spret _do_ability(const ability_def& abil, bool fail, dist *target,
             mpr("You channel a ferocious divine power, granting unlimited,"
                 " but temporary, wand useage.");
         }
+        break;
 
     case ABIL_AG_RECALL_SIDEKICK:
         if (try_recall(ag_sidekick()))

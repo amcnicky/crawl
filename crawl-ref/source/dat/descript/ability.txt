@@ -842,6 +842,15 @@ irradiated explosions and other related effects. Has a chance to corrode
 any creatures caught in the blast, and a small chance to polymorph any 
 left alive afterwards.
 %%%%
+Release Plague Worms ability
+
+Tears open a series of small wounds in your body to allow a number 
+vicious plague worms to squirm their way free and assault your foes.
+
+Plagues worms will explode in a disgusting miasmic slurry when killed, or 
+after a short time, so worshippers would do well to keep out of their way or 
+have a way of resisting their foul pestillence!
+%%%%
 Hop ability
 
 Hops toward a chosen destination, landing somewhere nearby. After using this

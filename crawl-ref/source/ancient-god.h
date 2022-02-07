@@ -50,6 +50,7 @@ enum ag_abil_small_type
     AG_S_SPATIAL_SINGULARITY,
     AG_S_DIVINE_CONDUIT,
     AG_S_RADIATION_STORM,
+    AG_S_PLAGUE_WORMS,
     NUM_AGAS,
     MAX_AGAS = 255,
 };
