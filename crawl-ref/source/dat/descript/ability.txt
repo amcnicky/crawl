@@ -854,8 +854,8 @@ have a way of resisting their foul pestillence!
 Horrifying Visage ability
 
 Channels the horror and decay your god has experienced over the aeons, 
-terrifying those in sight who are subject to fear with such ferrocity that 
-some may also be entirely petrified, temporarily turning them to stone.
+terrifying those in sight who are subject to fear. Some may also be so 
+scared that they are entirely petrified, temporarily turning them to stone.
 %%%%
 Hop ability
 
