@@ -40,7 +40,7 @@ uint8_t generate_ancient_god_passive_key()
 
 uint8_t generate_ancient_god_small_key()
 {
-    return 4; //testing
+    return 5; //testing
     return you.game_seed%NUM_AGAS;
 }
 
@@ -76,6 +76,8 @@ string ancient_god_name()
 
 string sidekick_name()
 {
+    // TODO: consider turning spriggan sidekick into a summoning enhancer
+    // i.e. the sidekick appears as part of all summons
     ASSERT(you.props.exists(AG_SIDEKICK_NAME_KEY));
     return you.props[AG_SIDEKICK_NAME_KEY].get_string();
 }

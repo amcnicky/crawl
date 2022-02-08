@@ -88,6 +88,11 @@ agod_ability_small ag_ability_small_data[] =
         "outdated useage, to tidy up this section and delete.",
         "outdated useage, to tidy up this section and delete."
     },
+    {   //AG_S_HORRIFYING_VISAGE
+        ABIL_AG_HORRIFYING_VISAGE,
+        "outdated useage, to tidy up this section and delete.",
+        "outdated useage, to tidy up this section and delete."
+    },
 };
 
 agod_ability_cap ag_ability_cap_data[] =
@@ -207,7 +212,8 @@ const char* ag_name_data[] =
     "Udzu",
     "Uru Lai Kah",
     "Uukiru",
-    "Rrragathor"
+    "Rrragathor",
+    "Temaris"
 };
 
 // See above comment on adding names - additions welcome.

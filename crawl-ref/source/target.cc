@@ -2106,6 +2106,17 @@ bool targeter_discord::affects_monster(const monster_info& mon)
     return mon.willpower() != WILL_INVULN && mon.can_go_frenzy;
 }
 
+targeter_visage::targeter_visage()
+    : targeter_multimonster(&you)
+{
+}
+
+bool targeter_visage::affects_monster(const monster_info& mon)
+{
+    return mon.willpower() != WILL_INVULN && (mon.can_feel_fear 
+        || !(get_mons_class_resists(mon.type)!= MR_RES_PETRIFY));
+}
+
 targeter_englaciate::targeter_englaciate()
     : targeter_multimonster(&you)
 {

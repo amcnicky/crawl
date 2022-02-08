@@ -507,6 +507,13 @@ public:
     bool affects_monster(const monster_info& mon) override;
 };
 
+class targeter_visage : public targeter_multimonster
+{
+public:
+    targeter_visage();
+    bool affects_monster(const monster_info& mon) override;
+};
+
 class targeter_englaciate : public targeter_multimonster
 {
 public:

@@ -3812,6 +3812,8 @@ tileidx_t tileidx_ability(const ability_type ability)
         return TILEG_ABILITY_QAZLAL_UPHEAVAL;
     case ABIL_AG_RELEASE_PLAGUE_WORMS:
         return TILEG_ABILITY_BAT_FORM;
+    case ABIL_AG_HORRIFYING_VISAGE:
+        return TILEG_ABILITY_RU_SACRIFICE_EYE;
 
     // General divine (pseudo) abilities.
     case ABIL_RENOUNCE_RELIGION:

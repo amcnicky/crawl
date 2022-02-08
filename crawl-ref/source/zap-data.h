@@ -1815,4 +1815,36 @@ _mon_hex_zap(ZAP_DRAIN_MAGIC, BEAM_DRAIN_MAGIC),
     0 // Noise comes from explosion
 },
 
+{
+    ZAP_PETRIFY,
+    "petrifying visage",
+    50,
+    nullptr,
+    nullptr,
+    nullptr,
+    nullptr,
+    LIGHTGREY,
+    true,
+    BEAM_PETRIFY,
+    DCHAR_FIRED_BURST,
+    true,
+    false,
+    0
+},
+/*
+    zap_type ztype;
+    const char* name;
+    int player_power_cap;
+    dam_deducer* player_damage;
+    tohit_deducer* player_tohit;       // Enchantments have power modifier here
+    dam_deducer* monster_damage;
+    tohit_deducer* monster_tohit;      // Enchantments have power modifier here
+    colour_t colour;
+    bool is_enchantment;
+    beam_type flavour;
+    dungeon_char_type glyph;
+    bool can_beam;
+    bool is_explosion;
+    int hit_loudness;
+*/
 };

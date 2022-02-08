@@ -667,6 +667,8 @@ static vector<ability_def> &_get_ability_list()
             abflag::none },
         { ABIL_AG_RELEASE_PLAGUE_WORMS, "Release Plague Worms",
             1, 50, 8, -1, {fail_basis::invo}, abflag::none },
+        { ABIL_AG_HORRIFYING_VISAGE, "Horrifying Visage",
+            4, 0, 8, -1, {fail_basis::invo}, abflag::none },
 
         { ABIL_STOP_RECALL, "Stop Recall",
             0, 0, 0, -1, {fail_basis::invo}, abflag::none },
@@ -3502,6 +3504,33 @@ static spret _do_ability(const ability_def& abil, bool fail, dist *target,
         }
         break;
 
+    case ABIL_AG_HORRIFYING_VISAGE:
+    {
+        beam.range = you.current_vision;
+        const int pow = 64 + you.skill(SK_INVOCATIONS, 4);
+
+        dist target_local;
+        targeter_visage tgt;
+        direction_chooser_args args;
+        args.restricts = DIR_TARGET;
+        args.mode = TARG_HOSTILE;
+        args.needs_path = false;
+        args.get_desc_func = bind(desc_wl_success_chance, placeholders::_1,
+                                  zap_ench_power(ZAP_PETRIFY, pow, false),
+                                  nullptr);
+        args.top_prompt = "Aiming: <red>Horrifying Visage</red>";
+        args.self = confirm_prompt_type::cancel;
+        args.hitfunc = &tgt;
+        if (!spell_direction(target_local, beam, &args))
+            return spret::abort;
+
+        fail_check();
+
+        mprf("You unleash your horrifying visage!");
+        mass_enchantment(ENCH_FEAR,pow,false);
+        mass_enchantment(ENCH_PETRIFYING,pow,false);
+    }      
+
     case ABIL_AG_RECALL_SIDEKICK:
         if (try_recall(ag_sidekick()))
             return spret::success;
@@ -3510,7 +3539,6 @@ static spret _do_ability(const ability_def& abil, bool fail, dist *target,
     case ABIL_AG_RADIATION_STORM:
         {
             return ag_radiation_storm(coord_def(), false, fail, target);
-            //return ag_radiation_storm(&you, you.skill_rdiv(SK_INVOCATIONS)*10, fail/*, vector of squares?*/);
             break;
         }
 
