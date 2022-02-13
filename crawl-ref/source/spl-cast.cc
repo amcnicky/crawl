@@ -927,9 +927,21 @@ spret cast_a_spell(bool check_range, spell_type spell, dist *_target,
         }
     }
 
+    const int cost = spell_mana(spell);
+    if(have_passive(passive_t::degenerative_casting)
+        && cost > you.magic_points)
+    {
+        // Doublecheck with the player if they want to continue degen cast
+        if (!yesno("Really over-use mp? (This causes degeneration).",true, 'n'))
+        {
+            canned_msg(MSG_OK);
+            crawl_state.zero_turns_taken();
+            return spret::abort;
+        }
+    }
+
     you.last_cast_spell = spell;
     // Silently take MP before the spell.
-    const int cost = spell_mana(spell);
     pay_mp(cost);
 
     // Majin Bo HP cost taken at the same time

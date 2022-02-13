@@ -279,7 +279,10 @@ enum class passive_t
     spriggan_sidekick,
 
     // You are boosted with various heavenly powers when threatened
-    threatening_boost
+    threatening_boost,
+
+    // You can cast without sufficient mana at the cost of degen effects
+    degenerative_casting
 };
 
 enum ru_interference

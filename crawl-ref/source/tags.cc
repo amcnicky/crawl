@@ -1430,7 +1430,7 @@ static void _tag_construct_char(writer &th)
     marshallByte(th, you.ancient_god_passive_key);
     marshallByte(th, you.ancient_god_small_key);
     marshallByte(th, you.ancient_god_cap_key);
-    marshallByte(th, you.ancient_god_mut_key);
+    marshallByte(th, you.ancient_god_passive_key2);
     marshallByte(th, you.ancient_god_like_key);
     marshallByte(th, you.ancient_god_dislike_key);
 }
@@ -2359,7 +2359,7 @@ void tag_read_char(reader &th, uint8_t /*format*/, uint8_t major, uint8_t minor)
     you.ancient_god_passive_key = unmarshallByte(th);
     you.ancient_god_small_key = unmarshallByte(th);
     you.ancient_god_cap_key = unmarshallByte(th);
-    you.ancient_god_mut_key = unmarshallByte(th);
+    you.ancient_god_passive_key2 = unmarshallByte(th);
     you.ancient_god_like_key = unmarshallByte(th);
     you.ancient_god_dislike_key = unmarshallByte(th);
 }

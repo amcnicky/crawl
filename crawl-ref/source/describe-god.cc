@@ -1009,6 +1009,15 @@ static formatted_string _describe_god_powers(god_type which_god)
                 desc_freq_of_ancient_god_passive().c_str() 
                 : ""
             , ancient_god_passive_description_long().c_str());
+        // same deal for the second passive just simpler
+        if (piety < piety_breakpoint(ancient_god_passive_breakpoint2))
+            desc.textcolour(DARKGREY);
+        desc.cprintf("%s%s",
+            (you_worship(GOD_ANCIENT) && 
+            you.piety >= piety_breakpoint(ancient_god_passive_breakpoint2)) ?
+                ancient_god_name().c_str() 
+                : ""
+            , ancient_god_passive_description_long2().c_str());
         break;
     default:
         break;

@@ -1140,7 +1140,8 @@ string casting_uselessness_reason(spell_type spell, bool temp)
             if (!enough_hp(spell_mana(spell), true, false))
                 return "you don't have enough health to cast this spell.";
         }
-        else if (!enough_mp(spell_mana(spell), true, false))
+        else if (!enough_mp(spell_mana(spell), true, false)
+                && !have_passive(passive_t::degenerative_casting))
             return "you don't have enough magic to cast this spell.";
 
         if (spell == SPELL_SUBLIMATION_OF_BLOOD

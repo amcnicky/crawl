@@ -253,9 +253,9 @@ public:
     string jiyva_second_name;       // Random second name of Jiyva
     uint8_t ancient_god_name_key;       // attributes for ancient god configuration
     uint8_t ancient_god_passive_key;    // [ancient god] passive ability
+    uint8_t ancient_god_passive_key2;   // [ancient god] 2nd passive ability
     uint8_t ancient_god_small_key;      // [ancient god] small ability
     uint8_t ancient_god_cap_key;        // [ancient god] capstone ability
-    uint8_t ancient_god_mut_key;        // [ancient god] mutation
     uint8_t ancient_god_like_key;       // [ancient god] likes
     uint8_t ancient_god_dislike_key;    // [ancient god] dislikes
     uint8_t piety;

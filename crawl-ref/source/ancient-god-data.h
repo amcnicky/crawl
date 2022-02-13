@@ -61,6 +61,15 @@ agod_passive ag_passive_data[] =
     },
 };
 
+agod_passive ag_passive_data2[] = 
+{
+    {   //AG_P_DEGENERATIVE_CASTING
+        passive_t::degenerative_casting,
+        "Does this ever get used??? TODO:refactor and remove this line.\n",
+        " allows casting without sufficient mana at the cost of heavy degenerative effects.\n"
+    },
+};
+
 agod_ability_small ag_ability_small_data[] =
 {
     {   //AG_S_REALITY_DILATION
@@ -101,13 +110,6 @@ agod_ability_cap ag_ability_cap_data[] =
         ABIL_BEOGH_GIFT_ITEM,
         "GODNAME short description for capstone.",
         "GODNAME long description for capstone."
-    },
-};
-
-agod_mut ag_mut_data[] =
-{
-    {   //AG_M_HP_CASTING
-        MUT_HP_CASTING
     },
 };
 

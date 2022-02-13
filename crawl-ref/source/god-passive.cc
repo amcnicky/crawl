@@ -461,8 +461,12 @@ bool god_gives_passive(god_type god, passive_t passive)
 bool have_passive(passive_t passive)
 {
     if (you_worship(GOD_ANCIENT)
-        && ancient_god_passive()==passive
-        && you.piety>=piety_breakpoint(ancient_god_passive_breakpoint))
+        && (
+                (ancient_god_passive()==passive
+                && you.piety>=piety_breakpoint(ancient_god_passive_breakpoint))
+            ||  (ancient_god_passive2()==passive
+                && you.piety>=piety_breakpoint(ancient_god_passive_breakpoint2))
+        ))
     {
         return true;
     } else if (you_worship(GOD_ANCIENT))

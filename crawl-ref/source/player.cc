@@ -3634,12 +3634,28 @@ void pay_hp(int cost)
     ASSERT(you.hp);
 }
 
+static void _degen_casting_effect()
+    {
+        mpr("You manage to cast the spell but at great cost!");
+        for (int i = 0; i < NUM_STATS; ++i)
+            lose_stat(static_cast<stat_type>(i), 1 + random2(3));
+    }
+
 void pay_mp(int cost)
 {
     if (you.has_mutation(MUT_HP_CASTING))
         pay_hp(cost);
-    else
+    else if (have_passive(passive_t::degenerative_casting)
+        && cost > you.magic_points)
+    {
+        // 1. decrement any remaining mp
+        _dec_mp(you.magic_points, true);
+        // 2. fire degenerative casting event based on cost
+        _degen_casting_effect();
+    } else
+    {
         _dec_mp(cost, true);
+    }
 }
 
 void refund_hp(int cost)

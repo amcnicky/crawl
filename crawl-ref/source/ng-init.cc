@@ -501,12 +501,12 @@ void generate_ancient_god_attributes()
     ASSERT(you.ancient_god_name_key>=0 && you.ancient_god_name_key < NUM_AG_NAMES);
     you.ancient_god_passive_key = generate_ancient_god_passive_key();
     ASSERT(you.ancient_god_passive_key>=0 && you.ancient_god_passive_key < NUM_AGP);
+    you.ancient_god_passive_key2 = generate_ancient_god_passive_key2();
+    ASSERT(you.ancient_god_passive_key2>=0 && you.ancient_god_passive_key2 < NUM_AGP2);
     you.ancient_god_small_key = generate_ancient_god_small_key();
     ASSERT(you.ancient_god_small_key>=0 && you.ancient_god_small_key < NUM_AGAS);
     you.ancient_god_cap_key = generate_ancient_god_cap_key();
     ASSERT(you.ancient_god_cap_key>=0 && you.ancient_god_cap_key < NUM_AGAC);
-    you.ancient_god_mut_key = generate_ancient_god_mut_key();
-    ASSERT(you.ancient_god_mut_key>=0 && you.ancient_god_mut_key < NUM_AGM);
     you.ancient_god_like_key = generate_ancient_god_like_key();
     you.ancient_god_dislike_key = generate_ancient_god_dislike_key();
 }

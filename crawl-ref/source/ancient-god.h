@@ -11,6 +11,7 @@
 
 // used elsewhere to avoid hardcoding in multiple locations
 const int ancient_god_passive_breakpoint = 0;
+const int ancient_god_passive_breakpoint2 = 4;
 const int ancient_god_small_breakpoint = 2;
 const int ancient_god_mut_breakpoint = 3;
 const int ancient_god_cap_breakpoint = 5;
@@ -44,6 +45,13 @@ enum ag_passive_type
     MAX_AGP = 255,
 };
 
+enum ag_passive_type2
+{
+    AG_P_DEGENERATIVE_CASTING,
+    NUM_AGP2,
+    MAX_AGP2 = 255,
+};
+
 enum ag_abil_small_type
 {
     AG_S_REALITY_DILATION,
@@ -63,18 +71,11 @@ enum ag_abil_cap_type
     MAX_AGAC = 255,
 };
 
-enum ag_mut_type
-{
-    AG_M_HP_CASTING,
-    NUM_AGM,
-    MAX_AGM = 255,
-};
-
 uint8_t generate_ancient_god_name_key();
 uint8_t generate_ancient_god_passive_key();
+uint8_t generate_ancient_god_passive_key2();
 uint8_t generate_ancient_god_small_key();
 uint8_t generate_ancient_god_cap_key();
-uint8_t generate_ancient_god_mut_key();
 uint8_t generate_ancient_god_like_key();
 uint8_t generate_ancient_god_dislike_key();
 string ancient_god_name();
@@ -91,9 +92,12 @@ string ag_desc_god_fall();
 string ag_desc_god_now();
 string ag_desc_powers();
 passive_t ancient_god_passive();
+passive_t ancient_god_passive2();
 bool ancient_god_passive_active(passive_t passive);
 const char* ancient_god_passive_description_short();
+const char* ancient_god_passive_description_short2();
 string ancient_god_passive_description_long();
+string ancient_god_passive_description_long2();
 string desc_freq_of_ancient_god_passive();
 string desc_subtype_of_ancient_god_passive();
 int current_threat_level();

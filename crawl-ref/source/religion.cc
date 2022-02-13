@@ -3668,6 +3668,8 @@ static bool _god_rejects_loveless(god_type god)
     case GOD_HEPLIAKLQANA:
     case GOD_FEDHAS:
     case GOD_YREDELEMNUL:
+    // could be more specific based on seed but reject for consistency
+    case GOD_ANCIENT:
         return true;
     default:
         return false;
@@ -3956,7 +3958,7 @@ void _ancient_god_debug_to_remove()
     mprf("name index: %d\n",you.ancient_god_name_key);
     mprf("passive index: %d\n",you.ancient_god_passive_key);
     mprf("small index: %d\n",you.ancient_god_small_key);
-    mprf("mut index: %d\n",you.ancient_god_mut_key);
+    mprf("2nd passive index: %d\n",you.ancient_god_passive_key2);
     mprf("cap index: %d\n",you.ancient_god_cap_key);
     mprf("likes index: %d\n",you.ancient_god_like_key);
     mprf("hates index: %d\n",you.ancient_god_dislike_key);

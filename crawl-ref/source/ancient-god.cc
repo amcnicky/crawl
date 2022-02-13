@@ -38,9 +38,13 @@ uint8_t generate_ancient_god_passive_key()
     return you.game_seed%NUM_AGP;
 }
 
+uint8_t generate_ancient_god_passive_key2()
+{
+    return you.game_seed%NUM_AGP2;
+}
+
 uint8_t generate_ancient_god_small_key()
 {
-    return 5; //testing
     return you.game_seed%NUM_AGAS;
 }
 
@@ -48,11 +52,6 @@ uint8_t generate_ancient_god_cap_key()
 
 {
     return you.game_seed%NUM_AGAC;
-}
-
-uint8_t generate_ancient_god_mut_key()
-{
-    return you.game_seed%NUM_AGM;
 }
 
 uint8_t generate_ancient_god_like_key()
@@ -201,31 +200,47 @@ string ag_desc_powers()
 // use passive generation key to return the passive for this ancient god
 passive_t ancient_god_passive()
 {
-//    mprf("Looking up passive abil with key: %d",you.ancient_god_passive_key);
     return ag_passive_data[you.ancient_god_passive_key].passive;
+}
+
+// same but for the second passive
+passive_t ancient_god_passive2()
+{
+    return ag_passive_data2[you.ancient_god_passive_key2].passive;
 }
 
 bool ancient_god_passive_active(passive_t passive)
 {
     return you_worship(GOD_ANCIENT)
-        && passive == ancient_god_passive()
-        && you.piety >= piety_breakpoint(ancient_god_passive_breakpoint);
+        && ((
+                passive == ancient_god_passive()
+                && you.piety >= piety_breakpoint(ancient_god_passive_breakpoint)
+            )
+            ||
+            (
+                passive == ancient_god_passive2()
+                && you.piety >= piety_breakpoint(ancient_god_passive_breakpoint2)
+            ));
 }
 
 // an example of how certain passives may have more than one potential subtype
 // TODO: there's likely a more extensible way of doing this.
 ag_passive_threatening_boost_subtype get_threatening_boost_subtype()
 {
-    return ag_passive_threatening_boost_subtype::ST_INT; //testing
-    // this is a type cast, not a function
+    // this is a type cast, not a function call
     return ag_passive_threatening_boost_subtype(you.game_seed%NUM_ST);
 }
 
 // i.e. "ancient god now allows you to <return val>"
 const char* ancient_god_passive_description_short()
 {
-//    mprf("Looking up passive desc with key: %d",you.ancient_god_passive_key);
     return ag_passive_data[you.ancient_god_passive_key].short_description;
+}
+
+// for the second passive
+const char* ancient_god_passive_description_short2()
+{
+    return ag_passive_data2[you.ancient_god_passive_key2].short_description;
 }
 
 // i.e. in the ^ menu, how should the full description of the passive appear?
@@ -245,6 +260,17 @@ string ancient_god_passive_description_long()
     }
     // if no subtype just return the static desc per ag_passive_data
     return ag_passive_data[you.ancient_god_passive_key].long_description;
+}
+
+// and for the second passive (no subtypes...yet)
+string ancient_god_passive_description_long2()
+{
+    if (you.piety<piety_breakpoint(ancient_god_passive_breakpoint2)
+        || !(you_worship(GOD_ANCIENT)))
+    {
+        return "Gain more piety to discover this passive ability.\n";
+    }
+    return ag_passive_data2[you.ancient_god_passive_key2].long_description;
 }
 
 string desc_freq_of_ancient_god_passive()
@@ -366,7 +392,6 @@ const char* ancient_god_small_ability_description_long()
     return ag_ability_small_data[you.ancient_god_small_key].long_description;
 }
 
-
 /********************************************************
 *   Functions relating to ancient god capstone abilities
 ********************************************************/
@@ -390,12 +415,12 @@ const char* ancient_god_cap_ability_description_long()
 // a valid set of ancient god passive/abilities etc which is dynamic based
 // on the number of existing possibilities for those.
 COMPILE_CHECK(ARRAYSZ(ag_passive_data)==NUM_AGP);
+COMPILE_CHECK(ARRAYSZ(ag_passive_data2)==NUM_AGP2);
 COMPILE_CHECK(ARRAYSZ(ag_ability_small_data)==NUM_AGAS);
 COMPILE_CHECK(ARRAYSZ(ag_ability_cap_data)==NUM_AGAC);
-COMPILE_CHECK(ARRAYSZ(ag_mut_data)==NUM_AGM);
 
 COMPILE_CHECK(NUM_AGP<MAX_AGP); //uint8
+COMPILE_CHECK(NUM_AGP2<MAX_AGP2); //uint8
 COMPILE_CHECK(NUM_AGAS<MAX_AGAS); //uint8
 COMPILE_CHECK(NUM_AGAC<MAX_AGAC); //uint8
-COMPILE_CHECK(NUM_AGM<MAX_AGM); //uint8
 COMPILE_CHECK(NUM_ST<MAX_ST);
