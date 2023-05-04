@@ -204,6 +204,11 @@ playthings with which to toy. Many choose to follow Xom in the hope of
 receiving fabulous rewards and mighty powers, but Xom is nothing if not
 capricious. There is nothing a follower can do to influence Xom's mood.
 %%%%
+Yib
+
+Yib is a ritual god worshipped by a cult.
+TODO: proper description of Yib.
+%%%%
 Yredelemnul
 
 Yredelemnul the Dark is a god worshipped by those who seek powers over death
@@ -463,6 +468,11 @@ things up a little” and send worshippers to their doom. If such toys of Xom
 prove to be interesting, so much the better; if not, well, there'll be other
 playthings...
 %%%%
+Yib powers
+
+Yib has some mighty powers, all based on performing longer-than-typical
+god rituals. TODO: proper powers description.
+%%%%
 Yredelemnul powers
 
 Yredelemnul gives followers the power to raise slain foes from the dead and
@@ -661,6 +671,10 @@ Xom wrath
 Unfaithful ex-followers will find themselves suffering through Xom's bad moods
 for so long as Xom can be bothered to remember about them. Still, Xom's caprice
 remains; the unfaithful are rewarded just as the faithful are punished.
+%%%%
+Yib wrath
+
+Yib will mess you up if you leave. TODO: proper wrath description.
 %%%%
 Yredelemnul wrath
 

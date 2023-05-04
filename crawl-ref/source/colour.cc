@@ -640,6 +640,12 @@ void init_element_colours()
                               {40,  YELLOW},
                               {40,  WHITE},
                             }));
+    add_element_colour(new random_element_colour_calc(
+                            ETC_YIB, "yib",
+                            { {40,  DARKGREY},
+                              {40,  MAGENTA},
+                              {40,  RED},
+                            }));
     // redefined by Lua later
     add_element_colour(new element_colour_calc(
                             ETC_DISCO, "disco", _etc_random

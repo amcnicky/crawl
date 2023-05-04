@@ -398,6 +398,11 @@ const vector<vector<god_power>> & get_all_god_powers()
             { 1, ABIL_IGNIS_FOXFIRE, "call a swarm of foxfires against your foes" },
             { 7, ABIL_IGNIS_RISING_FLAME, "rocket upward and away" },
         },
+
+        // Yib
+        {
+            // TODO: Add more abilities here.
+        }
     };
     static bool god_powers_init = false;
 
@@ -2221,6 +2226,7 @@ string god_name(god_type which_god, bool long_name)
     case GOD_HEPLIAKLQANA:  return "Hepliaklqana";
     case GOD_WU_JIAN:       return "Wu Jian";
     case GOD_IGNIS:         return "Ignis";
+    case GOD_YIB:           return "Yib";
     case GOD_JIYVA: // This is handled at the beginning of the function
     case GOD_ECUMENICAL:    return "an unknown god";
     case NUM_GODS:          return "Buggy";
@@ -2864,6 +2870,7 @@ int initial_wrath_penance_for(god_type god)
         case GOD_NEMELEX_XOBEH:
         case GOD_TROG:
         case GOD_XOM:
+        case GOD_YIB:
             return 50;
         case GOD_FEDHAS:
         case GOD_KIKUBAAQUDGHA:
@@ -3212,6 +3219,10 @@ void excommunication(bool voluntary, god_type new_god)
             you.duration[DUR_RISING_FLAME] = 0;
             mpr("Your rising flame fizzles out.");
         }
+        break;
+
+    case GOD_YIB:
+        simple_god_message(" asks you to finish implementing on line 3325 religion.cc");
         break;
 
     case GOD_RU:
@@ -4235,6 +4246,7 @@ void handle_god_time(int /*time_delta*/)
         case GOD_CHEIBRIADOS:
         case GOD_SHINING_ONE:
         case GOD_NEMELEX_XOBEH:
+        case GOD_YIB:
             if (one_chance_in(35))
                 lose_piety(1);
             break;
@@ -4341,6 +4353,9 @@ int god_colour(god_type god) // mv - added
     case GOD_RU:
         return BROWN;
 
+    case GOD_YIB:
+        return MAGENTA;
+
 #if TAG_MAJOR_VERSION == 34
     case GOD_PAKELLAS:
         return LIGHTGREEN;
@@ -4444,6 +4459,9 @@ colour_t god_message_altar_colour(god_type god)
 
     case GOD_IGNIS:
         return random_choose(WHITE, YELLOW);
+
+    case GOD_YIB:
+        return MAGENTA;
 
     default:
         return YELLOW;
@@ -4783,6 +4801,7 @@ static bool _is_temple_god(god_type god)
     case GOD_BEOGH:
     case GOD_JIYVA:
     case GOD_IGNIS:
+    case GOD_YIB:
         return false;
 
     default:

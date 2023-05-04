@@ -801,6 +801,14 @@ a fake
 w:2
 a kilgore
 %%%%
+Yib penance
+
+Yib says: TODO: implement leaving message
+%%%%
+Yib welcome
+
+Yib whispers: Welcome to the family, my child.
+%%%%
 Yredelemnul penance
 
 Yredelemnul says: All are equal in death! Holy martyrdom means nothing!
