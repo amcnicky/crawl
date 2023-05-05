@@ -622,6 +622,33 @@ bool summon_holy_warrior(int pow, bool punish)
     return true;
 }
 
+// Not a spell. Rather, this is Yib's doing.
+bool summon_yib_cultist(int pow, bool punish)
+{
+    mgen_data mg(MONS_PLAYER_GHOST,
+                 punish? BEH_HOSTILE : BEH_FRIENDLY,
+                 you.pos(), MHITYOU, MG_FORCE_BEH | MG_AUTOFOE);
+    mg.set_summoned(punish? 0 : &you,
+                    punish? 0 : min(2 + (random2(pow) / 4), 6),
+                    SPELL_NO_SPELL, GOD_YIB);
+
+    if (punish)
+    {
+        mg.extra_flags |= (MF_NO_REWARD | MF_HARD_RESET);
+        mg.non_actor_summoner = god_name(GOD_YIB, false);
+    }
+
+    monster *summon = create_monster(mg);
+
+    if (!summon)
+        return false;
+
+    if (!punish)
+        mpr("The blurry identity behind you mask splits in two!");
+
+    return true;
+}
+
 /**
  * Essentially a macro to allow for a generic fail pattern to avoid leaking
  * information about invisible enemies. (Not implemented as a macro because I
