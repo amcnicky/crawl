@@ -2007,6 +2007,10 @@ static int _player_evasion_bonuses()
     if (you.get_mutation_level(MUT_DISTORTION_FIELD))
         evbonus += you.get_mutation_level(MUT_DISTORTION_FIELD) + 1;
 
+    // Yib shifting visage is harder to hit
+    if (have_passive(passive_t::morphous_mask))
+        evbonus += (you.piety*5)/200 + 2;
+
     // transformation penalties/bonuses not covered by size alone:
     if (you.get_mutation_level(MUT_SLOW_REFLEXES))
         evbonus -= you.get_mutation_level(MUT_SLOW_REFLEXES) * 5;
@@ -3093,6 +3097,11 @@ int player_stealth()
     stealth += STEALTH_PIP * you.get_mutation_level(MUT_CAMOUFLAGE);
     if (you.has_mutation(MUT_TRANSLUCENT_SKIN))
         stealth += STEALTH_PIP;
+
+    // Yib morphous mask
+    if (have_passive(passive_t::morphous_mask))
+        stealth += STEALTH_PIP;
+    
 
     // Radiating silence is the negative complement of shouting all the
     // time... a sudden change from background noise to no noise is going

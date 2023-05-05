@@ -256,6 +256,9 @@ enum class passive_t
 
     // Immunity to spectral mist clouds
     r_spectral_mist,
+
+    // Yib +EV and +Stealth
+    morphous_mask,
 };
 
 enum ru_interference

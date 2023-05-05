@@ -419,7 +419,7 @@ static const vector<god_passive> god_passives[] =
 
     // Yib
     {
-        // TODO
+        { 0, passive_t::morphous_mask, "are harder to hit and detect due to your shifting features"},
     },
 };
 COMPILE_CHECK(ARRAYSZ(god_passives) == NUM_GODS);
