@@ -313,6 +313,21 @@ static const form_entry formdata[] =
       { "", "You are incredibly evasive." },
       { "insubstantial", "Your insubstantial body is immune to petrification, constriction, and being set on fire"}
     }
+},
+
+{
+    transformation::abomination, MONS_ABOMINATION_SMALL, "Abomination", "wretched-regrowth-form", "abomination",
+    "a wretched slithering mass",
+    EQF_PHYSICAL, MR_NO_FLAGS,
+    DEFAULT_DURATION, -5, 5, SIZE_SMALL, 7,
+    4, 4, 0, true, 0, false, -1,
+    SPWPN_NORMAL, BROWN, "", { "flail", "flop at", "gnaw", "thrash" },
+    FC_DEFAULT, FC_DEFAULT, FC_DEFAULT, false,
+    "gurgle", 0, "", "", "place yourself before", "newborn, slimy flesh",
+    { { "fast", "Your new, smaller body covers ground quickly." },
+      { "weak", "Your muscles are weak, reducing damage dealt in melee combat." },
+      { "born again", "Your maximum health is lowered whilst in this abominable form." }
+    }
 }
 
 };

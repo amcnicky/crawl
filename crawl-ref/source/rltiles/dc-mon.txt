@@ -1265,6 +1265,7 @@ shadow_form TRAN_SHADOW
 storm_form TRAN_STORM_HUMANOID
 storm_form_felid TRAN_STORM_FELID
 storm_form_octopode TRAN_STORM_OCTOPODE
+abom_form TRAN_ABOMINATION
 %rim 1
 
 %sdir misc

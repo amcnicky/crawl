@@ -678,6 +678,10 @@ static vector<ability_def> &_get_ability_list()
         { ABIL_IGNIS_RISING_FLAME, "Rising Flame",
             0, 0, 0, -1, {fail_basis::invo}, abflag::none },
 
+        // Yib
+        { ABIL_YIB_ABOM_FORM, "Shed this Beleaguered Flesh",
+            2, 6, 6, -1, {fail_basis::invo}, abflag::none },
+
         { ABIL_STOP_RECALL, "Stop Recall",
             0, 0, 0, -1, {fail_basis::invo}, abflag::none },
         { ABIL_RENOUNCE_RELIGION, "Renounce Religion",
@@ -2019,6 +2023,19 @@ static bool _check_ability_possible(const ability_def& abil, bool quiet = false)
 
     default:
         return true;
+    
+
+    case ABIL_YIB_ABOM_FORM:
+    {
+        string reason;
+        if (!transform(0, transformation::abomination, false, true, &reason))
+        {
+            if (!quiet)
+                mpr(reason);
+            return false;
+        }
+        return true;
+    }
     }
 }
 
@@ -2151,6 +2168,7 @@ unique_ptr<targeter> find_ability_targeter(ability_type ability)
     case ABIL_WU_JIAN_SERPENTS_LASH:
     case ABIL_IGNIS_FIERY_ARMOUR:
     case ABIL_IGNIS_RISING_FLAME:
+    case ABIL_YIB_ABOM_FORM:
     case ABIL_STOP_RECALL:
         return make_unique<targeter_radius>(&you, LOS_SOLID_SEE, 0);
 
@@ -3292,6 +3310,11 @@ static spret _do_ability(const ability_def& abil, bool fail, dist *target,
         you.set_duration(DUR_RISING_FLAME, 2 + random2(3));
         you.one_time_ability_used.set(GOD_IGNIS);
         return spret::success;
+    
+    case ABIL_YIB_ABOM_FORM:
+        fail_check();
+        transform(you.skill(SK_INVOCATIONS), transformation::abomination);
+        break;
 
     case ABIL_RENOUNCE_RELIGION:
         if (yesno("Really renounce your faith, foregoing its fabulous benefits?",

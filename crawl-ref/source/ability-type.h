@@ -312,6 +312,9 @@ enum ability_type
     ABIL_IGNIS_RISING_FLAME,
 #endif
 
+    // Yib
+    ABIL_YIB_ABOM_FORM,
+
     // For both Yred and Beogh
     ABIL_STOP_RECALL = 1500,
     ABIL_LAST_RELIGIOUS_ABILITY = ABIL_STOP_RECALL,

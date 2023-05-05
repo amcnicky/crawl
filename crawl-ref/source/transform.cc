@@ -973,6 +973,20 @@ public:
     }
 };
 
+class FormAbomination : public Form
+{
+private:
+    FormAbomination() : Form(transformation::abomination) { }
+    DISALLOW_COPY_AND_ASSIGN(FormAbomination);
+public:
+    static const FormAbomination &instance() { static FormAbomination inst; return inst; }
+
+    /**
+     * Get a message for untransforming from this form.
+     */
+    string get_untransform_message() const override { return "You disgustingly re-grow your prior body around you."; }
+};
+
 void set_airform_power(int pow)
 {
     you.props[AIRFORM_POWER_KEY] = pow;
@@ -1097,6 +1111,7 @@ static const Form* forms[] =
     &FormHydra::instance(),
 #endif
     &FormStorm::instance(),
+    &FormAbomination::instance(),
 };
 
 const Form* get_form(transformation xform)
@@ -1616,6 +1631,9 @@ undead_form_reason lifeless_prevents_form(transformation which_trans,
     if (which_trans == transformation::shadow)
         return UFR_GOOD; // even the undead can use dith's shadow form
 
+    if (which_trans == transformation::abomination)
+        return UFR_GOOD; // shedding an undead form is just like shedding any other form
+
     if (!you.has_mutation(MUT_VAMPIRISM))
         return UFR_TOO_DEAD; // ghouls & mummies can't become anything else
 
@@ -1920,6 +1938,14 @@ bool transform(int pow, transformation which_trans, bool involuntary,
         else
             mpr("You feel less conspicuous.");
         break;
+
+    case transformation::abomination:
+        if (you.heal(random_range(you.hp_max*0.1, you.hp_max*0.2) && (you.hp < you.hp_max * 0.8)))
+            mpr("You emerge healthier as you rend free of your damaged form.");
+        else if (you.heal(random_range(you.hp_max*0.1, you.hp_max*0.2)))
+            mpr("You emerge healthier as you rend free of you prior form.");
+        else 
+            mpr("Something prevents your form change from bolstering your health.");
 
     default:
         break;
@@ -2245,6 +2271,8 @@ int form_base_movespeed(transformation tran)
         return 5; // but allowed minimum is six
     else if (tran == transformation::pig)
         return 7;
+    else if (tran == transformation::abomination)
+        return 8;
     else
         return 10;
 }

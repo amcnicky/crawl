@@ -1079,6 +1079,10 @@ int attack::player_apply_final_multipliers(int damage, bool /*aux*/)
     if (you.form == transformation::shadow)
         damage = div_rand_round(damage, 2);
 
+    // Yib's abomination form is weak, having just crawled out of its mortal shell.
+    if (you.form == transformation::abomination)
+        damage = div_rand_round(damage * 6, 10);
+
     // Spectral weapons deal "only" 70% of the damage that their
     // owner would, matching cleaving.
     if (attacker->type == MONS_SPECTRAL_WEAPON)
