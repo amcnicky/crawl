@@ -3865,9 +3865,6 @@ tileidx_t tileidx_ability(const ability_type ability)
     case ABIL_YIB_ABOM_FORM:
         // TODO: draw this
         return TILEG_ABILITY_YIB_ABOM_FORM;
-    case ABIL_YIB_SPLIT_IDENTITY:
-        // TODO: implement this
-        return TILEG_ABILITY_TROG_BROTHERS_IN_ARMS;
 
     // General divine (pseudo) abilities.
     case ABIL_RENOUNCE_RELIGION:

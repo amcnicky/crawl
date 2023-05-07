@@ -314,7 +314,6 @@ enum ability_type
 
     // Yib
     ABIL_YIB_ABOM_FORM,
-    ABIL_YIB_SPLIT_IDENTITY,
 
     // For both Yred and Beogh
     ABIL_STOP_RECALL = 1500,

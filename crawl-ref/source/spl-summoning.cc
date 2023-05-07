@@ -623,30 +623,79 @@ bool summon_holy_warrior(int pow, bool punish)
 }
 
 // Not a spell. Rather, this is Yib's doing.
-bool summon_yib_cultist(int pow, bool punish)
+// inPlace - whether or not the identity takes the physical place of the player
+bool summon_yib_identity(int pow, bool punish, bool inPlace)
 {
-    mgen_data mg(MONS_PLAYER_GHOST,
-                 punish? BEH_HOSTILE : BEH_FRIENDLY,
-                 you.pos(), MHITYOU, MG_FORCE_BEH | MG_AUTOFOE);
-    mg.set_summoned(punish? 0 : &you,
-                    punish? 0 : min(2 + (random2(pow) / 4), 6),
-                    SPELL_NO_SPELL, GOD_YIB);
-
-    if (punish)
+    // First check if there's any space adjacent to the player for us to squeeze
+    // them into for an inPlace summon (i.e. in the case where the player is
+    // leaving their previous body where it was).
+    if (inPlace && !punish)
     {
-        mg.extra_flags |= (MF_NO_REWARD | MF_HARD_RESET);
-        mg.non_actor_summoner = god_name(GOD_YIB, false);
+        bool atLeastOneEscapeSpot = false;
+        vector<coord_weight> allowable_escape_spots(8);
+        coord_def identitySummonLocation = you.pos();
+
+        for (adjacent_iterator ai(you.pos()); ai; ++ai)
+        {
+            // if you can inhabit the space and there's nobody already there
+            // and you aren't going to escape to a drowning spot
+            if ( you.is_habitable_feat(env.grid(*ai))
+                && !actor_at(*ai)
+                && !need_expiration_warning(*ai)
+            )
+            {
+                allowable_escape_spots.emplace_back(*ai,1);
+                atLeastOneEscapeSpot = true;
+            }
+        }
+
+        // If there's no escape spot, then there's nothing to do.
+        // Note: the player will still transform, just no use from the prior body
+        if (!atLeastOneEscapeSpot)
+        {
+            mpr("Escaping with such little space destroys your previous body!");
+            return false;
+        }
+
+        // At this point, we know that there's at least one valid escape spot
+        // and so can generate the ally.
+        coord_def* playerNewLocation = random_choose_weighted(allowable_escape_spots);
+
+        // First, move the player to the escape spot.
+        you.move_to_pos(*playerNewLocation);
+
+        // Then, summon the ally.
+        if(!you.allies_forbidden())
+        {
+            mgen_data mg(MONS_PLAYER_GHOST,
+                        punish? BEH_HOSTILE : BEH_FRIENDLY,
+                        identitySummonLocation, MHITYOU, MG_FORCE_BEH | MG_AUTOFOE);
+            mg.set_summoned(&you, min(2 + (random2(pow) / 4), 6),
+                            SPELL_NO_SPELL, GOD_YIB);
+
+            monster *summon = create_monster(mg);
+
+            if (!summon)
+            {
+                return false;
+                mpr("Something prevents another identity from inhabiting your previous body!");
+            }
+
+            mpr("Your previous body morphs into another of Yib's identities.");
+            return true;
+        } else { // player is allies_forbidden()
+            mpr("Yib is unable to grant your previous body an allied identity.");
+        }
     }
 
-    monster *summon = create_monster(mg);
-
-    if (!summon)
-        return false;
-
-    if (!punish)
-        mpr("The blurry identity behind you mask splits in two!");
-
-    return true;
+    return false;
+    // TODO: Implement and use the not in-place version (or delete it)  
+    // TODO: Implement the punishing version (or delete it)
+    //         if (punish)
+    //    {
+    //        mg.extra_flags |= (MF_NO_REWARD | MF_HARD_RESET);
+    //        mg.non_actor_summoner = god_name(GOD_YIB, false);
+    //    }
 }
 
 /**

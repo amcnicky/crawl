@@ -680,9 +680,7 @@ static vector<ability_def> &_get_ability_list()
 
         // Yib
         { ABIL_YIB_ABOM_FORM, "Shed this Beleaguered Flesh",
-            2, 6, 6, -1, {fail_basis::invo}, abflag::none },
-        { ABIL_YIB_SPLIT_IDENTITY, "Split Identity",
-            3, 8, 7, -1, {fail_basis::invo}, abflag::none },
+            2, 0, 8, -1, {fail_basis::invo}, abflag::none },
 
         { ABIL_STOP_RECALL, "Stop Recall",
             0, 0, 0, -1, {fail_basis::invo}, abflag::none },
@@ -1113,7 +1111,6 @@ ability_type fixup_ability(ability_type ability)
     case ABIL_TROG_BROTHERS_IN_ARMS:
     case ABIL_GOZAG_BRIBE_BRANCH:
     case ABIL_QAZLAL_ELEMENTAL_FORCE:
-    case ABIL_YIB_SPLIT_IDENTITY:
         if (you.allies_forbidden())
             return ABIL_NON_ABILITY;
         else
@@ -2026,7 +2023,7 @@ static bool _check_ability_possible(const ability_def& abil, bool quiet = false)
 
     default:
         return true;
-    
+
 
     case ABIL_YIB_ABOM_FORM:
     {
@@ -2127,8 +2124,6 @@ unique_ptr<targeter> find_ability_targeter(ability_type ability)
     case ABIL_TROG_BROTHERS_IN_ARMS:
     case ABIL_KIKU_UNEARTH_WRETCHES:
     case ABIL_YRED_DARK_BARGAIN:
-    case ABIL_YIB_SPLIT_IDENTITY:
-        return make_unique<targeter_maybe_radius>(&you, LOS_NO_TRANS, 2, 0, 1);
     case ABIL_IGNIS_FOXFIRE:
         return make_unique<targeter_radius>(&you, LOS_NO_TRANS, 2, 0, 1);
 
@@ -3314,17 +3309,10 @@ static spret _do_ability(const ability_def& abil, bool fail, dist *target,
         you.set_duration(DUR_RISING_FLAME, 2 + random2(3));
         you.one_time_ability_used.set(GOD_IGNIS);
         return spret::success;
-    
+
     case ABIL_YIB_ABOM_FORM:
         fail_check();
         transform(you.skill(SK_INVOCATIONS), transformation::abomination);
-        break;
-
-    case ABIL_YIB_SPLIT_IDENTITY:
-        fail_check();
-        summon_yib_cultist(you.piety +
-                    random2(you.piety/4) - random2(you.piety/4),
-                    0);
         break;
 
     case ABIL_RENOUNCE_RELIGION:

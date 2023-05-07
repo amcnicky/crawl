@@ -31,6 +31,7 @@
 #include "prompt.h"
 #include "religion.h"
 #include "spl-cast.h"
+#include "spl-summoning.h"
 #include "state.h"
 #include "stringutil.h"
 #include "tag-version.h"
@@ -1940,12 +1941,17 @@ bool transform(int pow, transformation which_trans, bool involuntary,
         break;
 
     case transformation::abomination:
-        if (you.heal(random_range(you.hp_max*0.1, you.hp_max*0.2) && (you.hp < you.hp_max * 0.8)))
-            mpr("You emerge healthier as you rend free of your damaged form.");
-        else if (you.heal(random_range(you.hp_max*0.1, you.hp_max*0.2)))
-            mpr("You emerge healthier as you rend free of you prior form.");
-        else 
-            mpr("Something prevents your form change from bolstering your health.");
+        // Specifically Yibbish behaviour, if there's ever a reason for a non-Yib
+        // abomination form, this ain't it.
+
+        // Drain the player to recognise the stress of tearing free with a new form    
+        drain_player(12, true, true);
+        mpr("The stress of leaving your previous body drains you!");
+
+        // The player's previous identity continues to fight
+        summon_yib_identity(you.piety +
+                    random2(you.piety/4) - random2(you.piety/4),
+                    0,1);
 
     default:
         break;

@@ -3101,7 +3101,7 @@ int player_stealth()
     // Yib morphous mask
     if (have_passive(passive_t::morphous_mask))
         stealth += STEALTH_PIP;
-    
+
 
     // Radiating silence is the negative complement of shouting all the
     // time... a sudden change from background noise to no noise is going
