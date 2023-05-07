@@ -31,7 +31,6 @@
 #include "prompt.h"
 #include "religion.h"
 #include "spl-cast.h"
-#include "spl-summoning.h"
 #include "state.h"
 #include "stringutil.h"
 #include "tag-version.h"
@@ -1697,7 +1696,8 @@ bool transform(int pow, transformation which_trans, bool involuntary,
     if (!involuntary && crawl_state.is_god_acting())
         involuntary = true;
 
-    if (you.transform_uncancellable)
+    // Yib can always rend free from the current form.
+    if (you.transform_uncancellable && which_trans != transformation::abomination)
     {
         msg = "You are stuck in your current form!";
         success = false;
@@ -1716,7 +1716,8 @@ bool transform(int pow, transformation which_trans, bool involuntary,
     }
 
     // This must occur before the untransform() and the undead_state() check.
-    if (previous_trans == which_trans)
+    // Yib followers are quite happy to imitate a russian doll, no need to extend
+    if (previous_trans == which_trans && previous_trans != transformation::abomination)
     {
         if (just_check)
             return true;
@@ -1947,11 +1948,6 @@ bool transform(int pow, transformation which_trans, bool involuntary,
         // Drain the player to recognise the stress of tearing free with a new form
         drain_player(12, true, true);
         mpr("The stress of leaving your previous body drains you!");
-
-        // The player's previous identity continues to fight
-        summon_yib_identity(you.piety +
-                    random2(you.piety/4) - random2(you.piety/4),
-                    0,1);
 
     default:
         break;

@@ -2015,6 +2015,19 @@ static bool _check_ability_possible(const ability_def& abil, bool quiet = false)
         return true;
     }
 
+    case ABIL_YIB_ABOM_FORM:
+    {
+        string reason;
+
+        if (!transform(0, transformation::abomination, false, true, &reason))
+        {
+            if (!quiet)
+                mpr(reason);
+            return false;
+        }
+        return true;
+    }
+
     case ABIL_IGNIS_RISING_FLAME:
         return _can_rising_flame(quiet);
 
@@ -2024,18 +2037,6 @@ static bool _check_ability_possible(const ability_def& abil, bool quiet = false)
     default:
         return true;
 
-
-    case ABIL_YIB_ABOM_FORM:
-    {
-        string reason;
-        if (!transform(0, transformation::abomination, false, true, &reason))
-        {
-            if (!quiet)
-                mpr(reason);
-            return false;
-        }
-        return true;
-    }
     }
 }
 
@@ -3312,8 +3313,16 @@ static spret _do_ability(const ability_def& abil, bool fail, dist *target,
 
     case ABIL_YIB_ABOM_FORM:
         fail_check();
+
+        // The player's previous identity continues to fight.
+        // Need to do this before transform to get accurate body type.
+        summon_yib_identity(you.piety +
+                    random2(you.piety/4) - random2(you.piety/4),
+                    0,1);
+
         transform(you.skill(SK_INVOCATIONS), transformation::abomination);
-        break;
+        // TODO: some gore, it is pretty gory after all.
+        return spret::success;
 
     case ABIL_RENOUNCE_RELIGION:
         if (yesno("Really renounce your faith, foregoing its fabulous benefits?",

@@ -59,6 +59,7 @@
 #include "teleport.h"
 #include "terrain.h"
 #include "timed-effects.h"
+#include "transform.h"
 #include "unwind.h"
 #include "viewchar.h"
 #include "xom.h"
@@ -667,8 +668,51 @@ bool summon_yib_identity(int pow, bool punish, bool inPlace)
         // Then, summon the ally.
         if (!you.allies_forbidden())
         {
-            mgen_data mg(MONS_PLAYER_GHOST,
-                        punish? BEH_HOSTILE : BEH_FRIENDLY,
+            // TODO: update player ghost description to not a ghost
+            // TODO: don't use random player ghosts, use the player's ghost
+
+            // check what transformation the player is currently in.
+
+            // get the equivalent monster
+            monster_type bodyType = transform_mons();
+            monster_type finalType;
+
+            if (bodyType == MONS_PLAYER)
+            {
+                finalType = MONS_PLAYER_GHOST;
+                mpr("DEBUG: you are a MONS_PLAYER");
+            }
+            else if (bodyType == MONS_PROGRAM_BUG)
+            {
+                if (you.form == transformation::dragon)
+                {
+                    switch (you.species)
+                    { // Some have no direct mons equivalent but fairly niche
+                    case SP_BLACK_DRACONIAN:   finalType = MONS_SHADOW_DRAGON;  break;
+                    case SP_YELLOW_DRACONIAN:  finalType = MONS_GOLDEN_DRAGON;  break;
+                    case SP_GREY_DRACONIAN:    finalType = MONS_STEAM_DRAGON;   break;
+                    case SP_GREEN_DRACONIAN:   finalType = MONS_SWAMP_DRAGON;   break;
+                    case SP_PALE_DRACONIAN:    finalType = MONS_ICE_DRAGON;     break;
+                    case SP_PURPLE_DRACONIAN:  finalType = MONS_QUICKSILVER_DRAGON;    break;
+                    case SP_WHITE_DRACONIAN:   finalType = MONS_ICE_DRAGON;     break;
+                    case SP_RED_DRACONIAN:     finalType = MONS_FIRE_DRAGON;    break;
+                    default:                   finalType = MONS_ACID_DRAGON;    break;
+                    }
+                }
+
+                else if (you.form == transformation::bat)
+                    finalType = MONS_BAT;
+
+                // could also just fail this part of the effect but that seems sad.
+                else finalType = MONS_INSUBSTANTIAL_WISP;
+            }
+
+            // TODO: check on all monsters that cannot spawn (shadow, tree)
+            // and fix or replace with new monster, probably easiest
+
+            else finalType = bodyType;
+
+            mgen_data mg(finalType, BEH_FRIENDLY,
                         identitySummonLocation, MHITYOU, MG_FORCE_BEH | MG_AUTOFOE);
             mg.set_summoned(&you, min(2 + (random2(pow) / 4), 6),
                             SPELL_NO_SPELL, GOD_YIB);
