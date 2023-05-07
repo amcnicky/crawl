@@ -1944,7 +1944,7 @@ bool transform(int pow, transformation which_trans, bool involuntary,
         // Specifically Yibbish behaviour, if there's ever a reason for a non-Yib
         // abomination form, this ain't it.
 
-        // Drain the player to recognise the stress of tearing free with a new form    
+        // Drain the player to recognise the stress of tearing free with a new form
         drain_player(12, true, true);
         mpr("The stress of leaving your previous body drains you!");
 

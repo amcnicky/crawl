@@ -633,13 +633,13 @@ bool summon_yib_identity(int pow, bool punish, bool inPlace)
     {
         bool atLeastOneEscapeSpot = false;
         vector<coord_weight> allowable_escape_spots(8);
-        coord_def identitySummonLocation = you.pos();
+        const coord_def identitySummonLocation = you.pos();
 
         for (adjacent_iterator ai(you.pos()); ai; ++ai)
         {
             // if you can inhabit the space and there's nobody already there
             // and you aren't going to escape to a drowning spot
-            if ( you.is_habitable_feat(env.grid(*ai))
+            if (you.is_habitable_feat(env.grid(*ai))
                 && !actor_at(*ai)
                 && !need_expiration_warning(*ai)
             )
@@ -665,7 +665,7 @@ bool summon_yib_identity(int pow, bool punish, bool inPlace)
         you.move_to_pos(*playerNewLocation);
 
         // Then, summon the ally.
-        if(!you.allies_forbidden())
+        if (!you.allies_forbidden())
         {
             mgen_data mg(MONS_PLAYER_GHOST,
                         punish? BEH_HOSTILE : BEH_FRIENDLY,
@@ -681,6 +681,9 @@ bool summon_yib_identity(int pow, bool punish, bool inPlace)
                 mpr("Something prevents another identity from inhabiting your previous body!");
             }
 
+            // and explicitly move the summon to the player's previous location
+            // a more elegant way to do this?
+            summon->move_to_pos(identitySummonLocation);
             mpr("Your previous body morphs into another of Yib's identities.");
             return true;
         } else { // player is allies_forbidden()
@@ -689,7 +692,7 @@ bool summon_yib_identity(int pow, bool punish, bool inPlace)
     }
 
     return false;
-    // TODO: Implement and use the not in-place version (or delete it)  
+    // TODO: Implement and use the not in-place version (or delete it)
     // TODO: Implement the punishing version (or delete it)
     //         if (punish)
     //    {
