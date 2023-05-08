@@ -775,6 +775,19 @@ vector<coord_def> find_recite_targets()
     return result;
 }
 
+vector<coord_def> find_identity_shift_targets()
+{
+    vector<coord_def> result;
+    for (monster_near_iterator mi(you.pos(), LOS_NO_TRANS); mi; ++mi)
+    {
+        if (you.can_see(**mi)
+            && (mons_aligned(&you, *mi)))
+        {
+            result.push_back((*mi)->pos());
+        }
+    }
+    return result;    
+}
 /**
  * Check whether there are monsters who might be influenced by Recite.
  * If prayertype is null, we're just checking whether we can.
@@ -5961,4 +5974,62 @@ void jiyva_end_oozemancy()
     for (rectangle_iterator ri(0); ri; ++ri)
         if (env.grid(*ri) == DNGN_SLIMY_WALL && is_temp_terrain(*ri))
             revert_terrain_change(*ri, TERRAIN_CHANGE_SLIME);
+}
+
+/**
+ * Activate Yib's identity shift, swapping the player's location with the
+ * location of a visible ally
+ * @param fail      Whether the effect should fail after checking validity.
+ * @return          Whether the ability succeeded, failed, or was aborted.
+ */
+spret yib_identity_shift(coord_def target)
+{
+    // First, safety check to ensure we've targetted as expected and
+    // the ally targetter has given us a monster to work with that we can see
+    monster *target_ally = monster_at(target);
+    if (!target_ally || !you.can_see(*target_ally))
+    {
+        return spret::abort;
+    }
+
+    // Then check whether the ally is an allowable target for an identity shift.
+    // Projectile creatures and tentacles are pretty much the only ones that are
+    // disallowed since neither have a personal identity that Yib could allow
+    // you to take over. Stationary monsters are fine - you 'Agent Smith'
+    // the Oklob
+    const bool ally_immovable
+        = target_ally && (mons_is_tentacle_or_tentacle_segment(target_ally->type)
+                     || mons_is_projectile(target_ally->type));
+    if (ally_immovable)
+    {
+        mprf("This entity has no meaningful identity for Yib's power to shift you to.");
+        return spret::abort;
+    }
+
+    // Define the destination coordinates and then check whether the player could even
+    // inhabit that space.
+    const coord_def destination = target_ally->pos();
+
+    // TODO: figure out the below, behaviour for flying allies over water basically
+    /*
+    const bool uninhabitable = target_ally && you.is_habitable(destination);
+    if (uninhabitable)
+    {
+        mprf("The location of that identity would be incredibly dangerous to inhabit.");
+        return spret::abort;
+    }
+    */
+    // Kill the ally silently (you've taken over it's identity).
+    monster_die(*target_ally, KILL_NONE, true, false);
+
+    // At this point, pretty happy to go ahead with the identity shift.
+    move_player_to_grid(destination, false);
+    
+    mprf("Your ally's form and identity merge with your own!");
+    // TODO: A bunch of small but important things to thematically reflect merging
+    // with your ally
+
+    // TODO: Place cloud?
+
+    return spret::success;
 }

@@ -681,6 +681,9 @@ static vector<ability_def> &_get_ability_list()
         // Yib
         { ABIL_YIB_ABOM_FORM, "Shed this Beleaguered Flesh",
             2, 0, 8, -1, {fail_basis::invo}, abflag::none },
+        { ABIL_YIB_IDENTITY_SHIFT, "Identity Shift",
+            4, 0, 8, LOS_MAX_RANGE, {fail_basis::invo}, 
+            abflag::target | abflag::not_self },
 
         { ABIL_STOP_RECALL, "Stop Recall",
             0, 0, 0, -1, {fail_basis::invo}, abflag::none },
@@ -2028,6 +2031,15 @@ static bool _check_ability_possible(const ability_def& abil, bool quiet = false)
         return true;
     }
 
+    case ABIL_YIB_IDENTITY_SHIFT:
+    {
+        // TODO: can only be done if there's an ally in LOS
+        for (monster_near_iterator rad(you.pos(), LOS_NO_TRANS); rad; ++rad)
+        if (rad->friendly())
+            return true;
+        return false;
+    }
+
     case ABIL_IGNIS_RISING_FLAME:
         return _can_rising_flame(quiet);
 
@@ -2101,6 +2113,9 @@ unique_ptr<targeter> find_ability_targeter(ability_type ability)
         return make_unique<targeter_multiposition>(&you, find_briar_spaces(true), AFF_YES);
     case ABIL_QAZLAL_ELEMENTAL_FORCE:
         return make_unique<targeter_multiposition>(&you, find_elemental_targets());
+    case ABIL_YIB_IDENTITY_SHIFT:
+        return make_unique<targeter_multiposition>(&you, find_identity_shift_targets());
+
     case ABIL_JIYVA_OOZEMANCY:
         return make_unique<targeter_walls>(&you, find_slimeable_walls());
 
@@ -2172,6 +2187,7 @@ unique_ptr<targeter> find_ability_targeter(ability_type ability)
     case ABIL_STOP_RECALL:
         return make_unique<targeter_radius>(&you, LOS_SOLID_SEE, 0);
 
+    // target ancestor
     case ABIL_HEPLIAKLQANA_IDEALISE:
     {
         monster *ancestor = hepliaklqana_ancestor_mon();
@@ -3322,6 +3338,30 @@ static spret _do_ability(const ability_def& abil, bool fail, dist *target,
 
         transform(you.skill(SK_INVOCATIONS), transformation::abomination);
         // TODO: some gore, it is pretty gory after all.
+        return spret::success;
+
+    case ABIL_YIB_IDENTITY_SHIFT:
+        fail_check();
+        if (!target)
+            return spret::abort;
+        // Abort if target is not valid
+        if (!monster_at(beam.target))
+        {
+            mpr("Must target a visible ally.");
+            return spret::abort;
+        } else
+        {
+            const monster *mon = monster_at(beam.target);
+            if (!you.can_see(*mon)
+                || !mon->friendly())
+            {
+                mpr("Must target a visible ally.");
+                return spret::abort;
+            }
+        }
+
+        // Swap positions of the player and the target ally
+        yib_identity_shift(beam.target);
         return spret::success;
 
     case ABIL_RENOUNCE_RELIGION:

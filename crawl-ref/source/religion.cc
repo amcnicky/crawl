@@ -403,6 +403,8 @@ const vector<vector<god_power>> & get_all_god_powers()
         {
             { 1, ABIL_YIB_ABOM_FORM,
                  "rend yourself free from the flesh of your current form" },
+            { 3, ABIL_YIB_IDENTITY_SHIFT,
+                "reform you identity, merged with the body and mind of an ally"}
         }
     };
     static bool god_powers_init = false;

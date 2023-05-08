@@ -200,3 +200,6 @@ void okawaru_end_duel();
 vector<coord_def> find_slimeable_walls();
 spret jiyva_oozemancy(bool fail);
 void jiyva_end_oozemancy();
+
+vector<coord_def> find_identity_shift_targets();
+spret yib_identity_shift(coord_def target);
