@@ -258,7 +258,9 @@ enum class passive_t
     r_spectral_mist,
 
     // Yib +EV and +Stealth
-    morphous_mask,
+    yib_morphous_mask,
+    // Yib transmutations skill support
+    yib_transmutation_support,
 };
 
 enum ru_interference
@@ -306,5 +308,8 @@ bool wu_jian_has_momentum(wu_jian_attack_type);
 bool wu_jian_post_move_effects(bool did_wall_jump,
                                const coord_def& initial_position);
 bool wu_jian_move_triggers_attacks(coord_def new_pos);
+bool yib_has_skill_boost(skill_type sk);
+unsigned int yib_skill_point_boost(int scaled_skill);
+int yib_skill_boost(int scale);
 
 void okawaru_handle_duel();

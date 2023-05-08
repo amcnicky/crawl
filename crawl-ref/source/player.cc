@@ -2008,7 +2008,7 @@ static int _player_evasion_bonuses()
         evbonus += you.get_mutation_level(MUT_DISTORTION_FIELD) + 1;
 
     // Yib shifting visage is harder to hit
-    if (have_passive(passive_t::morphous_mask))
+    if (have_passive(passive_t::yib_morphous_mask))
         evbonus += (you.piety*5)/200 + 2;
 
     // transformation penalties/bonuses not covered by size alone:
@@ -3099,7 +3099,7 @@ int player_stealth()
         stealth += STEALTH_PIP;
 
     // Yib morphous mask
-    if (have_passive(passive_t::morphous_mask))
+    if (have_passive(passive_t::yib_morphous_mask))
         stealth += STEALTH_PIP;
 
 
@@ -5796,6 +5796,12 @@ int player::skill(skill_type sk, int scale, bool real, bool temp) const
     }
     else if (ash_has_skill_boost(sk))
             level = ash_skill_boost(sk, scale);
+
+    if (!penance[GOD_YIB] && yib_has_skill_boost(sk))
+    {
+        // as long as not under penance, Yib can boost transmutation skill
+        level = yib_skill_boost(scale);
+    }
 
     if (temp && duration[DUR_HEROISM] && sk <= SK_LAST_MUNDANE)
         level = min(level + 5 * scale, MAX_SKILL_LEVEL * scale);

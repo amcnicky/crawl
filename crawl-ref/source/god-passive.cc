@@ -419,7 +419,8 @@ static const vector<god_passive> god_passives[] =
 
     // Yib
     {
-        { 0, passive_t::morphous_mask, "are harder to hit and detect due to your shifting features"},
+        { 0, passive_t::yib_morphous_mask, "are harder to hit and detect due to your shifting features."},
+        { 2, passive_t::yib_transmutation_support, "GOD NOW supports your use of transmutations magic." },
     },
 };
 COMPILE_CHECK(ARRAYSZ(god_passives) == NUM_GODS);
@@ -1716,4 +1717,52 @@ void okawaru_handle_duel()
     if (!player_in_branch(BRANCH_ARENA) && you.duration[DUR_DUEL_COMPLETE])
         you.duration[DUR_DUEL_COMPLETE] = 0;
 
+}
+
+// Yib
+/**
+ * Does the player have an ash skill boost for a particular skill?
+ */
+bool yib_has_skill_boost(skill_type sk)
+{
+    return sk == SK_TRANSMUTATIONS && have_passive(passive_t::yib_transmutation_support);
+}
+
+/**
+ * Calculate the yib skill point boost for transmutations.
+ *
+ * @param scaled_skill the skill level to calculate it for, scaled by 10.
+ *
+ * @return the skill point bonus to use.
+ */
+unsigned int yib_skill_point_boost(int scaled_skill)
+{
+    skill_type sk = SK_TRANSMUTATIONS;
+    unsigned int skill_points = 0;
+    const int scale = 10;
+    const int skill_boost = scale * 5;
+
+    skill_points += skill_boost * (piety_rank() * 2 + 1) * max(scaled_skill, 1)
+                    * species_apt_factor(sk) / scale;
+    return skill_points;
+}
+
+int yib_skill_boost(int scale)
+{
+    // It gives a bonus to skill points. The formula is:
+    // 5 * (piety_rank * 2 + 1) * skill_level
+    // This is more sensitive than Ash to piety, but weaker at lower piety
+    // assuming a middling (3 or 4) number of curses.
+    skill_type sk = SK_TRANSMUTATIONS;
+    unsigned int skill_points = you.skill_points[sk]
+                  + get_crosstrain_points(sk)
+                  + yib_skill_point_boost(you.skill(sk, 10, true));
+
+    int level = you.skills[sk];
+    while (level < MAX_SKILL_LEVEL && skill_points >= skill_exp_needed(level + 1, sk))
+        ++level;
+
+    level = level * scale + get_skill_progress(sk, level, skill_points, scale);
+
+    return min(level, MAX_SKILL_LEVEL * scale);
 }

@@ -1230,8 +1230,8 @@ void change_skill_points(skill_type sk, int points, bool do_level_up)
 }
 
 // Calculates the skill points required to reach the training target
-// Does not currently consider Ashenzari skill boost for experience currently being gained
-// so this may still result in some overtraining
+// Does not currently consider Ashenzari or Yib skill boost for experience currently 
+// being gained so this may still result in some overtraining
 static int _training_target_skill_point_diff(skill_type exsk, int training_target)
 {
     int target_level = training_target / 10;
@@ -1253,6 +1253,8 @@ static int _training_target_skill_point_diff(skill_type exsk, int training_targe
     int you_skill_points = you.skill_points[exsk] + get_crosstrain_points(exsk);
     if (ash_has_skill_boost(exsk))
         you_skill_points += ash_skill_point_boost(exsk, training_target);
+    if (yib_has_skill_boost(exsk))
+        you_skill_points += yib_skill_point_boost(training_target);
 
     int target_skill_point_diff = target_skill_points - you_skill_points;
 
@@ -1394,6 +1396,11 @@ skill_diff skill_level_to_diffs(skill_type skill, double amount,
         // It also assumes that piety won't change.
         if (ash_has_skill_boost(skill))
             you_skill += ash_skill_point_boost(skill, you.skills[skill] * 10);
+
+        // also allow for Yib transmutations boosting.
+        if (yib_has_skill_boost(skill))
+            you_skill += yib_skill_point_boost(you.skills[skill] * 10);
+    
 
         if (you.skill_manual_points[skill])
             target = you_skill + (target - you_skill) / 2;
