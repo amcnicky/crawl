@@ -680,7 +680,6 @@ bool summon_yib_identity(int pow, bool punish, bool inPlace)
             if (bodyType == MONS_PLAYER)
             {
                 finalType = MONS_PLAYER_GHOST;
-                mpr("DEBUG: you are a MONS_PLAYER");
             }
             else if (bodyType == MONS_PROGRAM_BUG)
             {

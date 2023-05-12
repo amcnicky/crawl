@@ -288,7 +288,8 @@ bool check_form_stat_safety(transformation new_form, bool quiet = false);
 
 bool transform(int pow, transformation which_trans,
                bool involuntary = false, bool just_check = false,
-               string *fail_reason = nullptr);
+               string *fail_reason = nullptr,
+               bool yib_transform = false);
 
 // skip_move: don't make player re-enter current cell
 void untransform(bool skip_move = false);

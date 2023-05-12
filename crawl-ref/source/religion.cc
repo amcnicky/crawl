@@ -401,8 +401,8 @@ const vector<vector<god_power>> & get_all_god_powers()
 
         // Yib
         {
-            { 1, ABIL_YIB_ABOM_FORM,
-                 "rend yourself free from the flesh of your current form" },
+            { 1, ABIL_YIB_SPLIT_IDENTITY,
+                 "split your identity from your current form" },
             { 3, ABIL_YIB_IDENTITY_SHIFT,
                 "reform you identity, merged with the body and mind of an ally"}
         }
@@ -3226,7 +3226,7 @@ void excommunication(bool voluntary, god_type new_god)
 
     case GOD_YIB:
         simple_god_message(" asks you to finish implementing on line 3325 religion.cc");
-        if (you.form == transformation::abomination)
+        if (you.form != transformation::none)
             untransform();
         break;
 

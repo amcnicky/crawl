@@ -679,7 +679,7 @@ static vector<ability_def> &_get_ability_list()
             0, 0, 0, -1, {fail_basis::invo}, abflag::none },
 
         // Yib
-        { ABIL_YIB_ABOM_FORM, "Shed this Beleaguered Flesh",
+        { ABIL_YIB_SPLIT_IDENTITY, "Split Identity",
             2, 0, 8, -1, {fail_basis::invo}, abflag::none },
         { ABIL_YIB_IDENTITY_SHIFT, "Identity Shift",
             4, 0, 8, LOS_MAX_RANGE, {fail_basis::invo}, 
@@ -2018,11 +2018,12 @@ static bool _check_ability_possible(const ability_def& abil, bool quiet = false)
         return true;
     }
 
-    case ABIL_YIB_ABOM_FORM:
+    case ABIL_YIB_SPLIT_IDENTITY:
     {
         string reason;
 
-        if (!transform(0, transformation::abomination, false, true, &reason))
+        // needs to be able to return you to default form
+        if (!transform(0, transformation::none, false, true, &reason))
         {
             if (!quiet)
                 mpr(reason);
@@ -2183,7 +2184,7 @@ unique_ptr<targeter> find_ability_targeter(ability_type ability)
     case ABIL_WU_JIAN_SERPENTS_LASH:
     case ABIL_IGNIS_FIERY_ARMOUR:
     case ABIL_IGNIS_RISING_FLAME:
-    case ABIL_YIB_ABOM_FORM:
+    case ABIL_YIB_SPLIT_IDENTITY:
     case ABIL_STOP_RECALL:
         return make_unique<targeter_radius>(&you, LOS_SOLID_SEE, 0);
 
@@ -3327,7 +3328,7 @@ static spret _do_ability(const ability_def& abil, bool fail, dist *target,
         you.one_time_ability_used.set(GOD_IGNIS);
         return spret::success;
 
-    case ABIL_YIB_ABOM_FORM:
+    case ABIL_YIB_SPLIT_IDENTITY:
         fail_check();
 
         // The player's previous identity continues to fight.
@@ -3336,8 +3337,16 @@ static spret _do_ability(const ability_def& abil, bool fail, dist *target,
                     random2(you.piety/4) - random2(you.piety/4),
                     0,1);
 
-        transform(you.skill(SK_INVOCATIONS), transformation::abomination);
-        // TODO: some gore, it is pretty gory after all.
+        if(transform(you.skill(SK_INVOCATIONS), transformation::none
+        // defaults
+        ,false, false, nullptr
+        // yib_transform
+        ,true))
+        {
+            // Drain the player to recognise the stress of tearing free with a new form
+            drain_player(12, true, true);
+            mpr("The stress of leaving your previous body drains you!");
+        }
         return spret::success;
 
     case ABIL_YIB_IDENTITY_SHIFT:

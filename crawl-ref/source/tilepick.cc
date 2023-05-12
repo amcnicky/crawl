@@ -3862,8 +3862,8 @@ tileidx_t tileidx_ability(const ability_type ability)
         return TILEG_ABILITY_IGNIS_RISING_FLAME;
 
     // Yib
-    case ABIL_YIB_ABOM_FORM:
-        // TODO: draw this
+    case ABIL_YIB_SPLIT_IDENTITY:
+        // TODO: draw this and fix its name
         return TILEG_ABILITY_YIB_ABOM_FORM;
 
     // General divine (pseudo) abilities.

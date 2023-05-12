@@ -973,20 +973,6 @@ public:
     }
 };
 
-class FormAbomination : public Form
-{
-private:
-    FormAbomination() : Form(transformation::abomination) { }
-    DISALLOW_COPY_AND_ASSIGN(FormAbomination);
-public:
-    static const FormAbomination &instance() { static FormAbomination inst; return inst; }
-
-    /**
-     * Get a message for untransforming from this form.
-     */
-    string get_untransform_message() const override { return "You disgustingly re-grow your prior body around you."; }
-};
-
 void set_airform_power(int pow)
 {
     you.props[AIRFORM_POWER_KEY] = pow;
@@ -1111,7 +1097,6 @@ static const Form* forms[] =
     &FormHydra::instance(),
 #endif
     &FormStorm::instance(),
-    &FormAbomination::instance(),
 };
 
 const Form* get_form(transformation xform)
@@ -1631,9 +1616,6 @@ undead_form_reason lifeless_prevents_form(transformation which_trans,
     if (which_trans == transformation::shadow)
         return UFR_GOOD; // even the undead can use dith's shadow form
 
-    if (which_trans == transformation::abomination)
-        return UFR_GOOD; // shedding an undead form is just like shedding any other form
-
     if (!you.has_mutation(MUT_VAMPIRISM))
         return UFR_TOO_DEAD; // ghouls & mummies can't become anything else
 
@@ -1677,7 +1659,7 @@ undead_form_reason lifeless_prevents_form(transformation which_trans,
  *                          to intervene. (That may be the only case.)
  */
 bool transform(int pow, transformation which_trans, bool involuntary,
-               bool just_check, string *fail_reason)
+               bool just_check, string *fail_reason, bool yib_transform) 
 {
     const transformation previous_trans = you.form;
     const bool was_flying = you.airborne();
@@ -1696,8 +1678,8 @@ bool transform(int pow, transformation which_trans, bool involuntary,
     if (!involuntary && crawl_state.is_god_acting())
         involuntary = true;
 
-    // Yib can always rend free from the current form.
-    if (you.transform_uncancellable && which_trans != transformation::abomination)
+    // Yib can always identity split from the current form
+    if (you.transform_uncancellable && !yib_transform)
     {
         msg = "You are stuck in your current form!";
         success = false;
@@ -1717,7 +1699,7 @@ bool transform(int pow, transformation which_trans, bool involuntary,
 
     // This must occur before the untransform() and the undead_state() check.
     // Yib followers are quite happy to imitate a russian doll, no need to extend
-    if (previous_trans == which_trans && previous_trans != transformation::abomination)
+    if (previous_trans == which_trans && !yib_transform)
     {
         if (just_check)
             return true;
@@ -1940,14 +1922,6 @@ bool transform(int pow, transformation which_trans, bool involuntary,
         else
             mpr("You feel less conspicuous.");
         break;
-
-    case transformation::abomination:
-        // Specifically Yibbish behaviour, if there's ever a reason for a non-Yib
-        // abomination form, this ain't it.
-
-        // Drain the player to recognise the stress of tearing free with a new form
-        drain_player(12, true, true);
-        mpr("The stress of leaving your previous body drains you!");
 
     default:
         break;
@@ -2273,8 +2247,6 @@ int form_base_movespeed(transformation tran)
         return 5; // but allowed minimum is six
     else if (tran == transformation::pig)
         return 7;
-    else if (tran == transformation::abomination)
-        return 8;
     else
         return 10;
 }

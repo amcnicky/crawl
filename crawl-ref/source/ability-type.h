@@ -313,7 +313,7 @@ enum ability_type
 #endif
 
     // Yib
-    ABIL_YIB_ABOM_FORM,
+    ABIL_YIB_SPLIT_IDENTITY,
     ABIL_YIB_IDENTITY_SHIFT,
 
     // For both Yred and Beogh
