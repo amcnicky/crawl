@@ -34,6 +34,7 @@ enum god_type
     GOD_HEPLIAKLQANA,
     GOD_WU_JIAN,
     GOD_IGNIS,
+    GOD_ANCIENT_ONE,                   // Development name for seed-based god
     NUM_GODS,                          // always after last god
 
     GOD_RANDOM = 100,

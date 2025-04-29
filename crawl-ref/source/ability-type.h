@@ -371,5 +371,10 @@ enum ability_type
     ABIL_WIZ_SET_TERRAIN,
     ABIL_WIZ_CLEAR_TERRAIN,
 #endif
+
+    // Ancient One abilities (Placeholders)
+    ABIL_ALPHA_POWER,
+    ABIL_BETA_POWER,
+
     NUM_ABILITIES
 };

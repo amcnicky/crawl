@@ -241,6 +241,7 @@ enum dungeon_feature_type
     DNGN_ALTAR_WU_JIAN,
     DNGN_ALTAR_IGNIS,
     DNGN_ALTAR_ECUMENICAL,
+    DNGN_ALTAR_ANCIENT_ONE,
 #endif
 
     DNGN_FOUNTAIN_BLUE,

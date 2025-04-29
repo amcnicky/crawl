@@ -407,6 +407,8 @@ static peeve_map divine_peeves[] =
     peeve_map(),
     // GOD_IGNIS,
     peeve_map(),
+    // GOD_ANCIENT_ONE
+    peeve_map(),
 };
 
 string get_god_dislikes(god_type which_god)
@@ -950,13 +952,15 @@ static like_map divine_likes[] =
     },
     // GOD_WU_JIAN
     {
-        { DID_KILL_LIVING, KILL_LIVING_RESPONSE },
-        { DID_KILL_UNDEAD, KILL_UNDEAD_RESPONSE },
-        { DID_KILL_DEMON, KILL_DEMON_RESPONSE },
-        { DID_KILL_HOLY, KILL_HOLY_RESPONSE },
-        { DID_KILL_NONLIVING, KILL_NONLIVING_RESPONSE },
+        { DID_MOVE, _wu_jian_move_response() },
     },
-    // GOD_IGNIS,
+    // GOD_IGNIS
+    {
+        { DID_CAUSE_FIRE, _on_kill("you start fires", MH_NONE, false) },
+    },
+    // GOD_ANCIENT_ONE
+    like_map(), // Placeholder
+    // GOD_ECUMENICAL
     like_map(),
 };
 

@@ -6197,7 +6197,7 @@ static void _stock_shop_item(int j, shop_type shop_type_,
         }
 
         if (_valid_item_for_shop(item_index, shop_type_, spec))
-            break;
+                    break;
 
         // Reset object and try again.
         if (item_index != NON_ITEM)
