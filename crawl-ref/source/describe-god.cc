@@ -242,6 +242,10 @@ static const char *divine_title[][8] =
     // Ignis -- fire/candles theme
     {"Extinguished",          "Last Ember",             "Glowing Coal",              "Thurifer",
         "Hearthfire",     "Furnace",               "Raging Flame",              "Inferno"},
+
+    // Ancient God -- ancient theme.
+    {"Ancient",          "Ancient",               "Ancient",                  "Ancient",
+        "Ancient",         "Ancient",               "Ancient",                  "Ancient"},
 };
 COMPILE_CHECK(ARRAYSZ(divine_title) == NUM_GODS);
 

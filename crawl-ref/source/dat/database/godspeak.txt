@@ -1543,6 +1543,10 @@ Zin welcome
 
 Zin says: Spread the light, my child.
 %%%%
+AncientGod welcome
+
+AncientGod says: Welcome! Please implement my actual dialogue!
+%%%%
 Zot death
 
 # hm, is Zot a god..?

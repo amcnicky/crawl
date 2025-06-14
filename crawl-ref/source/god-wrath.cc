@@ -98,6 +98,7 @@ static const char *_god_wrath_adjectives[] =
     "memory",           // Hepliaklqana (unused)
     "rancor",           // Wu Jian
     "fiery vengeance",  // Ignis
+    "wrath",            // Ancient God
 };
 COMPILE_CHECK(ARRAYSZ(_god_wrath_adjectives) == NUM_GODS);
 
@@ -1707,6 +1708,15 @@ static bool _uskayaw_retribution()
     return true;
 }
 
+static bool _ancient_retribution()
+{
+    // TODO: Implement Ancient God wrath.
+    simple_god_message(" unleashes a torrent of ancient power!", false,
+                       GOD_ANCIENT);
+    // TODO: Implement Ancient God wrath.
+    return true;
+}
+
 bool divine_retribution(god_type god, bool no_bonus, bool force)
 {
     ASSERT(god != GOD_NO_GOD);
@@ -1749,6 +1759,7 @@ bool divine_retribution(god_type god, bool no_bonus, bool force)
     case GOD_USKAYAW:       do_more = _uskayaw_retribution(); break;
     case GOD_WU_JIAN:       do_more = _wu_jian_retribution(); break;
     case GOD_IGNIS:         do_more = _ignis_retribution(); break;
+    case GOD_ANCIENT:       do_more = _ancient_retribution(); break;
 
     case GOD_ASHENZARI:
     case GOD_ELYVILON:

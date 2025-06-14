@@ -223,6 +223,11 @@ worshippers may invoke Zin's wrath upon sinners, and eventually gain various
 divine protections. Zin's followers can convert to Elyvilon or the Shining One
 while keeping some piety.
 %%%%
+AncientGod
+
+Ancient God is an old god with variable properties
+TO IMPLEMENT!
+%%%%
 Ashenzari powers
 
 Ashenzari exhorts followers to curse their possessions, periodically offering
@@ -494,6 +499,11 @@ can eventually find temporary safety in a divine refuge. As piety grows,
 followers will be protected from mutation and the Hells, and Zin may even
 occasionally directly intervene to save a follower's life.
 %%%%
+AncientGod powers
+
+Ancient god grants variable powers.
+TO IMPLEMENT!!
+%%%%
 Ashenzari wrath
 
 Those who abandon Ashenzari will immediately have their curses shattered,
@@ -690,6 +700,10 @@ Zin wrath
 Those under Zin's wrath will find their beneficial mutations stripped away,
 their enemies alerted, and their senses confounded by the axioms of Law;
 confusion, fainting, blindness and complete paralysis will be their lot.
+%%%%
+AncientGod wrath
+
+Ancient God probably has static wrath. TO IMPLEMENT!!
 %%%%
 Wu Jian extra
 # any god extra screens need :nowrap

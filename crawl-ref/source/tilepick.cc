@@ -536,6 +536,8 @@ tileidx_t tileidx_feature_base(dungeon_feature_type feat)
         return TILE_DNGN_ALTAR_WU_JIAN;
     case DNGN_ALTAR_IGNIS:
         return TILE_DNGN_ALTAR_IGNIS;
+    case DNGN_ALTAR_ANCIENT:
+        return TILE_DNGN_ALTAR_ANCIENT; // TODO: Implement Ancient God altar.
     case DNGN_ALTAR_ECUMENICAL:
         return TILE_DNGN_ALTAR_ECUMENICAL;
     case DNGN_FOUNTAIN_BLUE:

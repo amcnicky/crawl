@@ -430,6 +430,11 @@ const vector<vector<god_power>> & get_all_god_powers()
             { 1, ABIL_IGNIS_FOXFIRE, "call a swarm of foxfires against your foes" },
             { 7, ABIL_IGNIS_RISING_FLAME, "rocket upward and away, once" },
         },
+
+        // Ancient God
+        {
+            // TODO: Implement Ancient God powers.
+        },
     };
     static bool god_powers_init = false;
 
@@ -2158,6 +2163,7 @@ string god_name(god_type which_god, bool long_name)
     case GOD_HEPLIAKLQANA:  return "Hepliaklqana";
     case GOD_WU_JIAN:       return "Wu Jian";
     case GOD_IGNIS:         return "Ignis";
+    case GOD_ANCIENT:       return "Ancient God";
     case GOD_JIYVA: // This is handled at the beginning of the function
     case GOD_ECUMENICAL:    return "an unknown god";
     case NUM_GODS:          return "Buggy";
@@ -2752,6 +2758,7 @@ int initial_wrath_penance_for(god_type god)
         case GOD_NEMELEX_XOBEH:
         case GOD_TROG:
         case GOD_XOM:
+        case GOD_ANCIENT:
             return 50;
         case GOD_FEDHAS:
         case GOD_KIKUBAAQUDGHA:
@@ -3145,6 +3152,12 @@ void excommunication(bool voluntary, god_type new_god)
     case GOD_RU:
         if (!you.props[AVAILABLE_SAC_KEY].get_vector().empty())
             ru_reset_sacrifice_timer();
+        break;
+
+    // Ancient God
+    case GOD_ANCIENT:
+        simple_god_message(" fades away.", false, old_god);
+        // TODO: Implement Ancient God powers.
         break;
 
     default:
@@ -4214,6 +4227,7 @@ void handle_god_time(int /*time_delta*/)
         case GOD_CHEIBRIADOS:
         case GOD_SHINING_ONE:
         case GOD_NEMELEX_XOBEH:
+        case GOD_ANCIENT:
             if (one_chance_in(35))
                 lose_piety(1);
             break;
@@ -4322,6 +4336,7 @@ int god_colour(god_type god) // mv - added
     case GOD_YREDELEMNUL:
     case GOD_DITHMENOS:
     case GOD_USKAYAW:
+    case GOD_ANCIENT:
         return MAGENTA;
 
     case GOD_QAZLAL:
@@ -4409,6 +4424,7 @@ colour_t god_message_altar_colour(god_type god)
         return random_choose(GREEN, LIGHTGREEN);
 
     case GOD_DITHMENOS:
+    case GOD_ANCIENT:
         return MAGENTA;
 
     case GOD_GOZAG:
@@ -4851,6 +4867,7 @@ static bool _is_temple_god(god_type god)
     case GOD_BEOGH:
     case GOD_JIYVA:
     case GOD_IGNIS:
+    case GOD_ANCIENT:
         return false;
 
     default:
