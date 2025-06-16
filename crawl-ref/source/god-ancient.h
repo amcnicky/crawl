@@ -50,6 +50,8 @@ struct ancient_power_spec
     ability_type ability; // ABIL_NON_ABILITY for passives
 };
 
+string get_ancient_god_name();
+string get_ancient_god_title();
 string get_ancient_god_main_description();
 void generate_ancient_god_powers();
 vector<god_power> get_ancient_god_powers();

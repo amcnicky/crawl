@@ -1,8 +1,101 @@
 #include "AppHdr.h"
 #include "god-ancient.h"
+#include "god-ancient-data.h"
+
 #include "ability-type.h"
 #include "player.h"
+#include "random.h"
 #include "religion.h"
+#include "stringutil.h"
+
+#define AG_NAME_KEY "ag_name_idx"
+#define AG_TITLE_KEY "ag_title_idx"
+#define AG_ASPECT_KEY "ag_aspect_idx"
+#define AG_FACTION_KEY "ag_faction_idx"
+#define AG_INTRO_KEY "ag_intro_idx"
+#define AG_WAS_KEY "ag_was_idx"
+#define AG_FALL_KEY "ag_fall_idx"
+#define AG_NOW_KEY "ag_now_idx"
+
+class AncientGodIdentity
+{
+public:
+    AncientGodIdentity()
+    {
+        _ensure_identity(); // purpose: ensure the identity is set, and set it if it's not
+    }
+
+    string get_name()
+    {
+        return ag_name_data[you.props[AG_NAME_KEY].get_int()];
+    }
+
+    string get_title()
+    {
+        return ag_title_data[you.props[AG_TITLE_KEY].get_int()];
+    }
+
+    string get_description()
+    {
+        string desc = "";
+        desc += _apply_dynamics(ag_desc_introduction_data[you.props[AG_INTRO_KEY].get_int()]);
+        desc += _apply_dynamics(ag_desc_how_god_was_data[you.props[AG_WAS_KEY].get_int()]);
+        desc += _apply_dynamics(ag_desc_god_fall_data[you.props[AG_FALL_KEY].get_int()]);
+        desc += _apply_dynamics(ag_desc_god_now_data[you.props[AG_NOW_KEY].get_int()]);
+        return desc;
+    }
+
+private:
+    void _ensure_identity()
+    {
+        if (you.props.exists(AG_NAME_KEY))
+            return;
+
+        rng::subgenerator subgen(you.game_seed, 0);
+
+        you.props[AG_NAME_KEY] = random2(ARRAYSZ(ag_name_data));
+        you.props[AG_TITLE_KEY] = random2(ARRAYSZ(ag_title_data));
+        you.props[AG_ASPECT_KEY] = random2(ARRAYSZ(ag_desc_aspect_data));
+        you.props[AG_FACTION_KEY] = random2(ARRAYSZ(ag_desc_faction_data));
+        you.props[AG_INTRO_KEY] = random2(ARRAYSZ(ag_desc_introduction_data));
+        you.props[AG_WAS_KEY] = random2(ARRAYSZ(ag_desc_how_god_was_data));
+        you.props[AG_FALL_KEY] = random2(ARRAYSZ(ag_desc_god_fall_data));
+        you.props[AG_NOW_KEY] = random2(ARRAYSZ(ag_desc_god_now_data));
+    }
+
+    string _apply_dynamics(string desc)
+    {
+        string godname = get_name();
+        string aspect = ag_desc_aspect_data[you.props[AG_ASPECT_KEY].get_int()];
+        string faction = ag_desc_faction_data[you.props[AG_FACTION_KEY].get_int()];
+
+        desc = replace_all(desc, "GODNAME", godname);
+        desc = replace_all(desc, "ASPECT", aspect);
+        desc = replace_all(desc, "FACTION", faction);
+        return desc;
+    }
+};
+
+static AncientGodIdentity& _get_god_identity()
+{
+    static AncientGodIdentity identity;
+    return identity;
+}
+
+string get_ancient_god_name()
+{
+    return _get_god_identity().get_name();
+}
+
+string get_ancient_god_title()
+{
+    return _get_god_identity().get_title();
+}
+
+string get_ancient_god_main_description()
+{
+    return _get_god_identity().get_description();
+}
 
 static vector<ancient_power_spec> _get_ancient_power_defs()
 {
@@ -37,15 +130,10 @@ static void _generate_power(ancient_power_category category)
 
 void generate_ancient_god_powers()
 {
+    // ensure god identity is set first, so power generation can be seeded
+    _get_god_identity();
     for (int i = 0; i < NUM_ANCIENT_POWER_CATEGORIES; ++i)
         _generate_power(static_cast<ancient_power_category>(i));
-}
-
-string get_ancient_god_main_description()
-{
-    return "The Ancient is a god of unknown origin and power. Its "
-           "followers are granted a unique set of powers, different "
-           "for each champion.";
 }
 
 static const ancient_power_spec& _get_power_spec(ancient_power_type type)
