@@ -270,7 +270,7 @@ static const vector<god_passive> god_passives[] =
 
     // Ancient God
     {
-        // TODO: Implement Ancient God passives.
+        // Ancient God passives are handled dynamically through you.ancient_powers
     },
 };
 COMPILE_CHECK(ARRAYSZ(god_passives) == NUM_GODS);

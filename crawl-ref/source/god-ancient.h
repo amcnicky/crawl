@@ -23,7 +23,7 @@ enum ancient_power_type
     ANCIENT_POWER_NONE = 0,
 
     // Passives
-    PASSIVE_PLACEHOLDER,
+    PASSIVE_DEGENERATIVE_CASTING,
 
     // Small Powers
     SMALL_POWER_PLACEHOLDER_1,
@@ -60,3 +60,4 @@ string get_ancient_god_main_description();
 string get_march_power_description();
 void generate_ancient_god_powers();
 vector<god_power> get_ancient_god_powers();
+bool has_degenerative_casting();

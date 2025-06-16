@@ -219,6 +219,9 @@ enum class passive_t
     /// Your enemies will sometime fail their attack or even hit themselves
     aura_of_power,
 
+    /// You can cast spells beyond your MP by spending piety and health
+    degenerative_casting,
+
     /// Enemies that inflict damage upon you will sometime receive a detrimental status effect
     upgraded_aura_of_power,
 

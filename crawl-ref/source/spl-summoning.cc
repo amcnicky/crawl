@@ -1358,6 +1358,8 @@ spret cast_ancient_creature_march(int pow, bool fail)
     fail_check();
 
     const int mood_idx = you.props["ag_march_mood"].get_int();
+    ASSERT_RANGE(mood_idx, 0, get_mood_data_size());
+    
     const enchant_type ench = mood_data[mood_idx].ench;
 
     int successful_summons = 0;

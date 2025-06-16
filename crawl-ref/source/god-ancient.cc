@@ -2,6 +2,7 @@
 #include "god-ancient.h"
 #include "god-ancient-data.h"
 #include "english.h"
+#include "god-passive.h"
 #include "random.h"
 #include "religion.h"
 #include "stringutil.h"
@@ -65,6 +66,14 @@ static void _build_valid_march_monsters()
         }
 
         if (mons_class_holiness(type) == MH_PLANT)
+            continue;
+
+        // Skip derived monsters that shouldn't be summoned directly
+        if (type == MONS_SKELETON || type == MONS_ZOMBIE || type == MONS_SIMULACRUM)
+            continue;
+
+        // Skip monsters with 0 hit dice (they're usually derived or incomplete)
+        if (mons_class_hit_dice(type) <= 0)
             continue;
 
         valid_march_monsters.push_back(type);
@@ -152,7 +161,16 @@ private:
         {
             _build_valid_march_monsters();
             rng::subgenerator subgen_march_monster(you.game_seed, 9);
-            you.props["ag_march_monster"] = valid_march_monsters[random2(valid_march_monsters.size())];
+            
+            // Safety check for valid monsters list
+            if (valid_march_monsters.empty())
+            {
+                you.props["ag_march_monster"] = MONS_RAT; // Safe fallback
+            }
+            else
+            {
+                you.props["ag_march_monster"] = valid_march_monsters[random2(valid_march_monsters.size())];
+            }
         }
 
         {
@@ -161,6 +179,7 @@ private:
             for (const auto& mood : mood_data)
                 total_weight += mood.weight;
             
+            ASSERT(total_weight > 0); // Weights are all positive constants
             int choice = random2(total_weight);
             int mood_idx = 0;
             for (size_t i = 0; i < ARRAYSZ(mood_data); ++i)
@@ -172,6 +191,8 @@ private:
                 }
                 choice -= mood_data[i].weight;
             }
+            // Ensure mood_idx is within bounds as a final safety check
+            mood_idx = max(0, min(mood_idx, static_cast<int>(ARRAYSZ(mood_data)) - 1));
             you.props["ag_march_mood"] = mood_idx;
         }
     }
@@ -244,7 +265,7 @@ string get_march_power_description()
 static vector<ancient_power_spec> _get_ancient_power_defs()
 {
     vector<ancient_power_spec> powers;
-    powers.emplace_back(ancient_power_spec{ PASSIVE_PLACEHOLDER, ANCIENT_POWER_PASSIVE, "power to be implemented", 0, ABIL_NON_ABILITY });
+    powers.emplace_back(ancient_power_spec{ PASSIVE_DEGENERATIVE_CASTING, ANCIENT_POWER_PASSIVE, "Degenerative Casting", 0, ABIL_NON_ABILITY });
     powers.emplace_back(ancient_power_spec{ SMALL_POWER_PLACEHOLDER_1, ANCIENT_POWER_SMALL, "power to be implemented", 1, ABIL_NON_ABILITY });
     powers.emplace_back(ancient_power_spec{ SMALL_POWER_PLACEHOLDER_2, ANCIENT_POWER_SMALL, "power to be implemented", 1, ABIL_NON_ABILITY });
     powers.emplace_back(ancient_power_spec{ LARGE_POWER_CREATURE_MARCH, ANCIENT_POWER_LARGE, "power to be implemented", 5, ABIL_ANCIENT_CREATURE_MARCH });
@@ -278,9 +299,10 @@ void generate_ancient_god_powers()
     (void)_get_god_identity().get_name();
 
     vector<int> powers;
+    _generate_power(ANCIENT_POWER_PASSIVE, powers);
     _generate_power(ANCIENT_POWER_SMALL, powers);
     _generate_power(ANCIENT_POWER_SMALL, powers);
-    powers.push_back(LARGE_POWER_CREATURE_MARCH);
+    _generate_power(ANCIENT_POWER_LARGE, powers);
 
     you.ancient_powers.clear();
     for (const auto& power : powers)
@@ -323,4 +345,18 @@ vector<god_power> get_ancient_god_powers()
         }
     }
     return powers;
+}
+
+bool has_degenerative_casting()
+{
+    if (you.religion != GOD_ANCIENT)
+        return false;
+    
+    for (const auto& power_val : you.ancient_powers)
+    {
+        ancient_power_type power_type = static_cast<ancient_power_type>(power_val.get_int());
+        if (power_type == PASSIVE_DEGENERATIVE_CASTING)
+            return true;
+    }
+    return false;
 }

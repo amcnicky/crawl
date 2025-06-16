@@ -1121,3 +1121,16 @@ matching atmospheric effects.
 
 The specific creature type and mood are determined by your ancient god's unique 
 memories and remain consistent throughout your worship.
+%%%%
+Degenerative Casting ability
+
+GODNAME allows you to cast spells even when you lack sufficient MP, 
+by channeling their power through your life force at great personal cost.
+
+When attempting to cast a spell without enough MP, you will be prompted to use 
+degenerative casting. This supplements your missing MP by spending piety and 
+applying a drain effect.
+
+This passive ability works partially - if you have some MP but not enough for 
+a spell, only the deficit will be paid through degenerative means. The piety 
+cost and drain effect scale with the amount of missing MP.

@@ -39,6 +39,7 @@
 #include "exercise.h"
 #include "files.h"
 #include "god-abil.h"
+#include "god-ancient.h"
 #include "god-conduct.h"
 #include "god-passive.h"
 #include "god-wrath.h"
@@ -3711,9 +3712,42 @@ void pay_hp(int cost)
 void pay_mp(int cost)
 {
     if (you.has_mutation(MUT_HP_CASTING))
+    {
         pay_hp(cost);
-    else
+        return;
+    }
+
+    // If we have enough regular MP or degenerative casting is not available, just pay normally
+    if (you.magic_points >= cost || !has_degenerative_casting())
+    {
         _dec_mp(cost, true);
+        return;
+    }
+
+    // Calculate how much we need to supplement with degenerative casting
+    const int mp_available = you.magic_points;
+    const int mp_deficit = cost - mp_available;
+    const int piety_cost = mp_deficit;
+    const int drain_power = mp_deficit * 20; // Drain power: 20 per MP point (similar to Ru's abilities)
+
+    // Confirm with the player before using degenerative casting
+    string prompt = make_stringf("This spell requires %d more MP than you have. "
+                               "Use degenerative casting (piety and drain)?",
+                               mp_deficit);
+    
+    if (!yesno(prompt.c_str(), false, 'n'))
+    {
+        mpr("Spell cancelled.");
+        return;
+    }
+
+    // Pay the costs
+    _dec_mp(mp_available, true); // Use all available MP
+    lose_piety(piety_cost);
+    drain_player(drain_power, false, true); // Apply drain effect
+
+    mprf("You channel %s power through your life force, draining yourself!",
+         get_ancient_god_name().c_str());
 }
 
 void refund_hp(int cost)
@@ -3784,15 +3818,15 @@ bool enough_mp(int minimum, bool suppress_msg, bool abort_macros)
     if (you.has_mutation(MUT_HP_CASTING))
         return enough_hp(minimum, suppress_msg, abort_macros);
 
-    if (you.magic_points < minimum)
+    // If we have enough regular MP, no need for degenerative casting
+    if (you.magic_points >= minimum)
+        return true;
+
+    // Check magic capacity first - this applies regardless of degenerative casting
+    if (get_real_mp(true) < minimum)
     {
         if (!suppress_msg)
-        {
-            if (get_real_mp(true) < minimum)
-                mpr("You don't have enough magic capacity.");
-            else
-                mpr("You don't have enough magic at the moment.");
-        }
+            mpr("You don't have enough magic capacity.");
         if (abort_macros)
         {
             crawl_state.cancel_cmd_again();
@@ -3801,8 +3835,43 @@ bool enough_mp(int minimum, bool suppress_msg, bool abort_macros)
         return false;
     }
 
+    // If degenerative casting is not available, fail with current MP message
+    if (!has_degenerative_casting())
+    {
+        if (!suppress_msg)
+            mpr("You don't have enough magic at the moment.");
+        if (abort_macros)
+        {
+            crawl_state.cancel_cmd_again();
+            crawl_state.cancel_cmd_repeat();
+        }
+        return false;
+    }
+
+    // Calculate how much we need to supplement with degenerative casting
+    const int mp_deficit = minimum - you.magic_points;
+    const int piety_cost = mp_deficit;
+
+    // Check if we have enough piety for degenerative casting
+    if (you.piety < piety_cost)
+    {
+        if (!suppress_msg)
+            mpr("You don't have enough piety for degenerative casting.");
+        if (abort_macros)
+        {
+            crawl_state.cancel_cmd_again();
+            crawl_state.cancel_cmd_repeat();
+        }
+        return false;
+    }
+
+    // Note: We don't check HP for drain effects since drain can't kill you directly
+    // (it only reduces max HP temporarily)
+
     return true;
 }
+
+
 
 void inc_mp(int mp_gain, bool silent)
 {
