@@ -22,21 +22,24 @@ class AncientGodIdentity
 public:
     AncientGodIdentity()
     {
-        _ensure_identity(); // purpose: ensure the identity is set, and set it if it's not
+        // _ensure_identity(); // purpose: ensure the identity is set, and set it if it's not
     }
 
     string get_name()
     {
+        _ensure_identity();
         return ag_name_data[you.props[AG_NAME_KEY].get_int()];
     }
 
     string get_title()
     {
+        _ensure_identity();
         return ag_title_data[you.props[AG_TITLE_KEY].get_int()];
     }
 
     string get_description()
     {
+        _ensure_identity();
         string desc = "";
         desc += _apply_dynamics(ag_desc_introduction_data[you.props[AG_INTRO_KEY].get_int()]);
         desc += _apply_dynamics(ag_desc_how_god_was_data[you.props[AG_WAS_KEY].get_int()]);
@@ -51,16 +54,46 @@ private:
         if (you.props.exists(AG_NAME_KEY))
             return;
 
-        rng::subgenerator subgen(you.game_seed, 0);
+        // need to salt to avoid correlation between the different parts of the description
+        {
+            rng::subgenerator subgen_name(you.game_seed, 1);
+            you.props[AG_NAME_KEY] = random2(ARRAYSZ(ag_name_data));
+        }
 
-        you.props[AG_NAME_KEY] = random2(ARRAYSZ(ag_name_data));
-        you.props[AG_TITLE_KEY] = random2(ARRAYSZ(ag_title_data));
-        you.props[AG_ASPECT_KEY] = random2(ARRAYSZ(ag_desc_aspect_data));
-        you.props[AG_FACTION_KEY] = random2(ARRAYSZ(ag_desc_faction_data));
-        you.props[AG_INTRO_KEY] = random2(ARRAYSZ(ag_desc_introduction_data));
-        you.props[AG_WAS_KEY] = random2(ARRAYSZ(ag_desc_how_god_was_data));
-        you.props[AG_FALL_KEY] = random2(ARRAYSZ(ag_desc_god_fall_data));
-        you.props[AG_NOW_KEY] = random2(ARRAYSZ(ag_desc_god_now_data));
+        {
+            rng::subgenerator subgen_title(you.game_seed, 2);
+            you.props[AG_TITLE_KEY] = random2(ARRAYSZ(ag_title_data));
+        }
+
+        {
+            rng::subgenerator subgen_aspect(you.game_seed, 3);
+            you.props[AG_ASPECT_KEY] = random2(ARRAYSZ(ag_desc_aspect_data));
+        }
+
+        {
+            rng::subgenerator subgen_faction(you.game_seed, 4);
+            you.props[AG_FACTION_KEY] = random2(ARRAYSZ(ag_desc_faction_data));
+        }
+
+        {
+            rng::subgenerator subgen_intro(you.game_seed, 5);
+            you.props[AG_INTRO_KEY] = random2(ARRAYSZ(ag_desc_introduction_data));
+        }
+
+        {
+            rng::subgenerator subgen_was(you.game_seed, 6);
+            you.props[AG_WAS_KEY] = random2(ARRAYSZ(ag_desc_how_god_was_data));
+        }
+
+        {
+            rng::subgenerator subgen_fall(you.game_seed, 7);
+            you.props[AG_FALL_KEY] = random2(ARRAYSZ(ag_desc_god_fall_data));
+        }
+
+        {
+            rng::subgenerator subgen_now(you.game_seed, 8);
+            you.props[AG_NOW_KEY] = random2(ARRAYSZ(ag_desc_god_now_data));
+        }
     }
 
     string _apply_dynamics(string desc)
@@ -131,7 +164,8 @@ static void _generate_power(ancient_power_category category)
 void generate_ancient_god_powers()
 {
     // ensure god identity is set first, so power generation can be seeded
-    _get_god_identity();
+    // this will call get_name(), which now ensures the identity is created
+    (void)_get_god_identity().get_name();
     for (int i = 0; i < NUM_ANCIENT_POWER_CATEGORIES; ++i)
         _generate_power(static_cast<ancient_power_category>(i));
 }
