@@ -37,6 +37,7 @@
 #include "tilepick.h"
 #include "unicode.h"
 #include "xom.h"
+#include "god-ancient.h"
 
 using namespace ui;
 
@@ -995,7 +996,11 @@ static formatted_string _god_overview_description(god_type which_god)
     formatted_string desc;
 
     // Print god's description.
-    const string god_desc = getLongDescription(god_name(which_god));
+    string god_desc;
+    if (which_god == GOD_ANCIENT)
+        god_desc = get_ancient_god_main_description();
+    else
+        god_desc = getLongDescription(god_name(which_god));
     desc += trimmed_string(god_desc) + "\n";
 
     // Title only shown for our own god.
@@ -1021,7 +1026,9 @@ static formatted_string _god_overview_description(god_type which_god)
         desc.cprintf("%s", _god_penance_message(which_god).c_str());
     else
         desc.cprintf("%s", _describe_favour(which_god).c_str());
+
     desc += _describe_god_powers(which_god);
+
     desc.cprintf("\n\n");
 
     return desc;

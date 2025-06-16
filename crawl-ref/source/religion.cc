@@ -75,6 +75,7 @@
 #include "terrain.h"
 #include "transform.h"
 #include "view.h"
+#include "god-ancient.h"
 
 #ifdef DEBUG_RELIGION
 #    define DEBUG_DIAGNOSTICS
@@ -433,7 +434,7 @@ const vector<vector<god_power>> & get_all_god_powers()
 
         // Ancient God
         {
-            // TODO: Implement Ancient God powers.
+            // powers are generated in god-ancient.cc and provided via get_ancient_god_powers()
         },
     };
     static bool god_powers_init = false;
@@ -451,6 +452,9 @@ const vector<vector<god_power>> & get_all_god_powers()
 
 vector<god_power> get_god_powers(god_type god)
 {
+    if (god == GOD_ANCIENT)
+        return get_ancient_god_powers();
+
     vector<god_power> ret;
     for (const auto& power : get_all_god_powers()[god])
     {

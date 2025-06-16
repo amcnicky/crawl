@@ -37,6 +37,7 @@
 #include "uncancellable-type.h"
 #include "unique-creature-list-type.h"
 #include "unique-item-status-type.h"
+#include "god-ancient.h"
 
 #define ICY_ARMOUR_KEY "ozocubu's_armour_pow"
 #define BARBS_MOVE_KEY "moved_with_barbs_status"
@@ -214,6 +215,8 @@ public:
     bool fishtail; // Merfolk fishtail transformation
 
     unsigned short pet_target;
+
+    ancient_power_type ancient_powers[NUM_ANCIENT_POWER_CATEGORIES];
 
     durations_t duration;
     bool apply_berserk_penalty;         // Whether to apply the berserk penalty at
