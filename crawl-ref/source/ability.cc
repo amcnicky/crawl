@@ -30,6 +30,7 @@
 #include "delay.h"
 #include "describe.h"
 #include "directn.h"
+#include "english.h"
 #include "dungeon.h"
 #include "evoke.h"
 #include "exercise.h"
@@ -39,6 +40,7 @@
 #include "god-conduct.h"
 #include "god-item.h"
 #include "god-passive.h"
+#include "god-ancient.h"
 #include "hints.h"
 #include "invent.h"
 #include "item-prop.h"
@@ -751,6 +753,10 @@ static vector<ability_def> &_get_ability_list()
         { ABIL_IGNIS_RISING_FLAME, "Rising Flame",
             0, 0, 0, -1, {fail_basis::invo}, abflag::none },
 
+        // Ancient God
+        { ABIL_ANCIENT_CREATURE_MARCH, "Ancient Creature March",
+            12, 0, 5, -1, {fail_basis::invo, 80, 4, 25}, abflag::none },
+
         { ABIL_RENOUNCE_RELIGION, "Renounce Religion",
             0, 0, 0, -1, {fail_basis::invo}, abflag::none },
         { ABIL_CONVERT_TO_BEOGH, "Convert to Beogh",
@@ -1379,6 +1385,12 @@ string ability_name(ability_type ability, bool dbname)
                                     mutation_name(makhleb_ability_to_mutation(ability)));
             }
 
+        case ABIL_ANCIENT_CREATURE_MARCH:
+            if (dbname)
+                return "Ancient Creature March";
+            else
+                return get_march_power_description();
+
         default:
             return get_ability_def(ability).name;
     }
@@ -1605,6 +1617,26 @@ string get_ability_desc(const ability_type ability, bool need_title)
         {
             const mutation_type mut = makhleb_ability_to_mutation(ability);
             lookup += "\n" + get_mutation_desc(mut);
+        }
+        break;
+
+        case ABIL_ANCIENT_CREATURE_MARCH:
+        {
+            // Replace placeholders with actual creature and mood names
+            if (you.props.exists("ag_march_monster") && you.props.exists("ag_march_mood"))
+            {
+                const monster_type type = static_cast<monster_type>(you.props["ag_march_monster"].get_int());
+                const int mood_idx = you.props["ag_march_mood"].get_int();
+                
+                if (mood_idx >= 0 && mood_idx < get_mood_data_size())
+                {
+                    const string creature_name = pluralise_monster(mons_type_name(type, DESC_PLAIN));
+                    const string mood_name = mood_data[mood_idx].name;
+                    
+                    lookup = replace_all(lookup, "CREATURENAME", creature_name);
+                    lookup = replace_all(lookup, "MOODNAME", mood_name);
+                }
+            }
         }
         break;
 
@@ -4006,6 +4038,9 @@ static spret _do_ability(const ability_def& abil, bool fail, dist *target,
         you.set_duration(DUR_RISING_FLAME, 2 + random2(3));
         you.one_time_ability_used.set(GOD_IGNIS);
         return spret::success;
+
+    case ABIL_ANCIENT_CREATURE_MARCH:
+        return cast_ancient_creature_march(you.skill(SK_INVOCATIONS, 4), false);
 
     case ABIL_RENOUNCE_RELIGION:
         if (yesno("Really renounce your faith, foregoing its fabulous benefits?",

@@ -1103,3 +1103,21 @@ always perform a Howl afterward.
 
 Can only target an enemy who is afraid, and who has at least one occupiable tile
 adjacent to them.
+%%%%
+Ancient Creature March ability
+
+Calls upon ancient memories to summon CREATURENAME from the depths of time. 
+Your forgotten god remembers these creatures and their MOODNAME temperament, 
+summoning a host of MOODNAME CREATURENAME with that mood already upon them.
+
+The number of creatures summoned depends on their power - weaker creatures appear 
+in greater numbers, while mighty ancient beasts may come alone or in small groups. 
+The duration of their service scales with your Invocations skill.
+
+Summoning CREATURENAME may trigger environmental effects based on their nature:
+creatures requiring specific habitats will reshape the terrain around you to 
+suit their needs, while those with elemental affinities may fill the air with 
+matching atmospheric effects.
+
+The specific creature type and mood are determined by your ancient god's unique 
+memories and remain consistent throughout your worship.

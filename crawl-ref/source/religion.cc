@@ -3793,6 +3793,7 @@ void makhleb_initialize_marks()
 
 /// What special things happen when you join a god?
 static const map<god_type, function<void ()>> on_join = {
+    { GOD_ANCIENT, []() { generate_ancient_god_powers(); }},
     { GOD_BEOGH, update_player_symbol },
     { GOD_CHEIBRIADOS, _join_cheibriados },
     { GOD_FEDHAS, []() {

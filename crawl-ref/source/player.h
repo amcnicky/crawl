@@ -216,7 +216,7 @@ public:
 
     unsigned short pet_target;
 
-    ancient_power_type ancient_powers[NUM_ANCIENT_POWER_CATEGORIES];
+    CrawlVector ancient_powers;
 
     durations_t duration;
     bool apply_berserk_penalty;         // Whether to apply the berserk penalty at
