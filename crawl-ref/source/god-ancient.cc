@@ -7,6 +7,8 @@
 #include "religion.h"
 #include "stringutil.h"
 #include "mon-tentacle.h"
+#include "mon-util.h"
+#include "monster.h"
 
 #define AG_NAME_KEY "ag_name_idx"
 #define AG_TITLE_KEY "ag_title_idx"
@@ -16,8 +18,8 @@
 #define AG_WAS_KEY "ag_was_idx"
 #define AG_FALL_KEY "ag_fall_idx"
 #define AG_NOW_KEY "ag_now_idx"
-#define AG_MARCH_MONSTER_KEY "ag_march_monster"
-#define AG_MARCH_MOOD_KEY "ag_march_mood"
+#define AG_CALL_MONSTER_KEY "ag_call_monster"
+#define AG_CALL_MOOD_KEY "ag_call_mood"
 
 const mood_spec mood_data[] =
 {
@@ -47,11 +49,42 @@ const mood_spec mood_data[] =
     { "slowed", ENCH_SLOW, 1 },
 };
 
-static vector<monster_type> valid_march_monsters;
-
-static void _build_valid_march_monsters()
+// Mood scaling factors for piety cost calculation
+// You can manually edit these values as needed
+// Values are in hundredths: 150 = 1.5x, 80 = 0.8x, etc.
+const mood_scaling_spec mood_scaling_data[] =
 {
-    if (!valid_march_monsters.empty())
+    // Beneficial moods - higher cost due to increased effectiveness
+    { "furious", 150, 80 },      // Good for melee, bad for spellcasters
+    { "hasty", 130, 130 },
+    { "mighty", 140, 140 },
+    { "swift", 120, 120 },
+    { "invisible", 160, 160 },
+    { "regenerating", 130, 130 },
+    { "agile", 120, 120 },
+    { "strong-willed", 110, 110 },
+    
+    // Mixed moods - moderate cost
+    { "frenzied", 100, 100 },
+    { "confused", 70, 70 },
+    { "feared", 60, 60 },
+    { "blind", 50, 50 },
+    { "dazed", 60, 60 },
+    { "sick", 80, 80 },
+    
+    // Detrimental moods - lower cost due to reduced effectiveness
+    { "petrified", 30, 30 },
+    { "paralysed", 20, 20 },
+    { "sleeping", 10, 10 },
+    { "weak", 40, 40 },
+    { "slowed", 50, 50 },
+};
+
+static vector<monster_type> valid_call_monsters;
+
+static void _build_valid_call_monsters()
+{
+    if (!valid_call_monsters.empty())
         return;
 
     for (int i = 0; i < NUM_MONSTERS; ++i)
@@ -76,7 +109,7 @@ static void _build_valid_march_monsters()
         if (mons_class_hit_dice(type) <= 0)
             continue;
 
-        valid_march_monsters.push_back(type);
+        valid_call_monsters.push_back(type);
     }
 }
 
@@ -159,22 +192,22 @@ private:
         }
 
         {
-            _build_valid_march_monsters();
-            rng::subgenerator subgen_march_monster(you.game_seed, 9);
+            _build_valid_call_monsters();
+            rng::subgenerator subgen_call_monster(you.game_seed, 9);
             
             // Safety check for valid monsters list
-            if (valid_march_monsters.empty())
+            if (valid_call_monsters.empty())
             {
-                you.props["ag_march_monster"] = MONS_RAT; // Safe fallback
+                you.props["ag_call_monster"] = MONS_RAT; // Safe fallback
             }
             else
             {
-                you.props["ag_march_monster"] = valid_march_monsters[random2(valid_march_monsters.size())];
+                you.props["ag_call_monster"] = valid_call_monsters[random2(valid_call_monsters.size())];
             }
         }
 
         {
-            rng::subgenerator subgen_march_mood(you.game_seed, 10);
+            rng::subgenerator subgen_call_mood(you.game_seed, 10);
             int total_weight = 0;
             for (const auto& mood : mood_data)
                 total_weight += mood.weight;
@@ -193,7 +226,7 @@ private:
             }
             // Ensure mood_idx is within bounds as a final safety check
             mood_idx = max(0, min(mood_idx, static_cast<int>(ARRAYSZ(mood_data)) - 1));
-            you.props["ag_march_mood"] = mood_idx;
+            you.props["ag_call_mood"] = mood_idx;
         }
     }
 
@@ -236,30 +269,32 @@ string get_ancient_god_main_description()
     return _get_god_identity().get_description();
 }
 
-string get_march_power_description()
+string get_call_power_description()
 {
     // Ensure identity is set before accessing properties
     _get_god_identity().get_name(); // This will call _ensure_identity()
     
     // Safety checks for properties
-    if (!you.props.exists("ag_march_monster") || !you.props.exists("ag_march_mood"))
+    if (!you.props.exists("ag_call_monster") || !you.props.exists("ag_call_mood"))
     {
-        return "March of the Monsters"; // fallback description
+        return "Call of Monsters"; // fallback description
     }
     
-    const monster_type type = static_cast<monster_type>(you.props["ag_march_monster"].get_int());
-    const int mood_idx = you.props["ag_march_mood"].get_int();
+    const monster_type type = static_cast<monster_type>(you.props["ag_call_monster"].get_int());
+    const int mood_idx = you.props["ag_call_mood"].get_int();
 
     // Safety check for mood index
     if (mood_idx < 0 || mood_idx >= static_cast<int>(ARRAYSZ(mood_data)))
     {
-        return "March of the Monsters"; // fallback description
+        return "Call of Monsters"; // fallback description
     }
 
     const string mood = mood_data[mood_idx].name;
     const string creature = pluralise_monster(mons_type_name(type, DESC_PLAIN));
 
-    return make_stringf("March of the %s %s", mood.c_str(), creature.c_str());
+    // Use a more descriptive format that clearly indicates it's an ability
+    // Format: "Call Furious Draconians" instead of just "Furious Draconians"
+    return make_stringf("Call %s %s", mood.c_str(), creature.c_str());
 }
 
 static vector<ancient_power_spec> _get_ancient_power_defs()
@@ -268,7 +303,7 @@ static vector<ancient_power_spec> _get_ancient_power_defs()
     powers.emplace_back(ancient_power_spec{ PASSIVE_DEGENERATIVE_CASTING, ANCIENT_POWER_PASSIVE, "Degenerative Casting", 0, ABIL_NON_ABILITY });
     powers.emplace_back(ancient_power_spec{ SMALL_POWER_PLACEHOLDER_1, ANCIENT_POWER_SMALL, "power to be implemented", 1, ABIL_NON_ABILITY });
     powers.emplace_back(ancient_power_spec{ SMALL_POWER_PLACEHOLDER_2, ANCIENT_POWER_SMALL, "power to be implemented", 1, ABIL_NON_ABILITY });
-    powers.emplace_back(ancient_power_spec{ LARGE_POWER_CREATURE_MARCH, ANCIENT_POWER_LARGE, "power to be implemented", 5, ABIL_ANCIENT_CREATURE_MARCH });
+    powers.emplace_back(ancient_power_spec{ LARGE_POWER_CREATURE_CALL, ANCIENT_POWER_LARGE, "power to be implemented", 5, ABIL_ANCIENT_CREATURE_CALL });
     return powers;
 }
 
@@ -320,7 +355,7 @@ static const ancient_power_spec& _get_power_spec(ancient_power_type type)
 }
 
 // Static storage for dynamic descriptions to avoid dangling pointers
-static string march_power_desc;
+static string call_power_desc;
 
 vector<god_power> get_ancient_god_powers()
 {
@@ -329,11 +364,12 @@ vector<god_power> get_ancient_god_powers()
     {
         ancient_power_type power_type = static_cast<ancient_power_type>(power_val.get_int());
         const ancient_power_spec& spec = _get_power_spec(power_type);
-        if (spec.type == LARGE_POWER_CREATURE_MARCH)
+        if (spec.type == LARGE_POWER_CREATURE_CALL)
         {
-            // Update the static description string
-            march_power_desc = get_march_power_description();
-            god_power power(spec.piety_rank, spec.ability, march_power_desc.c_str());
+            // Use the dynamic description for the "you can now" message
+            // This shows the specific creature and mood
+            call_power_desc = get_call_power_description();
+            god_power power(spec.piety_rank, spec.ability, call_power_desc.c_str());
             power.god = GOD_ANCIENT;
             powers.push_back(power);
         }
@@ -359,4 +395,119 @@ bool has_degenerative_casting()
             return true;
     }
     return false;
+}
+
+// Helper function to check if a monster type is a spellcaster
+static bool _is_monster_spellcaster(monster_type type)
+{
+    // Create a temporary monster to check spellcaster status
+    // This is a bit hacky but necessary for the mood scaling
+    monster temp_mon;
+    temp_mon.type = type;
+    temp_mon.set_hit_dice(mons_class_hit_dice(type));
+    return temp_mon.is_actual_spellcaster();
+}
+
+// Helper function to get mood scaling factor
+static int _get_mood_scaling_factor(monster_type type, const string& mood_name)
+{
+    // Find matching mood scaling factor
+    for (size_t i = 0; i < ARRAYSZ(mood_scaling_data); ++i)
+    {
+        if (strcmp(mood_scaling_data[i].name, mood_name.c_str()) == 0)
+        {
+            // For furious mood, check if monster is a spellcaster
+            if (strcmp(mood_name.c_str(), "furious") == 0)
+            {
+                return _is_monster_spellcaster(type)
+                    ? mood_scaling_data[i].scaling_factor_spellcaster
+                    : mood_scaling_data[i].scaling_factor;
+            }
+            else
+            {
+                return mood_scaling_data[i].scaling_factor;
+            }
+        }
+    }
+    return 100; // Default 1.0x scaling
+}
+
+// Ancient god ability cost calculations
+int get_ancient_creature_call_piety_cost()
+{
+    if (!you.props.exists("ag_call_monster") || !you.props.exists("ag_call_mood"))
+        return 4; // Fallback to reduced original cost
+    
+    const monster_type type = static_cast<monster_type>(you.props["ag_call_monster"].get_int());
+    const int mood_idx = you.props["ag_call_mood"].get_int();
+    
+    // Safety check for mood index
+    if (mood_idx < 0 || mood_idx >= static_cast<int>(ARRAYSZ(mood_data)))
+        return 4; // Fallback
+    
+    const int base_hd = mons_class_hit_dice(type);
+    
+    // Scale piety cost from ~3 (HD 1) to ~42 (HD 25+) - reduced by ~30%
+    // Formula: base_cost = 3 + (HD * 39/25) ≈ 3 + (HD * 1.56)
+    const int base_cost = 3 + (base_hd * 39) / 25;
+    const int add_cost = (base_cost + 1) / 2 + 1; // Same formula as generic_cost
+    
+    // Apply mood scaling using integer arithmetic
+    const string& mood_name = mood_data[mood_idx].name;
+    const int mood_scaling = _get_mood_scaling_factor(type, mood_name);
+    const int scaled_base_cost = (base_cost * mood_scaling) / 100;
+    
+    return scaled_base_cost + random2avg(add_cost, 1);
+}
+
+string get_ancient_creature_call_cost_description()
+{
+    if (!you.props.exists("ag_call_monster") || !you.props.exists("ag_call_mood"))
+        return "~3 Piety"; // Fallback
+    
+    const monster_type type = static_cast<monster_type>(you.props["ag_call_monster"].get_int());
+    const int mood_idx = you.props["ag_call_mood"].get_int();
+    
+    // Safety check for mood index
+    if (mood_idx < 0 || mood_idx >= static_cast<int>(ARRAYSZ(mood_data)))
+        return "~3 Piety"; // Fallback
+    
+    const int base_hd = mons_class_hit_dice(type);
+    const int base_cost = 3 + (base_hd * 39) / 25;
+    const int add_cost = (base_cost + 1) / 2 + 1;
+    
+    // Apply mood scaling using integer arithmetic
+    const string& mood_name = mood_data[mood_idx].name;
+    const int mood_scaling = _get_mood_scaling_factor(type, mood_name);
+    const int avg_cost = ((base_cost + add_cost / 2) * mood_scaling) / 100;
+    
+    return make_stringf("~%d Piety", avg_cost);
+}
+
+string get_ancient_creature_call_detailed_cost_description()
+{
+    if (!you.props.exists("ag_call_monster") || !you.props.exists("ag_call_mood"))
+        return "----- (about 2% of your maximum possible piety)"; // Fallback
+    
+    const monster_type type = static_cast<monster_type>(you.props["ag_call_monster"].get_int());
+    const int mood_idx = you.props["ag_call_mood"].get_int();
+    
+    // Safety check for mood index
+    if (mood_idx < 0 || mood_idx >= static_cast<int>(ARRAYSZ(mood_data)))
+        return "----- (about 2% of your maximum possible piety)"; // Fallback
+    
+    const int base_hd = mons_class_hit_dice(type);
+    const int base_cost = 3 + (base_hd * 39) / 25;
+    const int add_cost = (base_cost + 1) / 2 + 1;
+    
+    // Apply mood scaling using integer arithmetic
+    const string& mood_name = mood_data[mood_idx].name;
+    const int mood_scaling = _get_mood_scaling_factor(type, mood_name);
+    const int avg_cost = ((base_cost + add_cost / 2) * mood_scaling) / 100;
+    
+    // Calculate percentage of maximum piety
+    const int max_piety = piety_breakpoint(6); // 160 piety
+    const int percentage = (avg_cost * 100 + max_piety / 2) / max_piety;
+    
+    return make_stringf("~%d (about %d%% of your maximum possible piety)", avg_cost, percentage);
 }

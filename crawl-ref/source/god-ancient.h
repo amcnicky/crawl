@@ -30,7 +30,7 @@ enum ancient_power_type
     SMALL_POWER_PLACEHOLDER_2,
 
     // Large Powers
-    LARGE_POWER_CREATURE_MARCH,
+    LARGE_POWER_CREATURE_CALL,
     LARGE_POWER_PLACEHOLDER,
 
     NUM_ANCIENT_POWERS,
@@ -51,13 +51,25 @@ struct mood_spec {
     int weight;
 };
 
+struct mood_scaling_spec {
+    const char* name;
+    int scaling_factor;           // Multiplier (e.g., 150 = 1.5x, 80 = 0.8x)
+    int scaling_factor_spellcaster; // For furious mood when monster is a spellcaster
+};
+
 extern const mood_spec mood_data[];
+extern const mood_scaling_spec mood_scaling_data[];
 int get_mood_data_size();
 
 string get_ancient_god_name();
 string get_ancient_god_title();
 string get_ancient_god_main_description();
-string get_march_power_description();
+string get_call_power_description();
 void generate_ancient_god_powers();
 vector<god_power> get_ancient_god_powers();
 bool has_degenerative_casting();
+
+// Ancient god ability cost calculations
+int get_ancient_creature_call_piety_cost();
+string get_ancient_creature_call_cost_description();
+string get_ancient_creature_call_detailed_cost_description();

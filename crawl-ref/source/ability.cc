@@ -754,7 +754,7 @@ static vector<ability_def> &_get_ability_list()
             0, 0, 0, -1, {fail_basis::invo}, abflag::none },
 
         // Ancient God
-        { ABIL_ANCIENT_CREATURE_MARCH, "Ancient Creature March",
+        { ABIL_ANCIENT_CREATURE_CALL, "Ancient Creature Call",
             12, 0, 5, -1, {fail_basis::invo, 80, 4, 25}, abflag::none },
 
         { ABIL_RENOUNCE_RELIGION, "Renounce Religion",
@@ -993,7 +993,17 @@ const string make_cost_description(ability_type ability)
         ret += make_stringf(", %d HP", hp_cost);
 
     if (abil.piety_cost)
-        ret += make_stringf(", Piety%s", abil.piety_pips().c_str());
+    {
+        // Special case for Ancient Creature Call: show dynamic piety cost
+        if (ability == ABIL_ANCIENT_CREATURE_CALL)
+        {
+            ret += ", " + get_ancient_creature_call_cost_description();
+        }
+        else
+        {
+            ret += make_stringf(", Piety%s", abil.piety_pips().c_str());
+        }
+    }
 
     if (abil.flags & abflag::breath)
         ret += ", Breath";
@@ -1091,7 +1101,16 @@ static const string _detailed_cost_description(ability_type ability)
     {
         have_cost = true;
         ret << "\nPiety  : ";
-        ret << abil.piety_pips() << abil.piety_desc();
+        
+        // Special case for Ancient Creature Call: show dynamic piety cost
+        if (ability == ABIL_ANCIENT_CREATURE_CALL)
+        {
+            ret << get_ancient_creature_call_detailed_cost_description();
+        }
+        else
+        {
+            ret << abil.piety_pips() << abil.piety_desc();
+        }
     }
 
     if (abil.flags & abflag::gold)
@@ -1385,11 +1404,11 @@ string ability_name(ability_type ability, bool dbname)
                                     mutation_name(makhleb_ability_to_mutation(ability)));
             }
 
-        case ABIL_ANCIENT_CREATURE_MARCH:
+        case ABIL_ANCIENT_CREATURE_CALL:
             if (dbname)
-                return "Ancient Creature March";
+                return "Ancient Creature Call";
             else
-                return get_march_power_description();
+                return get_call_power_description();
 
         default:
             return get_ability_def(ability).name;
@@ -1620,13 +1639,13 @@ string get_ability_desc(const ability_type ability, bool need_title)
         }
         break;
 
-        case ABIL_ANCIENT_CREATURE_MARCH:
+        case ABIL_ANCIENT_CREATURE_CALL:
         {
             // Replace placeholders with actual creature and mood names
-            if (you.props.exists("ag_march_monster") && you.props.exists("ag_march_mood"))
+            if (you.props.exists("ag_call_monster") && you.props.exists("ag_call_mood"))
             {
-                const monster_type type = static_cast<monster_type>(you.props["ag_march_monster"].get_int());
-                const int mood_idx = you.props["ag_march_mood"].get_int();
+                const monster_type type = static_cast<monster_type>(you.props["ag_call_monster"].get_int());
+                const int mood_idx = you.props["ag_call_mood"].get_int();
                 
                 if (mood_idx >= 0 && mood_idx < get_mood_data_size())
                 {
@@ -4039,8 +4058,8 @@ static spret _do_ability(const ability_def& abil, bool fail, dist *target,
         you.one_time_ability_used.set(GOD_IGNIS);
         return spret::success;
 
-    case ABIL_ANCIENT_CREATURE_MARCH:
-        return cast_ancient_creature_march(you.skill(SK_INVOCATIONS, 4), false);
+    case ABIL_ANCIENT_CREATURE_CALL:
+        return cast_ancient_creature_call(you.skill(SK_INVOCATIONS, 4), false);
 
     case ABIL_RENOUNCE_RELIGION:
         if (yesno("Really renounce your faith, foregoing its fabulous benefits?",
@@ -4116,7 +4135,17 @@ static void _finalize_ability_costs(const ability_def& abil, int mp_cost, int hp
     else if (abil.ability != ABIL_WU_JIAN_WALLJUMP)
         you.turn_is_over = true;
 
-    const int piety_cost = abil.piety_cost.cost();
+    int piety_cost;
+    
+    // Special case for Ancient Creature Call: scale piety cost based on monster hit dice
+    if (abil.ability == ABIL_ANCIENT_CREATURE_CALL)
+    {
+        piety_cost = get_ancient_creature_call_piety_cost();
+    }
+    else
+    {
+        piety_cost = abil.piety_cost.cost();
+    }
 
     dprf("Cost: mp=%d; hp=%d; piety=%d",
          mp_cost, hp_cost, piety_cost);

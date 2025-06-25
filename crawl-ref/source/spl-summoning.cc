@@ -1114,166 +1114,11 @@ spret cast_call_imp(int pow, bool fail)
     return spret::success;
 }
 
-/**
- * Apply dynamic environmental effects based on the summoned monster's properties.
- * This creates intuitive visual and environmental effects that match creature characteristics:
- * - Color-based visual effects (flash_view with monster's color)  
- * - Habitat-based environmental changes (water for aquatic, lava for lava creatures, etc.)
- * - Resistance-based atmospheric effects (fire/cold/poison clouds based on resistances)
- * 
- * Always ensures proper habitat is placed under summoned creatures that require it.
- */
-static void _apply_ancient_march_effects(monster_type type, int num_summoned, int invocations,
-                                        const vector<coord_def>& summon_positions)
-{
-    // Determine effect intensity based on number summoned and skill
-    const int effect_intensity = min(5, 1 + num_summoned / 3 + invocations / 9);
-    const int effect_radius = min(3, 1 + effect_intensity / 2);
-    
-    // Use longer durations for meaningful atmospheric effects (10-25 turns typical)
-    const int base_duration = 8 + effect_intensity * 2;
-    const int cloud_duration = base_duration + random2(effect_intensity * 2);
-    
-    // === COLOR-BASED VISUAL EFFECTS ===
-    
-    // Get monster's color for visual flash effect
-    const colour_t monster_colour = mons_class_colour(type);
-    if (monster_colour != BLACK) // Only flash if monster has a distinct color
-    {
-        // Create a dramatic visual flash matching the monster's color
-        flash_view_delay(UA_PLAYER, monster_colour, 200);
-    }
-    
-    // === HABITAT-BASED ENVIRONMENTAL EFFECTS ===
-    
-    // Check for truly aquatic creatures (those that REQUIRE water, not just can survive in it)
-    // We need to check the core habitat without flight modifications
-    const habitat_type core_habitat = mons_class_habitat(type, true);
-    if (core_habitat == HT_WATER)
-    {
-        // Aquatic creatures: ALWAYS create water under summoned creatures, then expand
-        mprf("The air grows humid as %s from ancient waters arrive!",
-             num_summoned == 1 ? "a creature" : "creatures");
-        
-        // First: Ensure all summoned aquatic creatures have water under them
-        for (const coord_def& pos : summon_positions)
-        {
-            if (env.grid(pos) == DNGN_FLOOR) // Can convert floor to shallow water
-            {
-                temp_change_terrain(pos, DNGN_SHALLOW_WATER, 
-                                   random_range(200, 400), // Long duration for habitat
-                                   TERRAIN_CHANGE_FLOOD);
-            }
-        }
-        
-        // Then: Optionally expand water to nearby areas
-        for (radius_iterator ri(you.pos(), effect_radius, C_SQUARE, LOS_DEFAULT); ri; ++ri)
-        {
-            if (*ri != you.pos() && env.grid(*ri) == DNGN_FLOOR 
-                && one_chance_in(3) && x_chance_in_y(effect_intensity, 8))
-            {
-                temp_change_terrain(*ri, DNGN_SHALLOW_WATER, 
-                                   random_range(100, 200), // Shorter for expansion
-                                   TERRAIN_CHANGE_FLOOD);
-            }
-        }
-        
-        // Add atmospheric steam clouds
-        for (int i = 0; i < effect_intensity; ++i)
-        {
-            coord_def pos = you.pos() + coord_def(random_range(-2, 2), random_range(-2, 2));
-            if (in_bounds(pos) && pos != you.pos() && !cell_is_solid(pos) && !cloud_at(pos))
-                place_cloud(CLOUD_STEAM, pos, cloud_duration, &you);
-        }
-    }
-    else if (core_habitat & HT_LAVA)
-    {
-        // Lava-dwelling creatures: ALWAYS create lava under summoned creatures
-        mprf("The air shimmers with heat as %s from molten depths emerge!",
-             num_summoned == 1 ? "a creature" : "creatures");
-        
-        // First: Ensure all summoned lava creatures have lava under them
-        for (const coord_def& pos : summon_positions)
-        {
-            if (env.grid(pos) == DNGN_FLOOR) // Can convert floor to lava
-            {
-                temp_change_terrain(pos, DNGN_LAVA,
-                                   random_range(200, 400), // Long duration for habitat
-                                   TERRAIN_CHANGE_FLOOD);
-            }
-        }
-        
-        // Create fire clouds for heat atmosphere (never on player position)
-        for (int i = 0; i < effect_intensity; ++i)
-        {
-            coord_def pos = you.pos() + coord_def(random_range(-2, 2), random_range(-2, 2));
-            if (in_bounds(pos) && pos != you.pos() && !cell_is_solid(pos) && !cloud_at(pos))
-                place_cloud(CLOUD_FIRE, pos, cloud_duration, &you);
-        }
-        
-        // Additional visual effect for intense heat
-        flash_view_delay(UA_PLAYER, YELLOW, 150);
-    }
-    
-    // === RESISTANCE-BASED ATMOSPHERIC EFFECTS ===
-    
-    // Check for elemental resistances and create matching atmospheric effects
-    const resists_t resists = get_mons_class_resists(type);
-    
-    if (get_resist(resists, MR_RES_FIRE) > 0)
-    {
-        // Fire-resistant creatures bring warmth
-        if (effect_intensity >= 2 && one_chance_in(3))
-        {
-            mprf("The %s radiate ancient fire!",
-                 num_summoned == 1 ? "creature radiates" : "creatures");
-            
-            for (int i = 0; i < effect_intensity / 2; ++i)
-            {
-                coord_def pos = you.pos() + coord_def(random_range(-2, 2), random_range(-2, 2));
-                if (in_bounds(pos) && pos != you.pos() && !cell_is_solid(pos) && !cloud_at(pos))
-                    place_cloud(CLOUD_FLAME, pos, cloud_duration, &you);
-            }
-        }
-    }
-    
-    if (get_resist(resists, MR_RES_COLD) > 0)
-    {
-        // Cold-resistant creatures bring chill
-        if (effect_intensity >= 2 && one_chance_in(3))
-        {
-            mprf("A chill wind follows the ancient %s!",
-                 num_summoned == 1 ? "creature" : "creatures");
-            
-            for (int i = 0; i < effect_intensity / 2; ++i)
-            {
-                coord_def pos = you.pos() + coord_def(random_range(-2, 2), random_range(-2, 2));
-                if (in_bounds(pos) && pos != you.pos() && !cell_is_solid(pos) && !cloud_at(pos))
-                    place_cloud(CLOUD_COLD, pos, cloud_duration, &you);
-            }
-        }
-    }
-    
-    if (get_resist(resists, MR_RES_POISON) > 0)
-    {
-        // Poison-resistant creatures might bring miasma
-        if (effect_intensity >= 3 && one_chance_in(4))
-        {
-            mpr("The air grows thick with ancient vapours!");
-            
-            for (int i = 0; i < effect_intensity / 3; ++i)
-            {
-                coord_def pos = you.pos() + coord_def(random_range(-1, 1), random_range(-1, 1));
-                if (in_bounds(pos) && pos != you.pos() && !cell_is_solid(pos) && !cloud_at(pos))
-                    place_cloud(CLOUD_FAINT_MIASMA, pos, cloud_duration, &you);
-            }
-        }
-    }
-}
 
-spret cast_ancient_creature_march(int pow, bool fail)
+
+spret cast_ancient_creature_call(int pow, bool fail)
 {
-    const monster_type type = static_cast<monster_type>(you.props["ag_march_monster"].get_int());
+    const monster_type type = static_cast<monster_type>(you.props["ag_call_monster"].get_int());
     
     // Calculate quantity based on HD and invocations skill
     const int base_hd = mons_class_hit_dice(type);
@@ -1293,92 +1138,28 @@ spret cast_ancient_creature_march(int pow, bool fail)
     if (!player_summon_check(type, quantity))
         return spret::abort;
 
-    // Check if this summoning will create environmental effects and warn the player
-    const habitat_type habitat = mons_class_habitat(type);
-    const resists_t resists = get_mons_class_resists(type);
-    
-    const habitat_type core_habitat = mons_class_habitat(type, true);
-    bool will_create_terrain = (core_habitat == HT_WATER) || (core_habitat & HT_LAVA);
-    bool will_create_clouds = (get_resist(resists, MR_RES_FIRE) > 0) 
-                           || (get_resist(resists, MR_RES_COLD) > 0)
-                           || (get_resist(resists, MR_RES_POISON) > 0);
-    
-    if (will_create_terrain || will_create_clouds)
-    {
-        string effects_desc = "This summoning will create environmental effects around you";
-        vector<string> terrain_effects;
-        vector<string> cloud_effects;
-        
-        // Determine specific terrain effects
-        if (core_habitat == HT_WATER)
-            terrain_effects.push_back("shallow water");
-        if (core_habitat & HT_LAVA)
-            terrain_effects.push_back("lava");
-        
-        // Determine specific cloud effects
-        if (get_resist(resists, MR_RES_FIRE) > 0)
-            cloud_effects.push_back("fire/flame clouds");
-        if (get_resist(resists, MR_RES_COLD) > 0)
-            cloud_effects.push_back("cold clouds");
-        if (get_resist(resists, MR_RES_POISON) > 0)
-            cloud_effects.push_back("miasma clouds");
-        if (habitat & HT_DRY_LAND && monster_class_flies(type))
-            cloud_effects.push_back("dust clouds");
-        
-        // Build the description
-        if (!terrain_effects.empty())
-        {
-            effects_desc += " (terrain: ";
-            for (size_t i = 0; i < terrain_effects.size(); ++i)
-            {
-                if (i > 0) effects_desc += ", ";
-                effects_desc += terrain_effects[i];
-            }
-            effects_desc += ")";
-        }
-        
-        if (!cloud_effects.empty())
-        {
-            if (!terrain_effects.empty()) effects_desc += " and";
-            effects_desc += " (clouds: ";
-            for (size_t i = 0; i < cloud_effects.size(); ++i)
-            {
-                if (i > 0) effects_desc += ", ";
-                effects_desc += cloud_effects[i];
-            }
-            effects_desc += ")";
-        }
-        
-        effects_desc += ". These effects will not appear on your current location. Really cast this spell?";
-        
-        if (!yesno(effects_desc.c_str(), false, 'n'))
-            return spret::abort;
-    }
-
     fail_check();
 
-    const int mood_idx = you.props["ag_march_mood"].get_int();
+    const int mood_idx = you.props["ag_call_mood"].get_int();
     ASSERT_RANGE(mood_idx, 0, get_mood_data_size());
     
     const enchant_type ench = mood_data[mood_idx].ench;
 
     int successful_summons = 0;
-    vector<coord_def> summon_positions; // Track where monsters are successfully summoned
     
     for (int i = 0; i < quantity; ++i)
     {
         // Duration scaling like TSO's divine warrior: 3-8 based on invocations skill
         const int duration = min(3 + invocations / 4, 8);
         
-        mgen_data march_beast(type, BEH_FRIENDLY, you.pos(), MHITYOU, MG_AUTOFOE);
-        march_beast.set_summoned(&you, MON_SUMM_AID, summ_dur(duration));
-        march_beast.hd = base_hd + div_rand_round(pow, 20);
-        march_beast.set_range(4); // Allow some spread
+        mgen_data call_beast(type, BEH_FRIENDLY, you.pos(), MHITYOU, MG_AUTOFOE);
+        call_beast.set_summoned(&you, MON_SUMM_AID, summ_dur(duration));
+        call_beast.hd = base_hd + div_rand_round(pow, 20);
+        call_beast.set_range(4); // Allow some spread
 
-        if (monster* mons = create_monster(march_beast))
+        if (monster* mons = create_monster(call_beast))
         {
             mons->add_ench(ench);
-            summon_positions.push_back(mons->pos()); // Record successful summon position
             successful_summons++;
         }
     }
@@ -1386,17 +1167,51 @@ spret cast_ancient_creature_march(int pow, bool fail)
     if (successful_summons > 0)
     {
         if (successful_summons == 1)
-            mpr("A creature from an ancient time marches forth!");
+            mpr("A creature from an ancient time answers the call!");
         else
-            mprf("%d creatures from an ancient time march forth!", successful_summons);
+            mprf("%d creatures from an ancient time answer the call!", successful_summons);
         
-        // Apply dynamic environmental effects based on monster properties
-        _apply_ancient_march_effects(type, successful_summons, invocations, summon_positions);
+        // Ensure summoned creatures have appropriate habitat to survive
+        _ensure_creature_habitat(type);
     }
     else
         canned_msg(MSG_NOTHING_HAPPENS);
 
     return spret::success;
+}
+
+// Minimal habitat creation for creatures that require specific terrain to survive
+static void _ensure_creature_habitat(monster_type type)
+{
+    const habitat_type core_habitat = mons_class_habitat(type, true);
+    
+    // Only create essential habitat - no atmospheric effects
+    if (core_habitat == HT_WATER)
+    {
+        // Aquatic creatures need water to survive
+        for (radius_iterator ri(you.pos(), 2, C_SQUARE, LOS_DEFAULT); ri; ++ri)
+        {
+            if (monster_at(*ri) && monster_at(*ri)->type == type && env.grid(*ri) == DNGN_FLOOR)
+            {
+                temp_change_terrain(*ri, DNGN_SHALLOW_WATER, 
+                                   random_range(100, 200), 
+                                   TERRAIN_CHANGE_FLOOD);
+            }
+        }
+    }
+    else if (core_habitat & HT_LAVA)
+    {
+        // Lava creatures need lava to survive
+        for (radius_iterator ri(you.pos(), 2, C_SQUARE, LOS_DEFAULT); ri; ++ri)
+        {
+            if (monster_at(*ri) && monster_at(*ri)->type == type && env.grid(*ri) == DNGN_FLOOR)
+            {
+                temp_change_terrain(*ri, DNGN_LAVA,
+                                   random_range(100, 200),
+                                   TERRAIN_CHANGE_FLOOD);
+            }
+        }
+    }
 }
 
 static bool _butterfly_knockback(coord_def p)
