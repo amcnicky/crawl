@@ -1774,6 +1774,7 @@ static void _tag_construct_you(writer &th)
         marshallByte(th, you.mutation[j]);
         marshallByte(th, you.innate_mutation[j]);
         marshallByte(th, you.temp_mutation[j]);
+        marshallByte(th, you.stabilized_mutation[j]);
         marshallByte(th, you.sacrifices[j]);
     }
 
@@ -3468,6 +3469,9 @@ static void _tag_read_you(reader &th)
         {
 #endif
         you.temp_mutation[j]    = unmarshallUByte(th);
+        // Stabilized mutations - for now just initialize to 0
+        // TODO: Add proper tag version handling when this feature is complete
+        you.stabilized_mutation[j] = unmarshallUByte(th);
 #if TAG_MAJOR_VERSION == 34
         }
         if (th.getMinorVersion() < TAG_MINOR_RU_SACRIFICES)

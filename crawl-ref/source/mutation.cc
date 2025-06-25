@@ -1145,6 +1145,86 @@ void display_mutations()
     mut_menu.show();
 }
 
+// Menu for selecting mutations to stabilise
+class StabiliseMutationMenu : public Menu
+{
+private:
+    vector<mutation_type> available_mutations;
+
+public:
+    StabiliseMutationMenu() : Menu(MF_SINGLESELECT | MF_ARROWS_SELECT | MF_ALLOW_FORMATTING)
+    {
+        set_highlighter(nullptr);
+        set_title(new MenuEntry("Choose a mutation to stabilise:", MEL_TITLE));
+        menu_action = Menu::ACT_EXECUTE;
+        
+        // Find mutations the player has that aren't already stabilised
+        for (int i = 0; i < NUM_MUTATIONS; ++i)
+        {
+            mutation_type mut = static_cast<mutation_type>(i);
+            if (you.get_mutation_level(mut) > 0 && !you.stabilized_mutation[mut])
+            {
+                available_mutations.push_back(mut);
+            }
+        }
+        
+        if (available_mutations.empty())
+        {
+            add_entry(new MenuEntry("You have no mutations that can be stabilised.", MEL_ITEM, 1, 0));
+        }
+        else
+        {
+            menu_letter hotkey = 'a';
+            for (mutation_type mut : available_mutations)
+            {
+                const string desc = mutation_desc(mut, -1, true, false);
+                MenuEntry* me = new MenuEntry(desc, MEL_ITEM, 1, hotkey);
+                ++hotkey;
+                me->data = (void*)((intptr_t)mut);
+                add_entry(me);
+            }
+        }
+    }
+    
+    mutation_type get_selected_mutation()
+    {
+        vector<MenuEntry*> sel;
+        get_selected(&sel);
+        if (sel.empty())
+            return NUM_MUTATIONS; // Invalid mutation
+        return static_cast<mutation_type>((intptr_t)sel[0]->data);
+    }
+    
+    bool has_mutations() const
+    {
+        return !available_mutations.empty();
+    }
+};
+
+mutation_type choose_mutation_to_stabilise()
+{
+    // Check if the player has any unstabilised mutations
+    bool has_unstabilised = false;
+    for (int i = 0; i < NUM_MUTATIONS; ++i)
+    {
+        mutation_type mut = static_cast<mutation_type>(i);
+        if (you.get_mutation_level(mut) > 0 && !you.stabilized_mutation[mut])
+        {
+            has_unstabilised = true;
+            break;
+        }
+    }
+    
+    if (!has_unstabilised)
+        return NUM_MUTATIONS; // No mutations available
+    
+    // Show the mutation selection menu
+    StabiliseMutationMenu mut_menu;
+    mut_menu.show();
+    
+    return mut_menu.get_selected_mutation();
+}
+
 static int _calc_mutation_amusement_value(mutation_type which_mutation)
 {
     int amusement = 12 * (11 - _get_mutation_def(which_mutation).weight);
@@ -2083,6 +2163,10 @@ bool _delete_single_mutation_level(mutation_type mutat,
                                    const string &reason,
                                    bool transient)
 {
+    // Check if this mutation is stabilised and cannot be removed
+    if (you.stabilized_mutation[mutat] > 0)
+        return false;
+        
     // are there some non-innate mutations to delete?
     if (you.get_base_mutation_level(mutat, false, true, true) == 0)
         return false;
@@ -2618,6 +2702,10 @@ string mutation_desc(mutation_type mut, int level, bool colour,
 
     if (temporary)
         result = "[" + result + "]";
+
+    // Add stabilisation indicator
+    if (!ignore_player && you.stabilized_mutation[mut] > 0)
+        result = result + " *stable*";
 
     if (colour)
     {

@@ -350,6 +350,7 @@ enum ability_type
 #endif
 
     // Ancient God
+    ABIL_ANCIENT_STABILISE_MUTATION,
     ABIL_ANCIENT_CREATURE_CALL,
 
 #if TAG_MAJOR_VERSION == 34

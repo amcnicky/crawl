@@ -9,6 +9,7 @@
 #include "mon-tentacle.h"
 #include "mon-util.h"
 #include "monster.h"
+#include "mutation.h"
 
 #define AG_NAME_KEY "ag_name_idx"
 #define AG_TITLE_KEY "ag_title_idx"
@@ -301,7 +302,7 @@ static vector<ancient_power_spec> _get_ancient_power_defs()
 {
     vector<ancient_power_spec> powers;
     powers.emplace_back(ancient_power_spec{ PASSIVE_DEGENERATIVE_CASTING, ANCIENT_POWER_PASSIVE, "Degenerative Casting", 0, ABIL_NON_ABILITY });
-    powers.emplace_back(ancient_power_spec{ SMALL_POWER_PLACEHOLDER_1, ANCIENT_POWER_SMALL, "power to be implemented", 1, ABIL_NON_ABILITY });
+    powers.emplace_back(ancient_power_spec{ SMALL_POWER_STABILISE_MUTATION, ANCIENT_POWER_SMALL, "Stabilise Mutation", 2, ABIL_ANCIENT_STABILISE_MUTATION });
     powers.emplace_back(ancient_power_spec{ SMALL_POWER_PLACEHOLDER_2, ANCIENT_POWER_SMALL, "power to be implemented", 1, ABIL_NON_ABILITY });
     powers.emplace_back(ancient_power_spec{ LARGE_POWER_CREATURE_CALL, ANCIENT_POWER_LARGE, "power to be implemented", 5, ABIL_ANCIENT_CREATURE_CALL });
     return powers;
@@ -510,4 +511,30 @@ string get_ancient_creature_call_detailed_cost_description()
     const int percentage = (avg_cost * 100 + max_piety / 2) / max_piety;
     
     return make_stringf("~%d (about %d%% of your maximum possible piety)", avg_cost, percentage);
+}
+
+spret cast_ancient_stabilise_mutation()
+{
+    mutation_type selected = choose_mutation_to_stabilise();
+    if (selected == NUM_MUTATIONS)
+    {
+        mpr("You have no mutations that can be stabilised.");
+        return spret::abort;
+    }
+    
+    // Confirm the selection
+    const string mut_name = mutation_name(selected);
+    if (!yesno(make_stringf("Stabilise your %s mutation? This cannot be undone.", 
+                           mut_name.c_str()), true, 'n'))
+    {
+        canned_msg(MSG_OK);
+        return spret::abort;
+    }
+    
+    // Stabilise the mutation
+    you.stabilized_mutation[selected] = 1;
+    
+    mprf("Your %s mutation becomes stable and permanent!", mut_name.c_str());
+    
+    return spret::success;
 }

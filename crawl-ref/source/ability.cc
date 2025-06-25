@@ -754,6 +754,8 @@ static vector<ability_def> &_get_ability_list()
             0, 0, 0, -1, {fail_basis::invo}, abflag::none },
 
         // Ancient God
+        { ABIL_ANCIENT_STABILISE_MUTATION, "Stabilise Mutation",
+            2, 0, 2, -1, {fail_basis::invo}, abflag::none },
         { ABIL_ANCIENT_CREATURE_CALL, "Ancient Creature Call",
             12, 0, 5, -1, {fail_basis::invo, 80, 4, 25}, abflag::none },
 
@@ -4057,6 +4059,9 @@ static spret _do_ability(const ability_def& abil, bool fail, dist *target,
         you.set_duration(DUR_RISING_FLAME, 2 + random2(3));
         you.one_time_ability_used.set(GOD_IGNIS);
         return spret::success;
+
+    case ABIL_ANCIENT_STABILISE_MUTATION:
+        return cast_ancient_stabilise_mutation();
 
     case ABIL_ANCIENT_CREATURE_CALL:
         return cast_ancient_creature_call(you.skill(SK_INVOCATIONS, 4), false);

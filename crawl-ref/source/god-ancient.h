@@ -26,7 +26,7 @@ enum ancient_power_type
     PASSIVE_DEGENERATIVE_CASTING,
 
     // Small Powers
-    SMALL_POWER_PLACEHOLDER_1,
+    SMALL_POWER_STABILISE_MUTATION,
     SMALL_POWER_PLACEHOLDER_2,
 
     // Large Powers
@@ -73,3 +73,6 @@ bool has_degenerative_casting();
 int get_ancient_creature_call_piety_cost();
 string get_ancient_creature_call_cost_description();
 string get_ancient_creature_call_detailed_cost_description();
+
+// Ancient god abilities
+spret cast_ancient_stabilise_mutation();

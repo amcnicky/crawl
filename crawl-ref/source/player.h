@@ -288,6 +288,7 @@ public:
     FixedVector<uint8_t, NUM_MUTATIONS> mutation;
     FixedVector<uint8_t, NUM_MUTATIONS> innate_mutation;
     FixedVector<uint8_t, NUM_MUTATIONS> temp_mutation;
+    FixedVector<uint8_t, NUM_MUTATIONS> stabilized_mutation;
     FixedVector<uint8_t, NUM_MUTATIONS> sacrifices;
 
     FixedVector<uint8_t, NUM_ABILITIES> sacrifice_piety;
