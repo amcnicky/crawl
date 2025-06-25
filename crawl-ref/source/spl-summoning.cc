@@ -1114,7 +1114,39 @@ spret cast_call_imp(int pow, bool fail)
     return spret::success;
 }
 
-
+// Minimal habitat creation for creatures that require specific terrain to survive
+static void _ensure_creature_habitat(monster_type type)
+{
+    const habitat_type core_habitat = mons_class_habitat(type, true);
+    
+    // Only create essential habitat - no atmospheric effects
+    if (core_habitat == HT_WATER)
+    {
+        // Aquatic creatures need water to survive
+        for (radius_iterator ri(you.pos(), 2, C_SQUARE, LOS_DEFAULT); ri; ++ri)
+        {
+            if (monster_at(*ri) && monster_at(*ri)->type == type && env.grid(*ri) == DNGN_FLOOR)
+            {
+                temp_change_terrain(*ri, DNGN_SHALLOW_WATER, 
+                                   random_range(100, 200), 
+                                   TERRAIN_CHANGE_FLOOD);
+            }
+        }
+    }
+    else if (core_habitat & HT_LAVA)
+    {
+        // Lava creatures need lava to survive
+        for (radius_iterator ri(you.pos(), 2, C_SQUARE, LOS_DEFAULT); ri; ++ri)
+        {
+            if (monster_at(*ri) && monster_at(*ri)->type == type && env.grid(*ri) == DNGN_FLOOR)
+            {
+                temp_change_terrain(*ri, DNGN_LAVA,
+                                   random_range(100, 200),
+                                   TERRAIN_CHANGE_FLOOD);
+            }
+        }
+    }
+}
 
 spret cast_ancient_creature_call(int pow, bool fail)
 {
@@ -1178,40 +1210,6 @@ spret cast_ancient_creature_call(int pow, bool fail)
         canned_msg(MSG_NOTHING_HAPPENS);
 
     return spret::success;
-}
-
-// Minimal habitat creation for creatures that require specific terrain to survive
-static void _ensure_creature_habitat(monster_type type)
-{
-    const habitat_type core_habitat = mons_class_habitat(type, true);
-    
-    // Only create essential habitat - no atmospheric effects
-    if (core_habitat == HT_WATER)
-    {
-        // Aquatic creatures need water to survive
-        for (radius_iterator ri(you.pos(), 2, C_SQUARE, LOS_DEFAULT); ri; ++ri)
-        {
-            if (monster_at(*ri) && monster_at(*ri)->type == type && env.grid(*ri) == DNGN_FLOOR)
-            {
-                temp_change_terrain(*ri, DNGN_SHALLOW_WATER, 
-                                   random_range(100, 200), 
-                                   TERRAIN_CHANGE_FLOOD);
-            }
-        }
-    }
-    else if (core_habitat & HT_LAVA)
-    {
-        // Lava creatures need lava to survive
-        for (radius_iterator ri(you.pos(), 2, C_SQUARE, LOS_DEFAULT); ri; ++ri)
-        {
-            if (monster_at(*ri) && monster_at(*ri)->type == type && env.grid(*ri) == DNGN_FLOOR)
-            {
-                temp_change_terrain(*ri, DNGN_LAVA,
-                                   random_range(100, 200),
-                                   TERRAIN_CHANGE_FLOOD);
-            }
-        }
-    }
 }
 
 static bool _butterfly_knockback(coord_def p)

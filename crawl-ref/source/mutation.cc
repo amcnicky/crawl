@@ -1159,10 +1159,13 @@ public:
         menu_action = Menu::ACT_EXECUTE;
         
         // Find mutations the player has that aren't already stabilised
+        // Exclude innate mutations since they can't be lost anyway
         for (int i = 0; i < NUM_MUTATIONS; ++i)
         {
             mutation_type mut = static_cast<mutation_type>(i);
-            if (you.get_mutation_level(mut) > 0 && !you.stabilized_mutation[mut])
+            if (you.get_mutation_level(mut) > 0 
+                && you.get_base_mutation_level(mut, false, false, true) > 0  // Has non-innate levels
+                && !you.stabilized_mutation[mut])
             {
                 available_mutations.push_back(mut);
             }
@@ -1188,11 +1191,11 @@ public:
     
     mutation_type get_selected_mutation()
     {
-        vector<MenuEntry*> sel;
-        get_selected(&sel);
-        if (sel.empty())
+        vector<MenuEntry*> selected;
+        get_selected(&selected);
+        if (selected.empty())
             return NUM_MUTATIONS; // Invalid mutation
-        return static_cast<mutation_type>((intptr_t)sel[0]->data);
+        return static_cast<mutation_type>((intptr_t)selected[0]->data);
     }
     
     bool has_mutations() const
@@ -1204,11 +1207,14 @@ public:
 mutation_type choose_mutation_to_stabilise()
 {
     // Check if the player has any unstabilised mutations
+    // Exclude innate mutations since they can't be lost anyway
     bool has_unstabilised = false;
     for (int i = 0; i < NUM_MUTATIONS; ++i)
     {
         mutation_type mut = static_cast<mutation_type>(i);
-        if (you.get_mutation_level(mut) > 0 && !you.stabilized_mutation[mut])
+        if (you.get_mutation_level(mut) > 0 
+            && you.get_base_mutation_level(mut, false, false, true) > 0  // Has non-innate levels
+            && !you.stabilized_mutation[mut])
         {
             has_unstabilised = true;
             break;
@@ -2479,6 +2485,12 @@ string get_mutation_desc(mutation_type mut)
         mut_tags = "Category: " + mut_tags;
         const int spacing = 80 - formatted_string::parse_string(mut_tags).width();
         desc << "\n" << string(spacing, ' ') << mut_tags;
+    }
+
+    // Add stabilisation information if the mutation is stabilised
+    if (you.stabilized_mutation[mut] > 0)
+    {
+        desc << "\n\nThis mutation has been stabilised, preventing it from being lost or removed, though it may still be suppressed.";
     }
 
     // TODO: consider adding other fun facts here

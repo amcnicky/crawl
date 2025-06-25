@@ -4313,7 +4313,7 @@ tileidx_t tileidx_ability(const ability_type ability)
         return TILEG_ABILITY_IGNIS_RISING_FLAME;
     // Ancient God
     case ABIL_ANCIENT_STABILISE_MUTATION:
-        return TILEG_ABILITY_ANCIENT_STABILISE_MUTATION;
+        return TILEG_ERROR; // TODO: Add proper tile
     case ABIL_ANCIENT_CREATURE_CALL:
         return TILEG_ABILITY_ANCIENT_CREATURE_CALL;
 

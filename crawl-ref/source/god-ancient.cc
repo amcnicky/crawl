@@ -10,6 +10,8 @@
 #include "mon-util.h"
 #include "monster.h"
 #include "mutation.h"
+#include "prompt.h"
+#include "message.h"
 
 #define AG_NAME_KEY "ag_name_idx"
 #define AG_TITLE_KEY "ag_title_idx"
@@ -524,8 +526,8 @@ spret cast_ancient_stabilise_mutation()
     
     // Confirm the selection
     const string mut_name = mutation_name(selected);
-    if (!yesno(make_stringf("Stabilise your %s mutation? This cannot be undone.", 
-                           mut_name.c_str()), true, 'n'))
+        if (!yesno(make_stringf("Stabilise your %s mutation? This cannot be undone.",
+                           mut_name.c_str()).c_str(), true, 'n'))
     {
         canned_msg(MSG_OK);
         return spret::abort;
