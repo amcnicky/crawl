@@ -1,0 +1,27 @@
+# TODO List for Ancient God PR
+
+## High Priority Issues
+- [ ] **No ability description for call monster** - The ability needs a proper description text that explains what it does
+
+## Enhancement Ideas
+- [ ] **Thematic temp terrain change** - When summoning certain monster sets, temporarily change terrain to match theme (e.g., water for Shoals set, lava for Gehenna set)
+- [ ] **Add puffs of purple smoke** - Visual effects when summoning creatures (maybe different colors for different moods?)
+
+## Code Quality
+- [x] Remove unused individual monster system 
+- [x] Fix monster set assignment bug
+- [x] Add mood enchantments to summoned creatures
+- [x] Fix piety cost calculation to use monster sets
+- [x] Clean up redundant code and unused functions
+- [x] Use constants instead of hardcoded strings
+
+## Testing Notes
+- Ancient god now properly assigns monster sets instead of individual monsters
+- Summoning should now work correctly with proper thematic monsters
+- Moods should be applied as enchantments to summoned creatures
+- Piety costs should scale with mood and average HD of monster set
+
+## Future Considerations
+- Consider adding more monster sets for variety
+- Maybe add special effects for rare/powerful summons
+- Consider making some moods exclusive to certain monster types 

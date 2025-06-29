@@ -1114,99 +1114,102 @@ spret cast_call_imp(int pow, bool fail)
     return spret::success;
 }
 
-// Minimal habitat creation for creatures that require specific terrain to survive
-static void _ensure_creature_habitat(monster_type type)
-{
-    const habitat_type core_habitat = mons_class_habitat(type, true);
-    
-    // Only create essential habitat - no atmospheric effects
-    if (core_habitat == HT_WATER)
-    {
-        // Aquatic creatures need water to survive
-        for (radius_iterator ri(you.pos(), 2, C_SQUARE, LOS_DEFAULT); ri; ++ri)
-        {
-            if (monster_at(*ri) && monster_at(*ri)->type == type && env.grid(*ri) == DNGN_FLOOR)
-            {
-                temp_change_terrain(*ri, DNGN_SHALLOW_WATER, 
-                                   random_range(100, 200), 
-                                   TERRAIN_CHANGE_FLOOD);
-            }
-        }
-    }
-    else if (core_habitat & HT_LAVA)
-    {
-        // Lava creatures need lava to survive
-        for (radius_iterator ri(you.pos(), 2, C_SQUARE, LOS_DEFAULT); ri; ++ri)
-        {
-            if (monster_at(*ri) && monster_at(*ri)->type == type && env.grid(*ri) == DNGN_FLOOR)
-            {
-                temp_change_terrain(*ri, DNGN_LAVA,
-                                   random_range(100, 200),
-                                   TERRAIN_CHANGE_FLOOD);
-            }
-        }
-    }
-}
+
 
 spret cast_ancient_creature_call(int pow, bool fail)
 {
-    const monster_type type = static_cast<monster_type>(you.props["ag_call_monster"].get_int());
-    
-    // Calculate quantity based on HD and invocations skill
-    const int base_hd = mons_class_hit_dice(type);
-    const int invocations = you.skill(SK_INVOCATIONS);
-    
-    // Quantity formula: base 3 + invocations/2, then divided by sqrt(HD)
-    // At max invocations (27), weak monsters (HD 1) get ~16, strong monsters (HD 25+) get ~3
-    int base_quantity = 3 + invocations / 2;
-    base_quantity = base_quantity * 10 / max(10, static_cast<int>(10 * sqrt(base_hd)));
-    base_quantity = max(1, min(27, base_quantity)); // Clamp between 1 and 27
-    
-    // Add some variability: ±25% of base quantity
-    const int variation = max(1, base_quantity / 4);
-    int quantity = base_quantity + random2(2 * variation + 1) - variation;
-    quantity = max(1, quantity);
-    
-    if (!player_summon_check(type, quantity))
-        return spret::abort;
-
-    fail_check();
-
-    const int mood_idx = you.props["ag_call_mood"].get_int();
-    ASSERT_RANGE(mood_idx, 0, get_mood_data_size());
-    
-    const enchant_type ench = mood_data[mood_idx].ench;
-
-    int successful_summons = 0;
-    
-    for (int i = 0; i < quantity; ++i)
+    // Invocations skill is passed in as pow, scaled by 4 (max 27*4 = 108)
+    if (fail)
     {
-        // Duration scaling like TSO's divine warrior: 3-8 based on invocations skill
-        const int duration = min(3 + invocations / 4, 8);
-        
-        mgen_data call_beast(type, BEH_FRIENDLY, you.pos(), MHITYOU, MG_AUTOFOE);
-        call_beast.set_summoned(&you, MON_SUMM_AID, summ_dur(duration));
-        call_beast.hd = base_hd + div_rand_round(pow, 20);
-        call_beast.set_range(4); // Allow some spread
+        canned_msg(MSG_NOTHING_HAPPENS);
+        return spret::success;
+    }
 
-        if (monster* mons = create_monster(call_beast))
+    // Combine piety (0-200) and invocations (0-108) into a single power level.
+    // Weight them so they contribute roughly equally.
+    // Max power_level = (200 * 108) + (108 * 200) = 43200.
+    const int power_level = you.piety * 108 + pow * 200;
+    const int mid_power = 21600; // Half of max power
+    const int max_power = 43200;
+
+    // Number of summons scales linearly from 1 to 18.
+    const int num_summons = 1 + (17 * power_level) / max_power;
+
+    // Get the ancient set from player properties
+    const auto it = you.props.find(AG_CALL_MONSTER_SET_KEY);
+    const ancient_set_type set = (it != you.props.end()) 
+        ? static_cast<ancient_set_type>(it->second.get_int())
+        : ANCIENT_SET_LAIR;
+    if (set == NUM_ANCIENT_SETS)
+    {
+        canned_msg(MSG_NOTHING_HAPPENS);
+        return spret::success;
+    }
+
+    const auto& monster_candidates = ancient_summon_sets[set].monsters;
+    if (monster_candidates.empty())
+    {
+        canned_msg(MSG_NOTHING_HAPPENS);
+        return spret::success;
+    }
+
+    int summons_made = 0;
+    for (int i = 0; i < num_summons; ++i)
+    {
+        vector<pair<monster_type, int>> weighted_monsters;
+        for (const auto& mon_def : monster_candidates)
         {
-            mons->add_ench(ench);
-            successful_summons++;
+            const int hd = get_monster_data(mon_def.type)->HD;
+            if (hd <= 0)
+                continue;
+
+            // Weighting formula using integer math.
+            // At mid_power, slope is 0, so all weights are equal.
+            // Below mid_power, slope is negative, favoring low HD.
+            // Above mid_power, slope is positive, favoring high HD.
+            const int base_weight = mid_power * 30;
+            const int slope = power_level - mid_power;
+            const int weight = base_weight + slope * hd;
+
+            if (weight > 0)
+                weighted_monsters.emplace_back(mon_def.type, weight);
+        }
+
+        if (weighted_monsters.empty())
+            continue;
+
+        monster_type* chosen_monster = random_choose_weighted(weighted_monsters);
+        if (!chosen_monster)
+            continue;
+
+        mgen_data mg = _pal_data(*chosen_monster, summ_dur(4), SPELL_NO_SPELL);
+        if (monster* mons = create_monster(mg))
+        {
+            // Apply the mood enchantment to the summoned creature
+            if (you.props.exists(AG_CALL_MOOD_KEY))
+            {
+                const int mood_idx = you.props[AG_CALL_MOOD_KEY].get_int();
+                if (mood_idx >= 0 && mood_idx < get_mood_data_size())
+                {
+                    const enchant_type ench = mood_data[mood_idx].ench;
+                    if (ench != ENCH_NONE)
+                    {
+                        mons->add_ench(mon_enchant(ench, 0, &you, INFINITE_DURATION));
+                    }
+                }
+            }
+            
+            summons_made++;
+            if (i == 0 && you.can_see(*mons))
+                mprf("%s appears.", mons->name(DESC_A).c_str());
+            else if (i == 0)
+                mpr("You sense a new presence.");
         }
     }
 
-    if (successful_summons > 0)
-    {
-        if (successful_summons == 1)
-            mpr("A creature from an ancient time answers the call!");
-        else
-            mprf("%d creatures from an ancient time answer the call!", successful_summons);
-        
-        // Ensure summoned creatures have appropriate habitat to survive
-        _ensure_creature_habitat(type);
-    }
-    else
+    if (summons_made > 1)
+        mprf("More creatures arrive in response to your call!");
+    else if (summons_made == 0)
         canned_msg(MSG_NOTHING_HAPPENS);
 
     return spret::success;

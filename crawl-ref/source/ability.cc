@@ -1643,15 +1643,15 @@ string get_ability_desc(const ability_type ability, bool need_title)
 
         case ABIL_ANCIENT_CREATURE_CALL:
         {
-            // Replace placeholders with actual creature and mood names
-            if (you.props.exists("ag_call_monster") && you.props.exists("ag_call_mood"))
+            // Replace placeholders with actual creature set and mood names
+            if (you.props.exists(AG_CALL_MONSTER_SET_KEY) && you.props.exists(AG_CALL_MOOD_KEY))
             {
-                const monster_type type = static_cast<monster_type>(you.props["ag_call_monster"].get_int());
-                const int mood_idx = you.props["ag_call_mood"].get_int();
+                const ancient_set_type set = static_cast<ancient_set_type>(you.props[AG_CALL_MONSTER_SET_KEY].get_int());
+                const int mood_idx = you.props[AG_CALL_MOOD_KEY].get_int();
                 
-                if (mood_idx >= 0 && mood_idx < get_mood_data_size())
+                if (set >= 0 && set < NUM_ANCIENT_SETS && mood_idx >= 0 && mood_idx < get_mood_data_size())
                 {
-                    const string creature_name = pluralise_monster(mons_type_name(type, DESC_PLAIN));
+                    const string creature_name = get_ancient_set_name(set);
                     const string mood_name = mood_data[mood_idx].name;
                     
                     lookup = replace_all(lookup, "CREATURENAME", creature_name);
