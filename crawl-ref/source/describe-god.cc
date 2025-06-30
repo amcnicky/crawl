@@ -897,13 +897,7 @@ static formatted_string _describe_god_powers(god_type which_god)
         break;
 
     case GOD_ANCIENT:
-        have_any = true;
-        if (has_degenerative_casting())
-            desc.textcolour(god_colour(which_god));
-        else
-            desc.textcolour(DARKGREY);
-        desc.cprintf("%s allows you to cast spells beyond your MP by spending piety and applying drain.\n",
-                     get_ancient_god_name().c_str());
+        // Ancient god powers are handled by the standard god_power system below
         break;
 
     default:
