@@ -1,12 +1,33 @@
 # TODO List for Ancient God PR
 
 ## High Priority Issues
-- [x] **No ability description for call monster** - ✅ Added proper descriptions for both Ancient Creature Call and Stabilise Mutation abilities
+- [x] **No ability description for call monster** - ✅ Added proper descriptions for Ancient Creature Call ability
 - [x] **Fix ability name consistency** - ✅ Changed "Ancient Creature March" to "Ancient Creature Call" in descriptions
-- [x] **Missing Stabilise Mutation description** - ✅ Added complete ability description to ability.txt
 - [x] **GODNAME placeholder not replaced** - ✅ Implemented dynamic GODNAME replacement in ability descriptions
 - [x] **UI/Tile issues** - ✅ Fixed all tile assignments, moved tiles to proper directories, added transparent backgrounds
 - [x] **Horrifying Visage Implementation** - ✅ Added complete horrifying visage small power with fear mechanics, fixed duration bug and UI issues
+
+## Wizard Mode Integration - ✅ COMPLETED
+- [x] **Extended wizard join religion command** - ✅ Added ancient god power customization to existing `&_` wizard command
+- [x] **Ancient god aliases** - ✅ Can use "ancient" or "ancient god" in wizard mode regardless of runtime god name
+- [x] **Power selection interface** - ✅ Interactive wizard interface to choose 1 passive + small powers + 1 large power
+- [x] **Re-customization support** - ✅ Can modify powers when already worshipping ancient god via wizard mode
+- [x] **Code quality** - ✅ Uses actual power definitions from god-ancient.cc instead of hardcoded duplicates
+- [x] **UI improvements** - ✅ Fixed display issues where not all power options were visible, added proper formatting
+- [x] **Dynamic small power selection** - ✅ Wizard mode adapts to available small powers (currently 1)
+
+## Ability Removed
+- [x] **Stabilise Mutation Removal** - ✅ Completely removed stabilise mutation ability as it lacks interesting decision-making
+  - ✅ Removed from god-ancient.h enum and function declarations
+  - ✅ Removed from god-ancient.cc power definitions and implementation
+  - ✅ Removed from ability-type.h enum
+  - ✅ Removed from ability.cc (name, check, invocation)
+  - ✅ Removed from tilepick.cc tile mapping
+  - ✅ Removed from dc-invocations.txt tile definition
+  - ✅ Removed from ability.txt description
+  - ✅ Removed from mutation.cc (StabiliseMutationMenu, helper functions)
+  - ✅ Removed from mutation.h function declarations
+  - ✅ Updated wizard mode to handle only 1 small power
 
 ## Enhancement Ideas
 - [ ] **Thematic temp terrain change** - When summoning certain monster sets, temporarily change terrain to match theme (e.g., water for Shoals set, lava for Gehenna set)
@@ -24,15 +45,14 @@
 ## UI/Descriptions Fixed Today
 - [x] **Dynamic placeholder replacement** - GODNAME, CREATURENAME, MOODNAME all work properly
 - [x] **Proper tile organization** - Moved ancient_creature_call from abilities/ to invocations/ directory
-- [x] **Added Stabilise Mutation tile** - Properly sized (32x32) with transparent background
 - [x] **Fixed tile references** - Updated tilepick.cc with correct tile enums
-- [x] **Added ability checks** - Stabilise Mutation now checks if player has stabilisable mutations
+- [x] **Duplicate descriptions** - ✅ Fixed degenerative casting appearing twice in religion menu with different formats
 
 ## Critical Bug Fixes
-- [x] **Stabilise Mutation UI spam** - Fixed interface triggering on every player action instead of only when ability used
 - [x] **Ancient Creature Call crash** - Fixed ASSERT(!fail) crash when ability fails due to low invocations skill
 - [x] **Poor god power descriptions in religion menu** - Fixed basic descriptions, added proper "you can now" messages
 - [x] **Missing piety gain messages** - Ancient god abilities now show proper notifications when unlocked
+- [x] **Degenerative casting duplicate display** - ✅ Removed hardcoded description in describe-god.cc that conflicted with power system
 
 ## Testing Notes
 - Ancient god now properly assigns monster sets instead of individual monsters
@@ -41,9 +61,21 @@
 - Piety costs should scale with mood and average HD of monster set
 - ✅ All ability descriptions now display correctly with dynamic god names
 - ✅ Tiles display properly in UI with transparent backgrounds
+- ✅ **Wizard mode testing** - Can easily test different power combinations using `&_` command
+
+## Development Workflow - ✅ STREAMLINED
+- [x] **Power testing** - ✅ Use `&_` → "ancient" → customize powers for rapid iteration
+- [x] **No more save file editing** - ✅ All testing can be done through wizard mode interface
+- [x] **Quick power swapping** - ✅ Can change power combinations without leaving religion
+
+## Current Power Set
+- **Passives (4):** Degenerative Casting, Infernal Absorption, Celestial Martyrdom, Runic Transformation
+- **Small Powers (1):** Horrifying Visage
+- **Large Powers (1):** Ancient Creature Call
 
 ## Future Considerations
 - Consider adding more monster sets for variety
 - Maybe add special effects for rare/powerful summons
 - Consider making some moods exclusive to certain monster types
-- [ ] **Fix ancient god icons** - Address transparency and bordering issues with ability tiles (later in implementation cycle) 
+- [ ] **Fix ancient god icons** - Address transparency and bordering issues with ability tiles (later in implementation cycle)
+- [ ] **Add more small powers** - Consider implementing additional small power options for variety and choice 

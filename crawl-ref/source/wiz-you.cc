@@ -1006,8 +1006,8 @@ static void _wizard_customize_ancient_god()
     }
     chosen_powers.push_back(passive);
     
-    // Select 2 small powers
-    for (int i = 0; i < 2; ++i)
+    // Select small powers (select 2 but code works even if only 1 available)
+    for (int i = 0; i < min(2, (int)smalls.size()); ++i)
     {
         auto small = select_power(smalls, make_stringf("small #%d", i + 1));
         if (small == static_cast<ancient_power_type>(-1))

@@ -35,7 +35,6 @@ enum ancient_power_type
     PASSIVE_RUNIC_TRANSFORMATION,
 
     // Small Powers
-    SMALL_POWER_STABILISE_MUTATION,
     SMALL_POWER_HORRIFYING_VISAGE,
 
     // Large Powers
@@ -156,7 +155,6 @@ string get_ancient_creature_call_cost_description();
 string get_ancient_creature_call_detailed_cost_description();
 
 // Ancient god abilities
-spret cast_ancient_stabilise_mutation();
 spret cast_ancient_horrifying_visage(int pow, bool fail);
 void do_horrifying_visage_turn();
 

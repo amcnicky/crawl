@@ -54,8 +54,7 @@ void display_mutations();
 string describe_mutations(bool center_title);
 string terse_mutation_list();
 
-bool has_stabilisable_mutations();
-mutation_type choose_mutation_to_stabilise();
+
 string get_mutation_desc(mutation_type mut);
 string get_mutation_tags(mutation_type mut);
 

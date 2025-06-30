@@ -570,7 +570,6 @@ static vector<ancient_power_spec> _get_ancient_power_defs()
     powers.emplace_back(ancient_power_spec{ PASSIVE_INFERNAL_ABSORPTION, ANCIENT_POWER_PASSIVE, "absorb torment as chaotic energy and regenerate from damnation", 3, ABIL_NON_ABILITY });
     powers.emplace_back(ancient_power_spec{ PASSIVE_CELESTIAL_MARTYRDOM, ANCIENT_POWER_PASSIVE, "escape death as your god intervenes at great cost", 4, ABIL_NON_ABILITY });
     powers.emplace_back(ancient_power_spec{ PASSIVE_RUNIC_TRANSFORMATION, ANCIENT_POWER_PASSIVE, "gain positive mutations when obtaining runes of power", 1, ABIL_NON_ABILITY });
-    powers.emplace_back(ancient_power_spec{ SMALL_POWER_STABILISE_MUTATION, ANCIENT_POWER_SMALL, "permanently stabilise a chosen mutation", 2, ABIL_ANCIENT_STABILISE_MUTATION });
     powers.emplace_back(ancient_power_spec{ SMALL_POWER_HORRIFYING_VISAGE, ANCIENT_POWER_SMALL, "manifest a horrifying visage that terrifies nearby foes", 1, ABIL_ANCIENT_HORRIFYING_VISAGE });
     powers.emplace_back(ancient_power_spec{ LARGE_POWER_CREATURE_CALL, ANCIENT_POWER_LARGE, "call upon ancient memories to summon creatures", 5, ABIL_ANCIENT_CREATURE_CALL });
     return powers;
@@ -897,31 +896,6 @@ string get_ancient_creature_call_detailed_cost_description()
     return make_stringf("~%d (about %d%% of your maximum possible piety)", avg_cost, percentage);
 }
 
-spret cast_ancient_stabilise_mutation()
-{
-    mutation_type selected = choose_mutation_to_stabilise();
-    if (selected == NUM_MUTATIONS)
-    {
-        mpr("You have no mutations that can be stabilised.");
-        return spret::abort;
-    }
-    
-    // Confirm the selection
-    const string mut_name = mutation_name(selected);
-        if (!yesno(make_stringf("Stabilise your %s mutation? This cannot be undone.",
-                           mut_name.c_str()).c_str(), true, 'n'))
-    {
-        canned_msg(MSG_OK);
-        return spret::abort;
-    }
-    
-    // Stabilise the mutation
-    you.stabilized_mutation[selected] = 1;
-    
-    mprf("Your %s mutation becomes stable and permanent!", mut_name.c_str());
-    
-    return spret::success;
-}
 
 // Calculate horrifying visage power based on piety and invocations
 static int _get_horrifying_visage_power()
