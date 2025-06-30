@@ -1109,3 +1109,8 @@ const char* get_ancient_set_description(ancient_set_type set)
     return "Unknown creature type.";
 }
 
+vector<ancient_power_spec> get_ancient_power_definitions()
+{
+    return _get_ancient_power_defs();
+}
+

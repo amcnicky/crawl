@@ -26,6 +26,7 @@
 #include "player-stats.h"
 #include "prompt.h"
 #include "religion.h"
+#include "god-ancient.h"
 #include "skills.h"
 #include "species.h"
 #include "spl-book.h"
@@ -950,6 +951,95 @@ void wizard_transform()
         mpr("Transformation failed.");
 }
 
+static void _wizard_customize_ancient_god()
+{
+    // Helper function to display power options and get choice
+    auto select_power = [](const vector<ancient_power_spec>& options, const string& category_name) -> ancient_power_type {
+        if (options.empty())
+            return static_cast<ancient_power_type>(-1);
+            
+        mpr(make_stringf("Choose %s power:", category_name.c_str()));
+        for (size_t i = 0; i < options.size(); ++i)
+        {
+            mpr(make_stringf("  %c) %s", 'a' + (int)i, options[i].description));
+        }
+        more(); // Ensure all options are visible before prompting
+        
+        int choice = getchm() - 'a';
+        if (choice >= 0 && choice < static_cast<int>(options.size()))
+            return options[choice].type;
+        
+        return static_cast<ancient_power_type>(-1);
+    };
+    
+    // Get all available power definitions from the actual source
+    vector<ancient_power_spec> all_powers = get_ancient_power_definitions();
+    vector<ancient_power_spec> passives, smalls, larges;
+    
+    // Sort powers by category
+    for (const auto& power : all_powers)
+    {
+        switch (power.category)
+        {
+        case ANCIENT_POWER_PASSIVE:
+            passives.push_back(power);
+            break;
+        case ANCIENT_POWER_SMALL:
+            smalls.push_back(power);
+            break;
+        case ANCIENT_POWER_LARGE:
+            larges.push_back(power);
+            break;
+        default:
+            break;
+        }
+    }
+    
+    vector<ancient_power_type> chosen_powers;
+    
+    // Select 1 passive
+    auto passive = select_power(passives, "passive");
+    if (passive == static_cast<ancient_power_type>(-1))
+    {
+        mpr("Ancient god customization cancelled.");
+        return;
+    }
+    chosen_powers.push_back(passive);
+    
+    // Select 2 small powers
+    for (int i = 0; i < 2; ++i)
+    {
+        auto small = select_power(smalls, make_stringf("small #%d", i + 1));
+        if (small == static_cast<ancient_power_type>(-1))
+        {
+            mpr("Ancient god customization cancelled.");
+            return;
+        }
+        chosen_powers.push_back(small);
+        
+        // Remove chosen power from options
+        smalls.erase(remove_if(smalls.begin(), smalls.end(),
+                              [small](const ancient_power_spec& spec) { return spec.type == small; }),
+                    smalls.end());
+    }
+    
+    // Select 1 large power
+    auto large = select_power(larges, "large");
+    if (large == static_cast<ancient_power_type>(-1))
+    {
+        mpr("Ancient god customization cancelled.");
+        return;
+    }
+    chosen_powers.push_back(large);
+    
+    // Apply the chosen powers
+    you.ancient_powers.clear();
+    for (auto power : chosen_powers)
+        you.ancient_powers.push_back(power);
+    
+    mpr("Ancient god powers customized!");
+}
+
 void wizard_join_religion()
 {
     if (you.has_mutation(MUT_FORLORN))
@@ -968,11 +1058,25 @@ void wizard_join_religion()
             excommunication();
     }
     else if (you_worship(god))
-        mpr("You already worship that god!");
+    {
+        // Special case: allow re-customizing ancient god powers
+        if (god == GOD_ANCIENT && yesno("You already worship this ancient god. Customize powers?", true, 'y'))
+            _wizard_customize_ancient_god();
+        else
+            mpr("You already worship that god!");
+    }
     else
     {
         if (god == GOD_GOZAG)
             you.gold = max(you.gold, gozag_service_fee());
+        
+        // Special handling for ancient god
+        if (god == GOD_ANCIENT)
+        {
+            if (yesno("Customize ancient god powers?", true, 'y'))
+                _wizard_customize_ancient_god();
+        }
+        
         join_religion(god);
     }
 }

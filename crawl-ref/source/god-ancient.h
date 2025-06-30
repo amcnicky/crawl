@@ -164,6 +164,9 @@ void do_horrifying_visage_turn();
 const char* get_ancient_set_name(ancient_set_type set);
 const char* get_ancient_set_description(ancient_set_type set);
 
+// Get power definitions for wizard mode
+vector<ancient_power_spec> get_ancient_power_definitions();
+
 
 
 

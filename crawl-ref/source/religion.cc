@@ -4044,6 +4044,11 @@ god_type choose_god(god_type def_god)
 
     string spec = lowercase_string(specs);
 
+    // Special case: allow "ancient" and "ancient god" to match GOD_ANCIENT
+    // regardless of the randomized runtime name
+    if (spec == "ancient" || spec == "ancient god")
+        return GOD_ANCIENT;
+
     return find_earliest_match(spec, GOD_NO_GOD, NUM_GODS,
                                always_true<god_type>,
                                bind(god_name, placeholders::_1, false));
