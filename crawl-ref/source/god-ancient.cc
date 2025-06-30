@@ -16,6 +16,16 @@
 #include "religion.h"
 #include "stringutil.h"
 #include "view.h"
+#include "env.h"
+#include "traps.h"
+#include "actor.h"
+#include "cloud.h"
+#include "travel.h"
+#include "map-knowledge.h"
+#include "terrain.h"
+#include "dungeon.h"
+#include "coordit.h"
+#include "coord-circle.h"
 
 #define AG_NAME_KEY "ag_name_idx"
 #define AG_TITLE_KEY "ag_title_idx"
@@ -571,6 +581,7 @@ static vector<ancient_power_spec> _get_ancient_power_defs()
     powers.emplace_back(ancient_power_spec{ PASSIVE_CELESTIAL_MARTYRDOM, ANCIENT_POWER_PASSIVE, "escape death as your god intervenes at great cost", 4, ABIL_NON_ABILITY });
     powers.emplace_back(ancient_power_spec{ PASSIVE_RUNIC_TRANSFORMATION, ANCIENT_POWER_PASSIVE, "gain positive mutations when obtaining runes of power", 1, ABIL_NON_ABILITY });
     powers.emplace_back(ancient_power_spec{ SMALL_POWER_HORRIFYING_VISAGE, ANCIENT_POWER_SMALL, "manifest a horrifying visage that terrifies nearby foes", 1, ABIL_ANCIENT_HORRIFYING_VISAGE });
+    powers.emplace_back(ancient_power_spec{ SMALL_POWER_FIVE_FOLD_GATES, ANCIENT_POWER_SMALL, "create five obsidian gates linking distant locations", 2, ABIL_ANCIENT_FIVE_FOLD_GATES });
     powers.emplace_back(ancient_power_spec{ LARGE_POWER_CREATURE_CALL, ANCIENT_POWER_LARGE, "call upon ancient memories to summon creatures", 5, ABIL_ANCIENT_CREATURE_CALL });
     return powers;
 }
@@ -1064,6 +1075,145 @@ spret cast_ancient_horrifying_visage(int pow, bool fail)
     {
         flash_view_delay(UA_MONSTER, MAGENTA, 200);
     }
+    
+    return spret::success;
+}
+
+// Five-Fold Gates constants
+const int FIVE_FOLD_GATES_COUNT = 5;
+const int GATE_VISION_RANGE = 2; // 5x5 area around each gate
+const int GATE_VISION_DURATION = 20; // 2-3 turns
+
+// Helper function to check if a cell is valid for gate placement
+static bool _ancient_gate_valid_cell(coord_def p)
+{
+    return in_bounds(p)
+           && env.grid(p) == DNGN_FLOOR
+           && !monster_at(p)
+           && !actor_at(p)
+           && !cloud_at(p)
+           && !trap_at(p);
+}
+
+// Find a valid location near the player for the first gate
+static coord_def _find_player_gate_location()
+{
+    const int range = GATE_VISION_RANGE;
+    
+    // Try to place within 5x5 area around player
+    for (int tries = 0; tries < 100; ++tries)
+    {
+        coord_def pos = you.pos();
+        pos.x += random_range(-range, range);
+        pos.y += random_range(-range, range);
+        
+        if (_ancient_gate_valid_cell(pos) && pos != you.pos())
+            return pos;
+    }
+    
+    return coord_def(); // Failed to find location
+}
+
+// Find a random teleport-valid location on the level for distant gates
+static coord_def _find_random_gate_location()
+{
+    for (int tries = 0; tries < 500; ++tries)
+    {
+        coord_def pos = random_in_bounds();
+        
+        if (_ancient_gate_valid_cell(pos) && !testbits(env.pgrid(pos), FPROP_NO_TELE_INTO))
+            return pos;
+    }
+    
+    return coord_def(); // Failed to find location
+}
+
+// Store gate data globally (similar to Golubria passages)
+static vector<coord_def> active_ancient_gates;
+
+// Create all 5 gates
+static bool _create_five_fold_gates()
+{
+    // Clear any existing gates first
+    for (coord_def gate_pos : active_ancient_gates)
+    {
+        if (trap_at(gate_pos))
+        {
+            destroy_trap(gate_pos);
+        }
+    }
+    active_ancient_gates.clear();
+    
+    // Create first gate near player
+    coord_def player_gate = _find_player_gate_location();
+    if (player_gate.origin())
+    {
+        mpr("There isn't enough space nearby to create a gateway.");
+        return false;
+    }
+    
+    // Create 4 distant gates
+    vector<coord_def> distant_gates;
+    for (int i = 0; i < 4; ++i)
+    {
+        coord_def gate = _find_random_gate_location();
+        if (gate.origin())
+        {
+            mpr("Unable to create sufficient gateways on this level.");
+            return false;
+        }
+        distant_gates.push_back(gate);
+    }
+    
+    // Place all gates using traps (we'll need a new trap type)
+    // For now, use TRAP_TELEPORT as placeholder - we'll implement proper trap type later
+    place_specific_trap(player_gate, TRAP_TELEPORT);
+    active_ancient_gates.push_back(player_gate);
+    
+    for (coord_def gate : distant_gates)
+    {
+        place_specific_trap(gate, TRAP_TELEPORT);
+        active_ancient_gates.push_back(gate);
+    }
+    
+    return true;
+}
+
+// Grant temporary vision around all gates
+static void _grant_gate_vision()
+{
+    // This is a simplified version - we'll need proper vision tracking
+    mpr("You sense the locations of all five gateways.");
+    
+    // TODO: Implement proper temporary vision system
+    // For now, just reveal the areas temporarily
+    for (coord_def gate_pos : active_ancient_gates)
+    {
+        for (radius_iterator ri(gate_pos, GATE_VISION_RANGE, C_SQUARE); ri; ++ri)
+        {
+            if (in_bounds(*ri))
+            {
+                // Temporarily reveal the area
+                env.map_knowledge(*ri).set_feature(env.grid(*ri));
+            }
+        }
+    }
+    
+    // Mark for later cleanup
+    // TODO: Implement proper temporary vision that fades after 2-3 turns
+}
+
+spret cast_ancient_five_fold_gates(int /*pow*/, bool fail)
+{
+    fail_check();
+    
+    if (!_create_five_fold_gates())
+        return spret::abort;
+    
+    mprf("You tear open five obsidian gates between distant locations!");
+    
+    // Grant temporary vision around all gates
+    _grant_gate_vision();
     
     return spret::success;
 }

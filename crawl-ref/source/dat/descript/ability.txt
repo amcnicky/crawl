@@ -1138,6 +1138,22 @@ even the mightiest creatures may occasionally be overcome by such primordial
 horror. Creatures that cannot feel fear, your allies, and already-frightened 
 monsters are unaffected.
 %%%%
+Obsidian Key to the Five-Fold Gates ability
+
+Unlocks five obsidian gates connecting distant locations across the 
+current level. One gate is created within your immediate vicinity, while 
+the other four are placed at random.
+
+For a brief moment after creation, you gain vision around all 
+five gates.
+
+Entering any gate instantly transports you to a different gate at 
+random, closing both the origin and destination gates in the process. Once 
+only one gate remains, it too closes automatically.
+
+Recasting this ability while gates are still active will close all existing 
+gates and create five new ones.
+%%%%
 Degenerative Casting ability
 
 GODNAME allows you to cast spells even when you lack sufficient MP, 
