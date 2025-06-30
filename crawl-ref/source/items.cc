@@ -39,6 +39,7 @@
 #include "dungeon.h"
 #include "english.h"
 #include "env.h"
+#include "god-ancient.h"
 #include "god-passive.h"
 #include "god-prayer.h"
 #include "hints.h"
@@ -53,6 +54,7 @@
 #include "macro.h"
 #include "makeitem.h"
 #include "message.h"
+#include "mutation.h"
 #include "nearby-danger.h"
 #include "notes.h"
 #include "options.h"
@@ -1883,7 +1885,16 @@ static bool _got_all_pan_runes()
 static void _get_rune(const item_def& it, bool quiet)
 {
     if (!you.runes[it.sub_type])
+    {
         you.runes.set(it.sub_type);
+        
+        // Ancient god Runic Transformation passive - grant positive mutation for new runes
+        if (has_runic_transformation())
+        {
+            simple_god_message(" channels the rune's power into your very being!");
+            mutate(RANDOM_GOOD_MUTATION, "runic transformation", true, false, false, false);
+        }
+    }
 
     if (!quiet)
     {

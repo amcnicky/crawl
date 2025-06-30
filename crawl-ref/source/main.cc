@@ -69,6 +69,7 @@
 #include "files.h"
 #include "fineff.h"
 #include "god-abil.h"
+#include "god-ancient.h"
 #include "god-companions.h"
 #include "god-conduct.h"
 #include "god-passive.h"
@@ -1084,6 +1085,8 @@ static void _input()
 
     if (you.props.exists(DREAMSHARD_KEY))
         you.props.erase(DREAMSHARD_KEY);
+    if (you.props.exists(CELESTIAL_MARTYRDOM_KEY))
+        you.props.erase(CELESTIAL_MARTYRDOM_KEY);
     crawl_state.potential_pursuers.clear();
 
     apply_exp();

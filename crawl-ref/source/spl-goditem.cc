@@ -10,6 +10,7 @@
 #include "art-enum.h"
 #include "attack.h"
 #include "cleansing-flame-source-type.h"
+#include "cloud.h"
 #include "colour.h"
 #include "coordit.h"
 #include "database.h"
@@ -18,6 +19,7 @@
 #include "env.h"
 #include "tile-env.h"
 #include "fight.h"
+#include "god-ancient.h"
 #include "god-conduct.h"
 #include "god-passive.h"
 #include "hints.h"
@@ -1137,6 +1139,24 @@ int torment_player(const actor *attacker, torment_source_type taux)
                 hploss -= (1 + random2(hploss - 1));
                 simple_god_message(" partially shields you from torment!");
             }
+        }
+    }
+
+    // Ancient god Infernal Absorption passive
+    if (hploss > 0 && has_infernal_absorption())
+    {
+        // Piety-scaling chance to absorb torment (0% at 0 piety, 100% at max piety)
+        const int absorption_chance = (you.piety * 100) / piety_breakpoint(6); // 200 piety
+        if (random2(100) < absorption_chance)
+        {
+            // Convert blocked torment damage to chaos effects
+            simple_god_message(" converts the torment into chaotic energy!");
+            hploss = 0;
+            
+            // Apply chaos effects
+            chaos_affects_actor(&you, nullptr);
+            
+            return 0;
         }
     }
 

@@ -14,6 +14,7 @@ struct god_power;
 // Property keys for ancient god data
 #define AG_CALL_MONSTER_SET_KEY "ag_call_monster_set"
 #define AG_CALL_MOOD_KEY "ag_call_mood"
+#define CELESTIAL_MARTYRDOM_KEY "celestial_martyrdom"
 
 enum ancient_power_category
 {
@@ -29,6 +30,9 @@ enum ancient_power_type
 
     // Passives
     PASSIVE_DEGENERATIVE_CASTING,
+    PASSIVE_INFERNAL_ABSORPTION,
+    PASSIVE_CELESTIAL_MARTYRDOM,
+    PASSIVE_RUNIC_TRANSFORMATION,
 
     // Small Powers
     SMALL_POWER_STABILISE_MUTATION,
@@ -142,6 +146,9 @@ string get_call_power_description();
 void generate_ancient_god_powers();
 vector<god_power> get_ancient_god_powers();
 bool has_degenerative_casting();
+bool has_infernal_absorption();
+bool has_celestial_martyrdom();
+bool has_runic_transformation();
 
 // Ancient god ability cost calculations
 int get_ancient_creature_call_piety_cost();

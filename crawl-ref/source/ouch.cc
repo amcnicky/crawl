@@ -35,6 +35,7 @@
 #include "files.h"
 #include "fineff.h"
 #include "god-abil.h"
+#include "god-ancient.h"
 #include "god-passive.h"
 #include "hints.h"
 #include "hiscores.h"
@@ -154,6 +155,17 @@ int check_your_resists(int hurted, beam_type flavour, string source,
         break;
 
     case BEAM_DAMNATION:
+        // Ancient god Infernal Absorption passive - grant regen from damnation damage
+        if (doEffects && has_infernal_absorption() && hurted > 0)
+        {
+            // Grant regeneration proportional to damage taken
+            const int regen_amount = hurted / 5; // 20% of damage as regen turns
+            if (regen_amount > 0)
+            {
+                you.set_duration(DUR_REGENERATION, regen_amount + you.duration[DUR_REGENERATION]);
+                simple_god_message(" channels the infernal energy into regenerative power!");
+            }
+        }
         break; // sucks to be you (:
 
     case BEAM_COLD:
@@ -1267,7 +1279,9 @@ void ouch(int dam, kill_method_type death_type, mid_t source, const char *aux,
         // death's door protects against everything but falling into
         // water/lava, Zot, excessive rot, leaving the dungeon, or quitting.
         // Likewise, dreamshard protects you until the start of your next turn.
-        if (you.duration[DUR_DEATHS_DOOR] || you.props.exists(DREAMSHARD_KEY))
+        // Celestial Martyrdom also provides similar protection after activation.
+        if (you.duration[DUR_DEATHS_DOOR] || you.props.exists(DREAMSHARD_KEY) 
+            || you.props.exists(CELESTIAL_MARTYRDOM_KEY))
             return;
         // the dreamshard necklace protects from any fatal blow or death source
         // that death's door would protect from.
@@ -1309,6 +1323,27 @@ void ouch(int dam, kill_method_type death_type, mid_t source, const char *aux,
             // Ensure divine intervention wakes sleeping players. Necessary
             // because we otherwise don't wake players who take fatal damage.
             you.wake_up();
+            return;
+        }
+
+        // Ancient god Celestial Martyrdom passive - last resort death prevention
+        if (dam >= you.hp && you.hp_max > 0 && has_celestial_martyrdom())
+        {
+            simple_god_message(" hurls themselves before the fatal blow, weakening themselves greatly!");
+            
+            // Leave player on 1 HP
+            you.hp = 1;
+            
+            // Grant temporary invulnerability until end of turn
+            you.props[CELESTIAL_MARTYRDOM_KEY] = true;
+            
+            // Drain almost all piety (leave about 15/200)
+            you.piety = max(15, you.piety - 180);
+            
+            // Wake the player since they're about to die
+            you.wake_up();
+            
+            // Prevent further damage from this attack
             return;
         }
 

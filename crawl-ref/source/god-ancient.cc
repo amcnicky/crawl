@@ -567,6 +567,9 @@ static vector<ancient_power_spec> _get_ancient_power_defs()
 {
     vector<ancient_power_spec> powers;
     powers.emplace_back(ancient_power_spec{ PASSIVE_DEGENERATIVE_CASTING, ANCIENT_POWER_PASSIVE, "cast spells by channeling life force when lacking MP", 0, ABIL_NON_ABILITY });
+    powers.emplace_back(ancient_power_spec{ PASSIVE_INFERNAL_ABSORPTION, ANCIENT_POWER_PASSIVE, "absorb torment as chaotic energy and regenerate from damnation", 3, ABIL_NON_ABILITY });
+    powers.emplace_back(ancient_power_spec{ PASSIVE_CELESTIAL_MARTYRDOM, ANCIENT_POWER_PASSIVE, "escape death as your god intervenes at great cost", 4, ABIL_NON_ABILITY });
+    powers.emplace_back(ancient_power_spec{ PASSIVE_RUNIC_TRANSFORMATION, ANCIENT_POWER_PASSIVE, "gain positive mutations when obtaining runes of power", 1, ABIL_NON_ABILITY });
     powers.emplace_back(ancient_power_spec{ SMALL_POWER_STABILISE_MUTATION, ANCIENT_POWER_SMALL, "permanently stabilise a chosen mutation", 2, ABIL_ANCIENT_STABILISE_MUTATION });
     powers.emplace_back(ancient_power_spec{ SMALL_POWER_HORRIFYING_VISAGE, ANCIENT_POWER_SMALL, "manifest a horrifying visage that terrifies nearby foes", 1, ABIL_ANCIENT_HORRIFYING_VISAGE });
     powers.emplace_back(ancient_power_spec{ LARGE_POWER_CREATURE_CALL, ANCIENT_POWER_LARGE, "call upon ancient memories to summon creatures", 5, ABIL_ANCIENT_CREATURE_CALL });
@@ -668,6 +671,48 @@ bool has_degenerative_casting()
     {
         ancient_power_type power_type = static_cast<ancient_power_type>(power_val.get_int());
         if (power_type == PASSIVE_DEGENERATIVE_CASTING)
+            return true;
+    }
+    return false;
+}
+
+bool has_infernal_absorption()
+{
+    if (you.religion != GOD_ANCIENT)
+        return false;
+    
+    for (const auto& power_val : you.ancient_powers)
+    {
+        ancient_power_type power_type = static_cast<ancient_power_type>(power_val.get_int());
+        if (power_type == PASSIVE_INFERNAL_ABSORPTION)
+            return true;
+    }
+    return false;
+}
+
+bool has_celestial_martyrdom()
+{
+    if (you.religion != GOD_ANCIENT)
+        return false;
+    
+    for (const auto& power_val : you.ancient_powers)
+    {
+        ancient_power_type power_type = static_cast<ancient_power_type>(power_val.get_int());
+        if (power_type == PASSIVE_CELESTIAL_MARTYRDOM)
+            return true;
+    }
+    return false;
+}
+
+bool has_runic_transformation()
+{
+    if (you.religion != GOD_ANCIENT)
+        return false;
+    
+    for (const auto& power_val : you.ancient_powers)
+    {
+        ancient_power_type power_type = static_cast<ancient_power_type>(power_val.get_int());
+        if (power_type == PASSIVE_RUNIC_TRANSFORMATION)
             return true;
     }
     return false;
