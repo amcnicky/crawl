@@ -32,11 +32,10 @@ enum ancient_power_type
 
     // Small Powers
     SMALL_POWER_STABILISE_MUTATION,
-    SMALL_POWER_PLACEHOLDER_2,
+    SMALL_POWER_HORRIFYING_VISAGE,
 
     // Large Powers
     LARGE_POWER_CREATURE_CALL,
-    LARGE_POWER_PLACEHOLDER,
 
     NUM_ANCIENT_POWERS,
 };
@@ -151,6 +150,8 @@ string get_ancient_creature_call_detailed_cost_description();
 
 // Ancient god abilities
 spret cast_ancient_stabilise_mutation();
+spret cast_ancient_horrifying_visage(int pow, bool fail);
+void do_horrifying_visage_turn();
 
 // Get ancient set information
 const char* get_ancient_set_name(ancient_set_type set);

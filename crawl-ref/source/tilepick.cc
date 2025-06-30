@@ -4314,6 +4314,8 @@ tileidx_t tileidx_ability(const ability_type ability)
     // Ancient God
     case ABIL_ANCIENT_STABILISE_MUTATION:
         return TILEG_ABILITY_ANCIENT_STABILISE_MUTATION;
+    case ABIL_ANCIENT_HORRIFYING_VISAGE:
+        return TILEG_ABILITY_ANCIENT_HORRIFYING_VISAGE;
     case ABIL_ANCIENT_CREATURE_CALL:
         return TILEG_ABILITY_ANCIENT_CREATURE_CALL;
 

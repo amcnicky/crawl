@@ -1131,6 +1131,22 @@ other effects.
 
 This ability requires you to have at least one unstabilised mutation.
 %%%%
+Horrifying Visage ability
+
+Channels the countless horrors and decay witnessed by GODNAME across the 
+millennia, manifesting them upon your face to strike fear into the hearts 
+of nearby enemies.
+
+While this power is active, all hostile creatures in your line of sight have 
+a chance each turn to be overcome with primal terror and flee in fear. The 
+effectiveness depends on your piety and Invocations skill and affects
+enemies regardless of their willpower.
+
+Stronger monsters naturally resist this effect better than weaker ones, but 
+even the mightiest creatures may occasionally be overcome by such primordial 
+horror. Creatures that cannot feel fear, your allies, and already-frightened 
+monsters are unaffected.
+%%%%
 Degenerative Casting ability
 
 GODNAME allows you to cast spells even when you lack sufficient MP, 

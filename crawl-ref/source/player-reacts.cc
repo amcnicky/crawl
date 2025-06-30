@@ -47,6 +47,7 @@
 #include "exercise.h"
 #include "files.h"
 #include "god-abil.h"
+#include "god-ancient.h"
 #include "god-companions.h"
 #include "god-passive.h"
 #include "invent.h"
@@ -936,6 +937,10 @@ static void _decrement_durations()
 
     if (you.duration[DUR_FUSILLADE] && you.time_taken > 0)
         fire_fusillade();
+
+    // Handle horrifying visage per-turn effect
+    if (you.duration[DUR_HORRIFYING_VISAGE])
+        do_horrifying_visage_turn();
 
     // these should be after decr_ambrosia, transforms, liquefying, etc.
     for (int i = 0; i < NUM_DURATIONS; ++i)

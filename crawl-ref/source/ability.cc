@@ -756,6 +756,8 @@ static vector<ability_def> &_get_ability_list()
         // Ancient God
         { ABIL_ANCIENT_STABILISE_MUTATION, "Stabilise Mutation",
             2, 0, 2, -1, {fail_basis::invo}, abflag::none },
+        { ABIL_ANCIENT_HORRIFYING_VISAGE, "Horrifying Visage",
+            3, 0, 3, -1, {fail_basis::invo}, abflag::none },
         { ABIL_ANCIENT_CREATURE_CALL, "Ancient Creature Call",
             12, 0, 5, -1, {fail_basis::invo, 80, 4, 25}, abflag::none },
 
@@ -2611,6 +2613,15 @@ static bool _check_ability_possible(const ability_def& abil, bool quiet = false)
         }
         return true;
 
+    case ABIL_ANCIENT_HORRIFYING_VISAGE:
+        if (you.duration[DUR_HORRIFYING_VISAGE])
+        {
+            if (!quiet)
+                mpr("Your horrifying visage is already active.");
+            return false;
+        }
+        return true;
+
     default:
         return true;
     }
@@ -4075,6 +4086,9 @@ static spret _do_ability(const ability_def& abil, bool fail, dist *target,
 
     case ABIL_ANCIENT_STABILISE_MUTATION:
         return cast_ancient_stabilise_mutation();
+
+    case ABIL_ANCIENT_HORRIFYING_VISAGE:
+        return cast_ancient_horrifying_visage(you.skill(SK_INVOCATIONS, 4), fail);
 
     case ABIL_ANCIENT_CREATURE_CALL:
         return cast_ancient_creature_call(you.skill(SK_INVOCATIONS, 4), fail);

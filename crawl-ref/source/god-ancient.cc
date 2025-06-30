@@ -1,17 +1,21 @@
 #include "AppHdr.h"
 #include "god-ancient.h"
 #include "god-ancient-data.h"
+#include "act-iter.h"
+#include "colour.h"
 #include "english.h"
 #include "god-passive.h"
-#include "random.h"
-#include "religion.h"
-#include "stringutil.h"
+#include "mon-behv.h"
 #include "mon-tentacle.h"
 #include "mon-util.h"
 #include "monster.h"
 #include "mutation.h"
 #include "prompt.h"
 #include "message.h"
+#include "random.h"
+#include "religion.h"
+#include "stringutil.h"
+#include "view.h"
 
 #define AG_NAME_KEY "ag_name_idx"
 #define AG_TITLE_KEY "ag_title_idx"
@@ -564,7 +568,7 @@ static vector<ancient_power_spec> _get_ancient_power_defs()
     vector<ancient_power_spec> powers;
     powers.emplace_back(ancient_power_spec{ PASSIVE_DEGENERATIVE_CASTING, ANCIENT_POWER_PASSIVE, "cast spells by channeling life force when lacking MP", 0, ABIL_NON_ABILITY });
     powers.emplace_back(ancient_power_spec{ SMALL_POWER_STABILISE_MUTATION, ANCIENT_POWER_SMALL, "permanently stabilise a chosen mutation", 2, ABIL_ANCIENT_STABILISE_MUTATION });
-    powers.emplace_back(ancient_power_spec{ SMALL_POWER_PLACEHOLDER_2, ANCIENT_POWER_SMALL, "power to be implemented", 1, ABIL_NON_ABILITY });
+    powers.emplace_back(ancient_power_spec{ SMALL_POWER_HORRIFYING_VISAGE, ANCIENT_POWER_SMALL, "manifest a horrifying visage that terrifies nearby foes", 1, ABIL_ANCIENT_HORRIFYING_VISAGE });
     powers.emplace_back(ancient_power_spec{ LARGE_POWER_CREATURE_CALL, ANCIENT_POWER_LARGE, "call upon ancient memories to summon creatures", 5, ABIL_ANCIENT_CREATURE_CALL });
     return powers;
 }
@@ -870,6 +874,177 @@ spret cast_ancient_stabilise_mutation()
     you.stabilized_mutation[selected] = 1;
     
     mprf("Your %s mutation becomes stable and permanent!", mut_name.c_str());
+    
+    return spret::success;
+}
+
+// Calculate horrifying visage power based on piety and invocations
+static int _get_horrifying_visage_power()
+{
+    // Combine piety (0-200) and invocations (0-27*4=108) into a power level
+    // Max power = 200 + 108 = 308
+    const int raw_power = you.piety + you.skill(SK_INVOCATIONS, 4);
+    
+    // Scale to 0-100 for easier percentage calculations
+    return min(100, (raw_power * 100) / 308);
+}
+
+// Calculate fear chance for a monster based on power and monster HD
+static int _get_fear_chance(int power, int monster_hd)
+{
+    // Power ranges from 0 (min) to 100 (max)
+    // Monster HD typically ranges from 1 (weakest) to 25+ (strongest)
+    
+    // At max power (100): strongest monsters (HD 25) get 15%, weakest (HD 1) get 50%
+    // At min power (0): strongest monsters (HD 25) get 1%, weakest (HD 1) get 25%
+    
+    // Linear interpolation between these bounds
+    const int hd_clamped = min(25, max(1, monster_hd));
+    
+    // Base chances: HD 1 gets max chance, HD 25 gets min chance
+    const int max_power_max_chance = 50; // HD 1 at power 100
+    const int max_power_min_chance = 15; // HD 25 at power 100
+    const int min_power_max_chance = 25; // HD 1 at power 0
+    const int min_power_min_chance = 1;  // HD 25 at power 0
+    
+    // First interpolate based on HD (1-25 range)
+    const int hd_factor = (hd_clamped - 1) * 100 / 24; // 0-100 range
+    
+    const int max_power_chance = max_power_max_chance - 
+                                ((max_power_max_chance - max_power_min_chance) * hd_factor) / 100;
+    const int min_power_chance = min_power_max_chance -
+                                ((min_power_max_chance - min_power_min_chance) * hd_factor) / 100;
+    
+    // Now interpolate based on power (0-100 range)
+    const int final_chance = min_power_chance + 
+                            ((max_power_chance - min_power_chance) * power) / 100;
+    
+    return max(1, final_chance);
+}
+
+// Check if a horrifying visage attempt succeeds on a monster
+static bool _horrifying_visage_affects_monster(monster* mon, int power)
+{
+    if (!mon || !mon->alive())
+        return false;
+        
+    // Check if monster can feel fear
+    if (!mon->can_feel_fear(true))
+        return false;
+        
+    // Don't affect allied monsters
+    if (mon->wont_attack())
+        return false;
+        
+    // Already feared monsters are immune to additional fear
+    if (mon->has_ench(ENCH_FEAR))
+        return false;
+        
+    // Calculate fear chance based on power and monster HD
+    const int fear_chance = _get_fear_chance(power, mon->get_hit_dice());
+    
+    if (!x_chance_in_y(fear_chance, 100))
+        return false;
+        
+    // Currently doesn't check willpower but implementation is here
+    /*
+    const int willpower_roll = mon->check_willpower(&you, power * 2); // Scale power for willpower check
+    if (willpower_roll > 0)
+    {
+        if (you.can_see(*mon))
+        {
+            simple_monster_message(*mon, 
+                mon->resist_margin_phrase(willpower_roll).c_str());
+        }
+        return false;
+    }
+    */
+    
+    return true;
+}
+
+// Apply fear to monsters affected by horrifying visage
+void do_horrifying_visage_turn()
+{
+    if (!you.duration[DUR_HORRIFYING_VISAGE])
+        return;
+        
+    const int power = _get_horrifying_visage_power();
+    
+    // Check all monsters in LOS
+    for (monster_near_iterator mi(you.pos(), LOS_NO_TRANS); mi; ++mi)
+    {
+        if (_horrifying_visage_affects_monster(*mi, power))
+        {
+            // Apply fear enchantment
+            const int fear_duration = random_range(40, 70); // 4-7 turns
+            mi->add_ench(mon_enchant(ENCH_FEAR, 0, &you, fear_duration));
+            
+            if (you.can_see(**mi))
+            {
+                simple_monster_message(**mi, " cowers in terror at your horrifying visage!");
+            }
+            
+            // Trigger fear behavior
+            behaviour_event(*mi, ME_SCARE, &you);
+        }
+    }
+    
+    // No visual effect during ongoing turns - only on activation
+}
+
+spret cast_ancient_horrifying_visage(int pow, bool fail)
+{
+    fail_check();
+    
+    if (you.duration[DUR_HORRIFYING_VISAGE])
+    {
+        mpr("Your horrifying visage is already active.");
+        return spret::abort;
+    }
+    
+    // Calculate duration based on piety and invocations (10-35 turns)
+    const int base_duration = 10;  // 10 turns base
+    const int max_bonus = 25;      // 25 turns bonus max
+    const int power_level = you.piety + pow; // pow is invocations * 4
+    const int max_power = 200 + 108; // Max piety + max invocations*4
+    
+    const int bonus_duration = (max_bonus * power_level) / max_power;
+    const int duration_turns = base_duration + bonus_duration;
+    
+    you.set_duration(DUR_HORRIFYING_VISAGE, duration_turns);
+    
+    mprf(MSGCH_DURATION, "Your face contorts into a mask of ancient horrors and decay!");
+    
+    // Immediate effect on first cast with visual feedback
+    const int power = _get_horrifying_visage_power();
+    bool any_affected = false;
+    
+    // Check all monsters in LOS for immediate effect
+    for (monster_near_iterator mi(you.pos(), LOS_NO_TRANS); mi; ++mi)
+    {
+        if (_horrifying_visage_affects_monster(*mi, power))
+        {
+            // Apply fear enchantment
+            const int fear_duration = random_range(40, 70); // 4-7 turns
+            mi->add_ench(mon_enchant(ENCH_FEAR, 0, &you, fear_duration));
+            
+            if (you.can_see(**mi))
+            {
+                simple_monster_message(**mi, " cowers in terror at your horrifying visage!");
+            }
+            
+            // Trigger fear behavior
+            behaviour_event(*mi, ME_SCARE, &you);
+            any_affected = true;
+        }
+    }
+    
+    // Visual effect only on activation
+    if (any_affected && you.see_cell(you.pos()))
+    {
+        flash_view_delay(UA_MONSTER, MAGENTA, 200);
+    }
     
     return spret::success;
 }
