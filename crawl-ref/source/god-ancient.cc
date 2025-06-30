@@ -26,6 +26,7 @@
 #include "dungeon.h"
 #include "coordit.h"
 #include "coord-circle.h"
+#include "directn.h"
 
 #define AG_NAME_KEY "ag_name_idx"
 #define AG_TITLE_KEY "ag_title_idx"
@@ -581,7 +582,7 @@ static vector<ancient_power_spec> _get_ancient_power_defs()
     powers.emplace_back(ancient_power_spec{ PASSIVE_CELESTIAL_MARTYRDOM, ANCIENT_POWER_PASSIVE, "escape death as your god intervenes at great cost", 4, ABIL_NON_ABILITY });
     powers.emplace_back(ancient_power_spec{ PASSIVE_RUNIC_TRANSFORMATION, ANCIENT_POWER_PASSIVE, "gain positive mutations when obtaining runes of power", 1, ABIL_NON_ABILITY });
     powers.emplace_back(ancient_power_spec{ SMALL_POWER_HORRIFYING_VISAGE, ANCIENT_POWER_SMALL, "manifest a horrifying visage that terrifies nearby foes", 1, ABIL_ANCIENT_HORRIFYING_VISAGE });
-    powers.emplace_back(ancient_power_spec{ SMALL_POWER_FIVE_FOLD_GATES, ANCIENT_POWER_SMALL, "create five obsidian gates linking distant locations", 2, ABIL_ANCIENT_FIVE_FOLD_GATES });
+    powers.emplace_back(ancient_power_spec{ SMALL_POWER_OBSIDIAN_GATEWEB, ANCIENT_POWER_SMALL, "weave an obsidian gateweb across distant locations", 2, ABIL_ANCIENT_OBSIDIAN_GATEWEB });
     powers.emplace_back(ancient_power_spec{ LARGE_POWER_CREATURE_CALL, ANCIENT_POWER_LARGE, "call upon ancient memories to summon creatures", 5, ABIL_ANCIENT_CREATURE_CALL });
     return powers;
 }
@@ -1079,8 +1080,8 @@ spret cast_ancient_horrifying_visage(int pow, bool fail)
     return spret::success;
 }
 
-// Five-Fold Gates constants
-const int FIVE_FOLD_GATES_COUNT = 5;
+// Obsidian Gateweb constants
+const int OBSIDIAN_GATEWEB_COUNT = 5;
 const int GATE_VISION_RANGE = 2; // 5x5 area around each gate
 const int GATE_VISION_DURATION = 20; // 2-3 turns
 
@@ -1131,8 +1132,10 @@ static coord_def _find_random_gate_location()
 // Store gate data globally (similar to Golubria passages)
 static vector<coord_def> active_ancient_gates;
 
+
+
 // Create all 5 gates
-static bool _create_five_fold_gates()
+static bool _create_obsidian_gateweb()
 {
     // Clear any existing gates first
     for (coord_def gate_pos : active_ancient_gates)
@@ -1165,55 +1168,130 @@ static bool _create_five_fold_gates()
         distant_gates.push_back(gate);
     }
     
-    // Place all gates using traps (we'll need a new trap type)
-    // For now, use TRAP_TELEPORT as placeholder - we'll implement proper trap type later
-    place_specific_trap(player_gate, TRAP_TELEPORT);
+    // Place all gates using the new Obsidian Gateweb trap type
+    place_specific_trap(player_gate, TRAP_OBSIDIAN_GATEWEB);
     active_ancient_gates.push_back(player_gate);
+    mprf("Placed gate #1 near you at (%d, %d)", player_gate.x, player_gate.y);
     
-    for (coord_def gate : distant_gates)
+    for (int i = 0; i < (int)distant_gates.size(); ++i)
     {
-        place_specific_trap(gate, TRAP_TELEPORT);
+        coord_def gate = distant_gates[i];
+        place_specific_trap(gate, TRAP_OBSIDIAN_GATEWEB);
         active_ancient_gates.push_back(gate);
+        mprf("Placed gate #%d at (%d, %d)", i + 2, gate.x, gate.y);
     }
     
+    mprf("Successfully created %d gates total", (int)active_ancient_gates.size());
     return true;
 }
 
 // Grant temporary vision around all gates
 static void _grant_gate_vision()
 {
-    // This is a simplified version - we'll need proper vision tracking
-    mpr("You sense the locations of all five gateways.");
+    mpr("You sense the locations of all five gateways and can see around them!");
     
-    // TODO: Implement proper temporary vision system
-    // For now, just reveal the areas temporarily
+    // Set duration for temporary vision (2-3 turns)
+    you.set_duration(DUR_OBSIDIAN_GATEWEB_VISION, GATE_VISION_DURATION);
+    
+    // Store gate positions in player properties for the duration
+    you.props["obsidian_gateweb_positions"].new_vector(SV_COORD);
+    CrawlVector& gate_positions = you.props["obsidian_gateweb_positions"].get_vector();
+    
     for (coord_def gate_pos : active_ancient_gates)
     {
-        for (radius_iterator ri(gate_pos, GATE_VISION_RANGE, C_SQUARE); ri; ++ri)
+        gate_positions.push_back(gate_pos);
+        
+        // Reveal a 5x5 area around each gate using magic mapping (for initial discovery)
+        magic_mapping(GATE_VISION_RANGE, 100, true, true, true, true, false, gate_pos, false);
+        
+        // Also mark the gate position clearly in the player's memory
+        map_cell& knowledge = env.map_knowledge(gate_pos);
+        knowledge.set_feature(env.grid(gate_pos), 0, get_trap_type(gate_pos));
+        knowledge.flags |= MAP_EMPHASIZE;
+        
+        // Show the gate location in messages
+        mprf("A gleaming obsidian gateway appears at %s.", 
+             feature_description_at(gate_pos, false, DESC_A).c_str());
+    }
+    
+    // Update view immediately
+    viewwindow();
+}
+
+// Check and cleanup gates when some are destroyed
+void cleanup_insufficient_gates()
+{
+    if (!you.duration[DUR_OBSIDIAN_GATEWEB_VISION] || !you.props.exists("obsidian_gateweb_positions"))
+        return;
+    
+    CrawlVector& gate_positions = you.props["obsidian_gateweb_positions"].get_vector();
+    
+    // Count remaining valid gates
+    int valid_gates = 0;
+    for (int i = gate_positions.size() - 1; i >= 0; --i)
+    {
+        coord_def pos = gate_positions[i].get_coord();
+        if (!in_bounds(pos) || !trap_at(pos) || get_trap_type(pos) != TRAP_OBSIDIAN_GATEWEB)
         {
-            if (in_bounds(*ri))
-            {
-                // Temporarily reveal the area
-                env.map_knowledge(*ri).set_feature(env.grid(*ri));
-            }
+            gate_positions.erase(i); // Remove invalid entries
+        }
+        else
+        {
+            valid_gates++;
         }
     }
     
-    // Mark for later cleanup
-    // TODO: Implement proper temporary vision that fades after 2-3 turns
+    // If fewer than 2 gates remain, destroy them all
+    if (valid_gates > 0 && valid_gates < 2)
+    {
+        mpr("The remaining gateways collapse without sufficient linkage.");
+        for (const auto& gate_item : gate_positions)
+        {
+            coord_def pos = gate_item.get_coord();
+            if (in_bounds(pos))
+            {
+                trap_def *trap = trap_at(pos);
+                if (trap && trap->type == TRAP_OBSIDIAN_GATEWEB)
+                    trap->destroy();
+            }
+        }
+        gate_positions.clear();
+    }
+    
+    // End vision if no gates remain
+    if (gate_positions.empty())
+    {
+        you.duration[DUR_OBSIDIAN_GATEWEB_VISION] = 0;
+        you.props.erase("obsidian_gateweb_positions");
+    }
 }
 
-spret cast_ancient_five_fold_gates(int /*pow*/, bool fail)
+// Cleanup function for when Obsidian Gateweb vision ends
+void end_obsidian_gateweb_vision()
+{
+    if (you.props.exists("obsidian_gateweb_positions"))
+    {
+        you.props.erase("obsidian_gateweb_positions");
+        viewwindow(); // Update view to remove temporary vision
+    }
+    // Also clear the global gates vector to prevent stale references
+    active_ancient_gates.clear();
+}
+
+spret cast_ancient_obsidian_gateweb(int /*pow*/, bool fail)
 {
     fail_check();
     
-    if (!_create_five_fold_gates())
+    if (!_create_obsidian_gateweb())
         return spret::abort;
     
-    mprf("You tear open five obsidian gates between distant locations!");
+    mprf("You weave an obsidian gateweb between distant locations!");
     
     // Grant temporary vision around all gates
     _grant_gate_vision();
+    
+    // Set experience-based cooldown to prevent abuse
+    you.props[OBSIDIAN_GATEWEB_XP_KEY] = 100;
     
     return spret::success;
 }

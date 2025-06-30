@@ -352,6 +352,7 @@ TRAP(DNGN_TRAP_DEVOURER, "devourer's trap", "trap_devourer", LIGHTGREEN),
 TRAP(DNGN_TRAP_ALARM, "alarm trap", "trap_alarm", LIGHTRED),
 TRAP(DNGN_TRAP_ZOT, "Zot trap", "trap_zot", LIGHTMAGENTA),
 TRAP(DNGN_PASSAGE_OF_GOLUBRIA, "passage of Golubria", "passage of golubria", GREEN),
+TRAP(DNGN_OBSIDIAN_GATEWEB, "obsidian gateweb node", "obsidian_gateweb", MAGENTA),
 TRAP(DNGN_TRAP_SHAFT, "shaft", "shaft", BROWN),
 TRAP(DNGN_TRAP_WEB, "web", "trap_web", LIGHTGREY),
 

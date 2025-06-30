@@ -223,6 +223,7 @@ void wizard_heal(bool super_heal)
         you.props.erase(CACOPHONY_XP_KEY);
         you.props.erase(BATFORM_XP_KEY);
         you.props.erase(WATERY_GRAVE_XP_KEY);
+        you.props.erase(OBSIDIAN_GATEWEB_XP_KEY);
         you.duration[DUR_SICKNESS]  = 0;
         you.duration[DUR_EXHAUSTED] = 0;
         you.duration[DUR_BREATH_WEAPON] = 0;
@@ -953,23 +954,23 @@ void wizard_transform()
 
 static void _wizard_customize_ancient_god()
 {
-    // Helper function to display power options and get choice
+    // Helper function to create a menu for power selection
     auto select_power = [](const vector<ancient_power_spec>& options, const string& category_name) -> ancient_power_type {
         if (options.empty())
             return static_cast<ancient_power_type>(-1);
             
-        mpr(make_stringf("Choose %s power:", category_name.c_str()));
+        vector<WizardEntry> choices;
         for (size_t i = 0; i < options.size(); ++i)
         {
-            mpr(make_stringf("  %c) %s", 'a' + (int)i, options[i].description));
+            choices.emplace_back(WizardEntry(options[i].description, 
+                                           static_cast<int>(i)));
         }
-        more(); // Ensure all options are visible before prompting
         
-        int choice = getchm() - 'a';
-        if (choice >= 0 && choice < static_cast<int>(options.size()))
-            return options[choice].type;
-        
-        return static_cast<ancient_power_type>(-1);
+        auto menu = WizardMenu(make_stringf("Choose %s power (ESC to cancel):", category_name.c_str()), choices);
+        if (!menu.run(true))
+            return static_cast<ancient_power_type>(-1);
+            
+        return options[choices[menu.result()].output].type;
     };
     
     // Get all available power definitions from the actual source
@@ -1007,8 +1008,10 @@ static void _wizard_customize_ancient_god()
     chosen_powers.push_back(passive);
     
     // Select small powers (select 2 but code works even if only 1 available)
+    mprf("Found %d small powers available", (int)smalls.size());
     for (int i = 0; i < min(2, (int)smalls.size()); ++i)
     {
+        mprf("Selecting small power %d of %d", i + 1, min(2, (int)smalls.size()));
         auto small = select_power(smalls, make_stringf("small #%d", i + 1));
         if (small == static_cast<ancient_power_type>(-1))
         {
@@ -1070,14 +1073,18 @@ void wizard_join_religion()
         if (god == GOD_GOZAG)
             you.gold = max(you.gold, gozag_service_fee());
         
-        // Special handling for ancient god
+        // Special handling for ancient god - customize AFTER joining to override auto-generation
+        bool customize_ancient = false;
         if (god == GOD_ANCIENT)
         {
-            if (yesno("Customize ancient god powers?", true, 'y'))
-                _wizard_customize_ancient_god();
+            customize_ancient = yesno("Customize ancient god powers?", true, 'y');
         }
         
         join_religion(god);
+        
+        // Apply customization after joining to override the auto-generated powers
+        if (customize_ancient)
+            _wizard_customize_ancient_god();
     }
 }
 

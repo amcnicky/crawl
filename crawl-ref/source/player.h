@@ -60,6 +60,7 @@
 #define CACOPHONY_XP_KEY "cacophony_xp"
 #define BATFORM_XP_KEY "batform_xp"
 #define WATERY_GRAVE_XP_KEY "watery_grave_xp"
+#define OBSIDIAN_GATEWEB_XP_KEY "obsidian_gateweb_xp"
 #define WEREFURY_KEY "werefury_bonus"
 
 constexpr int ENKINDLE_CHARGE_COST = 40;

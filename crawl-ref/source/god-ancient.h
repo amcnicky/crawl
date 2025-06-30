@@ -36,7 +36,7 @@ enum ancient_power_type
 
     // Small Powers
     SMALL_POWER_HORRIFYING_VISAGE,
-    SMALL_POWER_FIVE_FOLD_GATES,
+    SMALL_POWER_OBSIDIAN_GATEWEB,
 
     // Large Powers
     LARGE_POWER_CREATURE_CALL,
@@ -158,7 +158,9 @@ string get_ancient_creature_call_detailed_cost_description();
 // Ancient god abilities
 spret cast_ancient_horrifying_visage(int pow, bool fail);
 void do_horrifying_visage_turn();
-spret cast_ancient_five_fold_gates(int pow, bool fail);
+spret cast_ancient_obsidian_gateweb(int pow, bool fail);
+void end_obsidian_gateweb_vision();
+void cleanup_insufficient_gates();
 
 // Get ancient set information
 const char* get_ancient_set_name(ancient_set_type set);

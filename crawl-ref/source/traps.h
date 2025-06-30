@@ -33,6 +33,7 @@ bool player_caught_in_net();
 void clear_trapping_net();
 void check_net_will_hold_monster(monster* mon);
 vector<coord_def> find_golubria_on_level();
+vector<coord_def> find_obsidian_gateweb_on_level();
 
 dungeon_feature_type trap_feature(trap_type type) IMMUTABLE;
 trap_type trap_type_from_feature(dungeon_feature_type type);

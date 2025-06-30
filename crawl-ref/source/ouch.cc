@@ -1329,22 +1329,43 @@ void ouch(int dam, kill_method_type death_type, mid_t source, const char *aux,
         // Ancient god Celestial Martyrdom passive - last resort death prevention
         if (dam >= you.hp && you.hp_max > 0 && has_celestial_martyrdom())
         {
-            simple_god_message(" hurls themselves before the fatal blow, weakening themselves greatly!");
+            // Calculate piety-based success chance: 10% at min piety (15), 100% at max piety (200)
+            const int min_piety = 15;
+            const int max_piety = 200;
+            const int piety_chance = 10 + (you.piety - min_piety) * 90 / (max_piety - min_piety);
             
-            // Leave player on 1 HP
-            you.hp = 1;
-            
-            // Grant temporary invulnerability until end of turn
-            you.props[CELESTIAL_MARTYRDOM_KEY] = true;
-            
-            // Drain almost all piety (leave about 15/200)
-            you.piety = max(15, you.piety - 180);
-            
-            // Wake the player since they're about to die
-            you.wake_up();
-            
-            // Prevent further damage from this attack
-            return;
+            if (random2(100) < piety_chance)
+            {
+                // Success - god intervenes
+                mprf(MSGCH_GOD, "%s hurls themselves before the fatal blow, weakening themselves greatly!", 
+                     god_name(you.religion).c_str());
+                more();
+                
+                // Flash screen in ancient god colors
+                flash_view_delay(UA_PLAYER, god_colour(you.religion), 300);
+                
+                // Leave player on 1 HP
+                you.hp = 1;
+                
+                // Grant temporary invulnerability until end of turn
+                you.props[CELESTIAL_MARTYRDOM_KEY] = true;
+                
+                // Drain almost all piety (leave about 15/200)
+                you.piety = max(15, you.piety - 180);
+                
+                // Wake the player since they're about to die
+                you.wake_up();
+                
+                // Prevent further damage from this attack
+                return;
+            }
+            else
+            {
+                // Failure - not enough piety
+                mprf(MSGCH_GOD, "%s considers acting but deems your piety unworthy of their sacrifice.",
+                     god_name(you.religion).c_str());
+                // Continue to normal death processing
+            }
         }
 
         you.turn_damage += dam;

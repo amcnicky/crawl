@@ -425,6 +425,18 @@ vector<coord_def> find_golubria_on_level()
     return ret;
 }
 
+vector<coord_def> find_obsidian_gateweb_on_level()
+{
+    vector<coord_def> ret;
+    for (rectangle_iterator ri(coord_def(0, 0), coord_def(GXM-1, GYM-1)); ri; ++ri)
+    {
+        trap_def *trap = trap_at(*ri);
+        if (trap && trap->type == TRAP_OBSIDIAN_GATEWEB)
+            ret.push_back(*ri);
+    }
+    return ret;
+}
+
 enum class passage_type
 {
     free,
@@ -567,6 +579,131 @@ void trap_def::trigger(actor& triggerer)
         {
             mprf("This passage %s!", search_result == passage_type::blocked ?
                  "seems to be blocked by something" : "doesn't lead anywhere");
+        }
+        break;
+    }
+    case TRAP_OBSIDIAN_GATEWEB:
+    {
+        // Find all Obsidian Gateweb portals on the level
+        vector<coord_def> gates;
+        for (rectangle_iterator ri(coord_def(0, 0), coord_def(GXM-1, GYM-1)); ri; ++ri)
+        {
+            trap_def *trap = trap_at(*ri);
+            if (trap && trap->type == TRAP_OBSIDIAN_GATEWEB && *ri != p)
+            {
+                // Safety check for valid coordinates
+                if (in_bounds(*ri))
+                    gates.push_back(*ri);
+                else
+                    mprf(MSGCH_ERROR, "Invalid gate coordinate found: (%d, %d)", ri->x, ri->y);
+            }
+        }
+        
+        if (!gates.empty())
+        {
+            // Find a random unblocked gate
+            vector<coord_def> free_gates;
+            for (coord_def gate : gates)
+            {
+                if (in_bounds(gate) && !actor_at(gate))
+                    free_gates.push_back(gate);
+            }
+            
+            if (!free_gates.empty())
+            {
+                coord_def to = free_gates[random2(free_gates.size())];
+                
+                // Safety check destination coordinate
+                if (!in_bounds(to))
+                {
+                    mprf(MSGCH_ERROR, "Invalid destination coordinate: (%d, %d)", to.x, to.y);
+                    break;
+                }
+                
+                if (you_trigger)
+                {
+                    mpr("You step through the obsidian gateway.");
+                    cancel_polar_vortex();
+                }
+                else
+                    simple_monster_message(*m, " steps through the obsidian gateway.");
+
+                // Move to the destination gate
+                bool moved = triggerer.move_to_pos(to);
+                ASSERT(moved);
+
+                // Create translocation energy clouds at both gates (with bounds checks)
+                if (in_bounds(p))
+                    place_cloud(CLOUD_TLOC_ENERGY, p, 1 + random2(3), &triggerer);
+                if (in_bounds(to))
+                    place_cloud(CLOUD_TLOC_ENERGY, to, 1 + random2(3), &triggerer);
+                
+                // Destroy both gates after use (destination trap and current trap)
+                if (in_bounds(to))
+                {
+                    trap_def *dest_trap = trap_at(to);
+                    if (dest_trap && dest_trap->type == TRAP_OBSIDIAN_GATEWEB)
+                        dest_trap->destroy();
+                }
+                
+                // Clean up stored gate coordinates for both traps
+                if (you.duration[DUR_OBSIDIAN_GATEWEB_VISION] && you.props.exists("obsidian_gateweb_positions"))
+                {
+                    CrawlVector& gate_positions = you.props["obsidian_gateweb_positions"].get_vector();
+                    // Remove both current and destination gate coordinates
+                    for (int i = gate_positions.size() - 1; i >= 0; --i)
+                    {
+                        coord_def stored_pos = gate_positions[i].get_coord();
+                        if (stored_pos == p || stored_pos == to)
+                        {
+                            gate_positions.erase(i);
+                        }
+                    }
+                    
+                    // Check if we need to destroy remaining gates due to insufficient linking
+                    if (gate_positions.size() < 2)
+                    {
+                        // Destroy all remaining gates since they can't link to anything
+                        for (const auto& gate_item : gate_positions)
+                        {
+                            coord_def remaining_pos = gate_item.get_coord();
+                            if (in_bounds(remaining_pos))
+                            {
+                                trap_def *remaining_trap = trap_at(remaining_pos);
+                                if (remaining_trap && remaining_trap->type == TRAP_OBSIDIAN_GATEWEB)
+                                    remaining_trap->destroy();
+                            }
+                        }
+                        gate_positions.clear();
+                        mpr("The remaining gateways collapse without sufficient linkage.");
+                    }
+                    
+                    // If no gates remain, end the vision duration
+                    if (gate_positions.empty())
+                    {
+                        you.duration[DUR_OBSIDIAN_GATEWEB_VISION] = 0;
+                        you.props.erase("obsidian_gateweb_positions");
+                    }
+                }
+                
+                // Destroy the current trap
+                trap_destroyed = true;
+                know_trap_destroyed = you_trigger;
+                
+                if (you_trigger)
+                {
+                    id_floor_items();
+                    mpr("Both gateways crumble and close behind you.");
+                }
+            }
+            else if (you_trigger)
+            {
+                mpr("All other gateways seem to be blocked by something!");
+            }
+        }
+        else if (you_trigger)
+        {
+            mpr("This gateway doesn't seem to lead anywhere anymore.");
         }
         break;
     }
@@ -1188,6 +1325,8 @@ dungeon_feature_type trap_feature(trap_type type)
         return DNGN_TRAP_ZOT;
     case TRAP_GOLUBRIA:
         return DNGN_PASSAGE_OF_GOLUBRIA;
+    case TRAP_OBSIDIAN_GATEWEB:
+        return DNGN_OBSIDIAN_GATEWEB;
 #if TAG_MAJOR_VERSION == 34
     case TRAP_SHADOW:
         return DNGN_TRAP_SHADOW;
@@ -1239,6 +1378,8 @@ trap_type trap_type_from_feature(dungeon_feature_type type)
         return TRAP_ZOT;
     case DNGN_PASSAGE_OF_GOLUBRIA:
         return TRAP_GOLUBRIA;
+    case DNGN_OBSIDIAN_GATEWEB:
+        return TRAP_OBSIDIAN_GATEWEB;
     case DNGN_TRAP_NET:
         return TRAP_NET;
     case DNGN_TRAP_PLATE:

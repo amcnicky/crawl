@@ -109,6 +109,7 @@ enum dungeon_feature_type
     DNGN_TRAP_PLATE,
     DNGN_SPIKE_LAUNCHER,
     DNGN_ORB_DAIS,
+    DNGN_OBSIDIAN_GATEWEB,
 #endif
 #if TAG_MAJOR_VERSION == 34
     DNGN_UNDISCOVERED_TRAP,
@@ -395,6 +396,7 @@ enum dungeon_feature_type
     DNGN_ENTER_NECROPOLIS,
     DNGN_EXIT_NECROPOLIS,
     DNGN_FRIGID_WALL,
+    DNGN_OBSIDIAN_GATEWEB,
 #endif
 
     NUM_FEATURES

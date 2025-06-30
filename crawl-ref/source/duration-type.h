@@ -98,6 +98,7 @@ enum duration_type
 #if TAG_MAJOR_VERSION == 34
     DUR_MIRROR_DAMAGE,
     DUR_SCRYING,
+    DUR_OBSIDIAN_GATEWEB_VISION,
 #endif
     DUR_VORTEX,
     DUR_LIQUEFYING,

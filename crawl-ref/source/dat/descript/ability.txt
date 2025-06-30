@@ -1138,21 +1138,24 @@ even the mightiest creatures may occasionally be overcome by such primordial
 horror. Creatures that cannot feel fear, your allies, and already-frightened 
 monsters are unaffected.
 %%%%
-Obsidian Key to the Five-Fold Gates ability
+Obsidian Gateweb ability
 
-Unlocks five obsidian gates connecting distant locations across the 
-current level. One gate is created within your immediate vicinity, while 
+Weaves an obsidian gateweb connecting five distant locations across the 
+current level. One node is created within your immediate vicinity, while 
 the other four are placed at random.
 
 For a brief moment after creation, you gain vision around all 
-five gates.
+five gateweb nodes.
 
-Entering any gate instantly transports you to a different gate at 
-random, closing both the origin and destination gates in the process. Once 
-only one gate remains, it too closes automatically.
+Entering any node instantly transports you to a different node at 
+random, closing both the origin and destination nodes in the process. Once 
+only one node remains, it too closes automatically.
 
-Recasting this ability while gates are still active will close all existing 
-gates and create five new ones.
+Recasting this ability while a gateweb is still active will dissolve the existing 
+gateweb and weave a new one.
+
+After using this ability, you must gain a moderate amount of experience before 
+you can recover enough power to use it again.
 %%%%
 Degenerative Casting ability
 
@@ -1161,7 +1164,7 @@ by channeling their power through your life force at great personal cost.
 
 When attempting to cast a spell without enough MP, you will be prompted to use 
 degenerative casting. This supplements your missing MP by spending piety and 
-applying a drain effect.
+draining your hp.
 
 This passive ability works partially - if you have some MP but not enough for 
 a spell, only the deficit will be paid through degenerative means. The piety 

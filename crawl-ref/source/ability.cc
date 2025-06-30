@@ -756,7 +756,7 @@ static vector<ability_def> &_get_ability_list()
         // Ancient God
         { ABIL_ANCIENT_HORRIFYING_VISAGE, "Horrifying Visage",
             3, 0, 3, -1, {fail_basis::invo}, abflag::none },
-        { ABIL_ANCIENT_FIVE_FOLD_GATES, "Obsidian Key to the Five-Fold Gates",
+        { ABIL_ANCIENT_OBSIDIAN_GATEWEB, "Obsidian Gateweb",
             5, 0, 4, -1, {fail_basis::invo}, abflag::none },
         { ABIL_ANCIENT_CREATURE_CALL, "Ancient Creature Call",
             12, 0, 5, -1, {fail_basis::invo, 80, 4, 25}, abflag::none },
@@ -2613,8 +2613,13 @@ static bool _check_ability_possible(const ability_def& abil, bool quiet = false)
         }
         return true;
 
-    case ABIL_ANCIENT_FIVE_FOLD_GATES:
-        // Always available when learned
+    case ABIL_ANCIENT_OBSIDIAN_GATEWEB:
+        if (you.props.exists(OBSIDIAN_GATEWEB_XP_KEY))
+        {
+            if (!quiet)
+                mpr("You must gain more experience before weaving another gateweb.");
+            return false;
+        }
         return true;
 
     default:
@@ -4082,8 +4087,8 @@ static spret _do_ability(const ability_def& abil, bool fail, dist *target,
     case ABIL_ANCIENT_HORRIFYING_VISAGE:
         return cast_ancient_horrifying_visage(you.skill(SK_INVOCATIONS, 4), fail);
 
-    case ABIL_ANCIENT_FIVE_FOLD_GATES:
-        return cast_ancient_five_fold_gates(you.skill(SK_INVOCATIONS, 4), fail);
+    case ABIL_ANCIENT_OBSIDIAN_GATEWEB:
+        return cast_ancient_obsidian_gateweb(you.skill(SK_INVOCATIONS, 4), fail);
 
     case ABIL_ANCIENT_CREATURE_CALL:
         return cast_ancient_creature_call(you.skill(SK_INVOCATIONS, 4), fail);

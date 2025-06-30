@@ -17,12 +17,14 @@
 #include "coordit.h"
 #include "database.h"
 #include "delay.h"
+#include "duration-type.h"
 #include "dgn-overview.h"
 #include "directn.h"
 #include "dungeon.h" // place_specific_trap
 #include "env.h"
 #include "files.h"
 #include "god-abil.h"
+#include "god-ancient.h"
 #include "god-companions.h"
 #include "god-passive.h" // passive_t::slow_abyss
 #include "hints.h"
@@ -256,6 +258,24 @@ static void _clear_golubria_traps()
     }
 }
 
+static void _clear_obsidian_gateweb_traps()
+{
+    for (auto c : find_obsidian_gateweb_on_level())
+    {
+        trap_def *trap = trap_at(c);
+        if (trap && trap->type == TRAP_OBSIDIAN_GATEWEB)
+            trap->destroy();
+    }
+    
+    // Clear stored gate coordinates and vision when leaving level
+    if (you.duration[DUR_OBSIDIAN_GATEWEB_VISION])
+    {
+        you.duration[DUR_OBSIDIAN_GATEWEB_VISION] = 0;
+        if (you.props.exists("obsidian_gateweb_positions"))
+            you.props.erase("obsidian_gateweb_positions");
+    }
+}
+
 static void _remove_unstable_monsters()
 {
     for (auto &mons : menv_real)
@@ -295,6 +315,7 @@ void leaving_level_now(dungeon_feature_type stair_used)
     dungeon_events.fire_event(DET_LEAVING_LEVEL);
 
     _clear_golubria_traps();
+    _clear_obsidian_gateweb_traps();
     _remove_unstable_monsters();
 }
 

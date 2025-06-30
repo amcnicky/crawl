@@ -901,6 +901,7 @@ static const char *trap_names[] =
 #endif
     "shaft",
     "passage",
+    "obsidian gate",
     "pressure plate",
     "web",
 #if TAG_MAJOR_VERSION == 34

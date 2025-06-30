@@ -2407,6 +2407,21 @@ static void _handle_watery_grave_recharge(int exp)
     }
 }
 
+static void _handle_obsidian_gateweb_recharge(int exp)
+{
+    if (!you.props.exists(OBSIDIAN_GATEWEB_XP_KEY))
+        return;
+
+    int loss = div_rand_round(exp, calc_skill_cost(you.skill_cost_level));
+    you.props[OBSIDIAN_GATEWEB_XP_KEY].get_int() -= loss;
+
+    if (you.props[OBSIDIAN_GATEWEB_XP_KEY].get_int() <= 0)
+    {
+        you.props.erase(OBSIDIAN_GATEWEB_XP_KEY);
+        mprf(MSGCH_DURATION, "You feel ready to weave another obsidian gateweb.");
+    }
+}
+
 static void _handle_god_wrath(int exp)
 {
     for (god_iterator it; it; ++it)
@@ -2470,6 +2485,7 @@ void apply_exp()
     _handle_cacophony_recharge(skill_xp);
     _handle_batform_recharge(skill_xp);
     _handle_watery_grave_recharge(skill_xp);
+    _handle_obsidian_gateweb_recharge(skill_xp);
 
     if (player_under_penance(GOD_HEPLIAKLQANA))
         return; // no xp for you!

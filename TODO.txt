@@ -6,6 +6,7 @@
 - [x] **GODNAME placeholder not replaced** - ✅ Implemented dynamic GODNAME replacement in ability descriptions
 - [x] **UI/Tile issues** - ✅ Fixed all tile assignments, moved tiles to proper directories, added transparent backgrounds
 - [x] **Horrifying Visage Implementation** - ✅ Added complete horrifying visage small power with fear mechanics, fixed duration bug and UI issues
+- [x] **Obsidian Gateweb Implementation** - ✅ Added Obsidian Gateweb small power with portal mechanics, temporary vision, and strategic teleportation
 
 ## Wizard Mode Integration - ✅ COMPLETED
 - [x] **Extended wizard join religion command** - ✅ Added ancient god power customization to existing `&_` wizard command
@@ -14,7 +15,8 @@
 - [x] **Re-customization support** - ✅ Can modify powers when already worshipping ancient god via wizard mode
 - [x] **Code quality** - ✅ Uses actual power definitions from god-ancient.cc instead of hardcoded duplicates
 - [x] **UI improvements** - ✅ Fixed display issues where not all power options were visible, added proper formatting
-- [x] **Dynamic small power selection** - ✅ Wizard mode adapts to available small powers (currently 1)
+- [x] **Dynamic small power selection** - ✅ Wizard mode adapts to available small powers (currently 2)
+- [x] **Wizard mode bug fixes** - ✅ Fixed initialization order issue and replaced mpr+getchm with proper WizardMenu for better UI
 
 ## Ability Removed
 - [x] **Stabilise Mutation Removal** - ✅ Completely removed stabilise mutation ability as it lacks interesting decision-making
@@ -70,8 +72,13 @@
 
 ## Current Power Set
 - **Passives (4):** Degenerative Casting, Infernal Absorption, Celestial Martyrdom, Runic Transformation
-- **Small Powers (1):** Horrifying Visage
+- **Small Powers (2):** Horrifying Visage, Obsidian Gateweb
 - **Large Powers (1):** Ancient Creature Call
+
+## Obsidian Gateweb Known Issues - ❌ TODO
+- [ ] **5th gateway removal bug** - When fewer than 2 gates remain, the final gate still doesn't get properly cleaned up in all cases
+- [ ] **Visual fog of war bug** - Map continues showing destroyed gates as active due to map knowledge not being updated properly
+- [ ] **Add time decay** - Gates should gradually decay over time like wizlab portals, rather than persisting indefinitely
 
 ## Future Considerations
 - Consider adding more monster sets for variety

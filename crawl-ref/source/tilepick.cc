@@ -562,6 +562,8 @@ tileidx_t tileidx_feature_base(dungeon_feature_type feat)
         return TILE_DNGN_RUNELIGHT;
     case DNGN_PASSAGE_OF_GOLUBRIA:
         return TILE_DNGN_TRAP_GOLUBRIA;
+    case DNGN_OBSIDIAN_GATEWEB:
+        return TILE_DNGN_OBSIDIAN_GATEWEB;
     case DNGN_UNKNOWN_ALTAR:
         return TILE_DNGN_UNKNOWN_ALTAR;
     case DNGN_UNKNOWN_PORTAL:
@@ -596,6 +598,7 @@ tileidx_t tileidx_feature(const coord_def &gc)
                         && feat != DNGN_FLOOR
                         && feat != DNGN_UNSEEN
                         && feat != DNGN_PASSAGE_OF_GOLUBRIA
+                        && feat != DNGN_OBSIDIAN_GATEWEB
                         && feat != DNGN_MALIGN_GATEWAY
                         && feat != DNGN_BINDING_SIGIL
                         && feat != DNGN_UNKNOWN_PORTAL
@@ -4314,8 +4317,8 @@ tileidx_t tileidx_ability(const ability_type ability)
     // Ancient God
     case ABIL_ANCIENT_HORRIFYING_VISAGE:
         return TILEG_ABILITY_ANCIENT_HORRIFYING_VISAGE;
-    case ABIL_ANCIENT_FIVE_FOLD_GATES:
-        return TILEG_ABILITY_ANCIENT_FIVE_FOLD_GATES;
+    case ABIL_ANCIENT_OBSIDIAN_GATEWEB:
+        return TILEG_PASSAGE_OF_GOLUBRIA;
     case ABIL_ANCIENT_CREATURE_CALL:
         return TILEG_ABILITY_ANCIENT_CREATURE_CALL;
 

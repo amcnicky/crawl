@@ -34,6 +34,7 @@ enum trap_type
 #endif
     TRAP_SHAFT,
     TRAP_GOLUBRIA,
+    TRAP_OBSIDIAN_GATEWEB,
     TRAP_PLATE,
     TRAP_WEB,
 #if TAG_MAJOR_VERSION == 34

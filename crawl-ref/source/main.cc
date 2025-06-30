@@ -2638,6 +2638,7 @@ void world_reacts()
         _update_golubria_traps(you.time_taken);
     if (env.level_state & LSTATE_STILL_WINDS)
         _update_still_winds();
+    cleanup_insufficient_gates(); // Check for obsidian gatewebs with insufficient linkage
     if (!crawl_state.game_is_arena())
         player_reacts_to_monsters();
 

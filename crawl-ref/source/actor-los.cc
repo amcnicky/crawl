@@ -7,6 +7,7 @@
 #include "los-type.h"
 #include "losglobal.h"
 #include "state.h"
+#include "player.h"
 
 bool actor::observable() const
 {
@@ -31,6 +32,23 @@ bool player::see_cell(const coord_def &p) const
         return false; // A non-arena player at (0,0) can't see anything.
     if (wizard_vision || you.duration[DUR_REVELATION])
         return (pos() - p).rdist() <= current_vision;
+    
+    // Obsidian Gateweb temporary vision - see around gate positions
+    if (you.duration[DUR_OBSIDIAN_GATEWEB_VISION] && you.props.exists("obsidian_gateweb_positions"))
+    {
+        const CrawlVector& gate_positions = you.props["obsidian_gateweb_positions"].get_vector();
+        for (const auto& gate_item : gate_positions)
+        {
+            const coord_def gate_pos = gate_item.get_coord();
+            // Safety check: ensure gate position is valid before using it
+            if (!in_bounds(gate_pos))
+                continue;
+            // Grant vision in 5x5 area around each gate (2 radius)
+            if ((gate_pos - p).rdist() <= 2)
+                return true;
+        }
+    }
+    
     return actor::see_cell(p);
 }
 
