@@ -6,6 +6,7 @@
 - [x] **Missing Stabilise Mutation description** - ✅ Added complete ability description to ability.txt
 - [x] **GODNAME placeholder not replaced** - ✅ Implemented dynamic GODNAME replacement in ability descriptions
 - [x] **UI/Tile issues** - ✅ Fixed all tile assignments, moved tiles to proper directories, added transparent backgrounds
+- [x] **Horrifying Visage Implementation** - ✅ Added complete horrifying visage small power with fear mechanics, fixed duration bug and UI issues
 
 ## Enhancement Ideas
 - [ ] **Thematic temp terrain change** - When summoning certain monster sets, temporarily change terrain to match theme (e.g., water for Shoals set, lava for Gehenna set)
