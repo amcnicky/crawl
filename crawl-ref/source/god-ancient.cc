@@ -562,10 +562,10 @@ string get_call_power_description()
 static vector<ancient_power_spec> _get_ancient_power_defs()
 {
     vector<ancient_power_spec> powers;
-    powers.emplace_back(ancient_power_spec{ PASSIVE_DEGENERATIVE_CASTING, ANCIENT_POWER_PASSIVE, "Degenerative Casting", 0, ABIL_NON_ABILITY });
-    powers.emplace_back(ancient_power_spec{ SMALL_POWER_STABILISE_MUTATION, ANCIENT_POWER_SMALL, "Stabilise Mutation", 2, ABIL_ANCIENT_STABILISE_MUTATION });
+    powers.emplace_back(ancient_power_spec{ PASSIVE_DEGENERATIVE_CASTING, ANCIENT_POWER_PASSIVE, "cast spells by channeling life force when lacking MP", 0, ABIL_NON_ABILITY });
+    powers.emplace_back(ancient_power_spec{ SMALL_POWER_STABILISE_MUTATION, ANCIENT_POWER_SMALL, "permanently stabilise a chosen mutation", 2, ABIL_ANCIENT_STABILISE_MUTATION });
     powers.emplace_back(ancient_power_spec{ SMALL_POWER_PLACEHOLDER_2, ANCIENT_POWER_SMALL, "power to be implemented", 1, ABIL_NON_ABILITY });
-    powers.emplace_back(ancient_power_spec{ LARGE_POWER_CREATURE_CALL, ANCIENT_POWER_LARGE, "power to be implemented", 5, ABIL_ANCIENT_CREATURE_CALL });
+    powers.emplace_back(ancient_power_spec{ LARGE_POWER_CREATURE_CALL, ANCIENT_POWER_LARGE, "call upon ancient memories to summon creatures", 5, ABIL_ANCIENT_CREATURE_CALL });
     return powers;
 }
 
@@ -628,9 +628,19 @@ vector<god_power> get_ancient_god_powers()
         const ancient_power_spec& spec = _get_power_spec(power_type);
         if (spec.type == LARGE_POWER_CREATURE_CALL)
         {
-            // Use the dynamic description for the "you can now" message
-            // This shows the specific creature and mood
-            call_power_desc = get_call_power_description();
+            // For creature call, use a more specific description that includes the creature type
+            // Format it as a lowercase verb phrase to match other god abilities
+            string dynamic_desc = get_call_power_description();
+            if (!dynamic_desc.empty())
+            {
+                // Convert to lowercase and format as a verb phrase
+                dynamic_desc[0] = tolower(dynamic_desc[0]);
+                call_power_desc = dynamic_desc;
+            }
+            else
+            {
+                call_power_desc = spec.description; // fallback to static description
+            }
             god_power power(spec.piety_rank, spec.ability, call_power_desc.c_str());
             power.god = GOD_ANCIENT;
             powers.push_back(power);

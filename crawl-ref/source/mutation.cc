@@ -1204,11 +1204,9 @@ public:
     }
 };
 
-mutation_type choose_mutation_to_stabilise()
+// Check if player has any mutations that can be stabilised (no UI)
+bool has_stabilisable_mutations()
 {
-    // Check if the player has any unstabilised mutations
-    // Exclude innate mutations since they can't be lost anyway
-    bool has_unstabilised = false;
     for (int i = 0; i < NUM_MUTATIONS; ++i)
     {
         mutation_type mut = static_cast<mutation_type>(i);
@@ -1216,12 +1214,16 @@ mutation_type choose_mutation_to_stabilise()
             && you.get_base_mutation_level(mut, false, false, true) > 0  // Has non-innate levels
             && !you.stabilized_mutation[mut])
         {
-            has_unstabilised = true;
-            break;
+            return true;
         }
     }
-    
-    if (!has_unstabilised)
+    return false;
+}
+
+mutation_type choose_mutation_to_stabilise()
+{
+    // Check if the player has any unstabilised mutations first
+    if (!has_stabilisable_mutations())
         return NUM_MUTATIONS; // No mutations available
     
     // Show the mutation selection menu

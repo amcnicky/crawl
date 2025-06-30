@@ -160,4 +160,3 @@ const char* get_ancient_set_description(ancient_set_type set);
 
 
 
-spret cast_ancient_creature_call();

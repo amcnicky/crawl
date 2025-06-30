@@ -1,7 +1,11 @@
 # TODO List for Ancient God PR
 
 ## High Priority Issues
-- [ ] **No ability description for call monster** - The ability needs a proper description text that explains what it does
+- [x] **No ability description for call monster** - ✅ Added proper descriptions for both Ancient Creature Call and Stabilise Mutation abilities
+- [x] **Fix ability name consistency** - ✅ Changed "Ancient Creature March" to "Ancient Creature Call" in descriptions
+- [x] **Missing Stabilise Mutation description** - ✅ Added complete ability description to ability.txt
+- [x] **GODNAME placeholder not replaced** - ✅ Implemented dynamic GODNAME replacement in ability descriptions
+- [x] **UI/Tile issues** - ✅ Fixed all tile assignments, moved tiles to proper directories, added transparent backgrounds
 
 ## Enhancement Ideas
 - [ ] **Thematic temp terrain change** - When summoning certain monster sets, temporarily change terrain to match theme (e.g., water for Shoals set, lava for Gehenna set)
@@ -14,14 +18,31 @@
 - [x] Fix piety cost calculation to use monster sets
 - [x] Clean up redundant code and unused functions
 - [x] Use constants instead of hardcoded strings
+- [x] **Align ability descriptions and UI with standard implementation** - ✅ All ancient god abilities now follow standard patterns
+
+## UI/Descriptions Fixed Today
+- [x] **Dynamic placeholder replacement** - GODNAME, CREATURENAME, MOODNAME all work properly
+- [x] **Proper tile organization** - Moved ancient_creature_call from abilities/ to invocations/ directory
+- [x] **Added Stabilise Mutation tile** - Properly sized (32x32) with transparent background
+- [x] **Fixed tile references** - Updated tilepick.cc with correct tile enums
+- [x] **Added ability checks** - Stabilise Mutation now checks if player has stabilisable mutations
+
+## Critical Bug Fixes
+- [x] **Stabilise Mutation UI spam** - Fixed interface triggering on every player action instead of only when ability used
+- [x] **Ancient Creature Call crash** - Fixed ASSERT(!fail) crash when ability fails due to low invocations skill
+- [x] **Poor god power descriptions in religion menu** - Fixed basic descriptions, added proper "you can now" messages
+- [x] **Missing piety gain messages** - Ancient god abilities now show proper notifications when unlocked
 
 ## Testing Notes
 - Ancient god now properly assigns monster sets instead of individual monsters
 - Summoning should now work correctly with proper thematic monsters
 - Moods should be applied as enchantments to summoned creatures
 - Piety costs should scale with mood and average HD of monster set
+- ✅ All ability descriptions now display correctly with dynamic god names
+- ✅ Tiles display properly in UI with transparent backgrounds
 
 ## Future Considerations
 - Consider adding more monster sets for variety
 - Maybe add special effects for rare/powerful summons
-- Consider making some moods exclusive to certain monster types 
+- Consider making some moods exclusive to certain monster types
+- [ ] **Fix ancient god icons** - Address transparency and bordering issues with ability tiles (later in implementation cycle) 

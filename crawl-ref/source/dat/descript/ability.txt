@@ -1104,7 +1104,7 @@ always perform a Howl afterward.
 Can only target an enemy who is afraid, and who has at least one occupiable tile
 adjacent to them.
 %%%%
-Ancient Creature March ability
+Ancient Creature Call ability
 
 Calls upon ancient memories to summon CREATURENAME from the depths of time. 
 Your forgotten god remembers these creatures and their MOODNAME temperament, 
@@ -1121,6 +1121,15 @@ matching atmospheric effects.
 
 The specific creature type and mood are determined by your ancient god's unique 
 memories and remain consistent throughout your worship.
+%%%%
+Stabilise Mutation ability
+
+Permanently stabilises one of your existing mutations, preventing it from being 
+removed by any means. Once a mutation is stabilised, it becomes a permanent part 
+of your being and cannot be lost through mutation removal, divine cleansing, or 
+other effects.
+
+This ability requires you to have at least one unstabilised mutation.
 %%%%
 Degenerative Casting ability
 

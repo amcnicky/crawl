@@ -1665,6 +1665,10 @@ string get_ability_desc(const ability_type ability, bool need_title)
         break;
     }
 
+    // Replace GODNAME placeholder for any ancient god abilities
+    if (you.religion == GOD_ANCIENT)
+        lookup = replace_all(lookup, "GODNAME", get_ancient_god_name());
+
     if (testbits(get_ability_def(ability).flags, abflag::sacrifice))
         lookup += _sacrifice_desc(ability);
 
@@ -2594,6 +2598,15 @@ static bool _check_ability_possible(const ability_def& abil, bool quiet = false)
         {
             if (!quiet)
                 mpr("You are already a vessel of slaughter!");
+            return false;
+        }
+        return true;
+
+    case ABIL_ANCIENT_STABILISE_MUTATION:
+        if (!has_stabilisable_mutations())
+        {
+            if (!quiet)
+                mpr("You have no mutations that can be stabilised.");
             return false;
         }
         return true;
@@ -4064,7 +4077,7 @@ static spret _do_ability(const ability_def& abil, bool fail, dist *target,
         return cast_ancient_stabilise_mutation();
 
     case ABIL_ANCIENT_CREATURE_CALL:
-        return cast_ancient_creature_call(you.skill(SK_INVOCATIONS, 4), false);
+        return cast_ancient_creature_call(you.skill(SK_INVOCATIONS, 4), fail);
 
     case ABIL_RENOUNCE_RELIGION:
         if (yesno("Really renounce your faith, foregoing its fabulous benefits?",
